@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#061b33">
+<title>Hamdi Elkhateeb Academy</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#04162a;--panel:#071f39;--panel2:#092846;--line:#1c5f9d;
+  --blue:#0798f5;--blue2:#27b1ff;--text:#f5f8ff;--muted:#a9bdd4;
+}
+body{font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+button,input{font:inherit}
+button{cursor:pointer}
+a{text-decoration:none;color:inherit}
+.nav{height:82px;display:flex;align-items:center;justify-content:space-between;padding:0 5.2%;border-bottom:1px solid rgba(39,177,255,.16);position:sticky;top:0;background:rgba(4,22,42,.94);backdrop-filter:blur(14px);z-index:20}
+.brand{display:flex;align-items:center;gap:12px;font-weight:800;font-size:20px}
+.logo{width:46px;height:46px;border:2px solid var(--blue);border-radius:12px;display:grid;place-items:center;font-size:24px;font-weight:900;color:white;box-shadow:0 0 22px rgba(7,152,245,.22)}
+.brand span{display:block}.brand small{display:block;color:var(--muted);font-size:8px;letter-spacing:4px;font-weight:500}
+.links{display:flex;gap:34px;align-items:center;font-size:14px;color:#d8e4f2}.links a{padding:28px 0;border-bottom:3px solid transparent}.links a.active{color:var(--blue2);border-color:var(--blue)}
+.start{background:var(--blue);border:0;color:#fff;border-radius:30px;padding:14px 25px;font-weight:800;box-shadow:0 8px 24px rgba(7,152,245,.22)}
+.menu{display:none;background:transparent;border:1px solid var(--line);color:#fff;border-radius:10px;padding:9px 12px;font-size:22px}
+.hero{min-height:510px;padding:65px 5.2% 45px;position:relative;overflow:hidden;background:
+radial-gradient(circle at 78% 35%,rgba(7,152,245,.18),transparent 31%),
+linear-gradient(115deg,#061b33 0%,#061b33 47%,#082b4c 100%)}
+.hero:before{content:"";position:absolute;width:520px;height:520px;border:1px solid rgba(7,152,245,.15);border-radius:50%;right:-160px;top:-150px;box-shadow:0 0 0 70px rgba(7,152,245,.025),0 0 0 140px rgba(7,152,245,.02)}
+.hero-grid{max-width:1400px;margin:auto;display:grid;grid-template-columns:1.02fr .98fr;gap:30px;align-items:center;position:relative;z-index:1}
+.eyebrow{color:var(--blue2);letter-spacing:4px;font-size:12px;font-weight:700;margin-bottom:18px}
+h1{font-size:clamp(42px,5vw,72px);line-height:1.02;letter-spacing:-2px;max-width:700px}
+h1 em{font-style:normal;color:var(--blue)}
+.lead{color:#c2d2e4;font-size:18px;max-width:650px;margin:24px 0 28px}
+.actions{display:flex;gap:14px;flex-wrap:wrap}.primary,.secondary{padding:15px 24px;border-radius:30px;font-weight:800;border:1px solid var(--blue)}
+.primary{background:var(--blue);color:#fff}.secondary{background:transparent;color:#fff}
+.features{display:flex;gap:32px;margin-top:30px;flex-wrap:wrap;color:#a9bdd4;font-size:12px;text-transform:uppercase;letter-spacing:.5px}
+.features b{color:var(--blue2);font-size:24px;display:block;margin-bottom:3px}
+.visual{min-height:390px;display:grid;place-items:center;position:relative}
+.person{width:min(460px,90%);height:350px;border-radius:30px;background:linear-gradient(145deg,#0c3659,#06192d);border:1px solid #1767a8;position:relative;overflow:hidden;box-shadow:0 30px 70px rgba(0,0,0,.3)}
+.person:before{content:"";position:absolute;width:190px;height:190px;border-radius:50%;background:#d9b18e;left:50%;top:40px;transform:translateX(-50%);box-shadow:0 0 0 16px rgba(7,152,245,.08)}
+.person:after{content:"";position:absolute;width:270px;height:190px;border-radius:45% 45% 10px 10px;background:#090e16;left:50%;bottom:-35px;transform:translateX(-50%)}
+.face{position:absolute;left:50%;top:76px;transform:translateX(-50%);font-size:95px;z-index:2;filter:grayscale(.1)}
+.screen{position:absolute;right:18px;top:25px;width:155px;height:100px;border:2px solid #1477bd;border-radius:8px;background:linear-gradient(135deg,#092a4b,#0b507b);opacity:.9}
+.tooth{position:absolute;left:25px;bottom:25px;font-size:78px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.3))}
+.section{padding:62px 5.2%;max-width:1500px;margin:auto}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:25px}.tag{color:var(--blue2);font-size:12px;letter-spacing:4px}.section h2{font-size:38px;margin-top:5px}.desc{color:var(--muted);max-width:450px;font-size:14px}.view{color:var(--blue2);font-weight:700}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.card{background:linear-gradient(145deg,#082542,#061a30);border:1px solid #285d88;border-radius:14px;overflow:hidden;transition:.2s}.card:hover{transform:translateY(-4px);border-color:var(--blue)}
+.card-img{height:190px;background:radial-gradient(circle at 50% 55%,#4d86a8 0 12%,transparent 13%),linear-gradient(135deg,#0a3152,#06162a);display:grid;place-items:center;font-size:65px}
+.card:nth-child(2) .card-img{background:radial-gradient(ellipse at center,#1288c9 0 4%,#0b4268 5% 14%,transparent 15%),linear-gradient(135deg,#0b2c48,#06172a)}
+.card:nth-child(3) .card-img{background:radial-gradient(circle at 45% 55%,#e7f3fa 0 8%,#5e8fa9 9% 13%,transparent 14%),linear-gradient(135deg,#092b48,#06172a)}
+.card-body{padding:18px}.card h3{font-size:19px}.card p{color:var(--muted);font-size:13px;margin-top:3px}.card-row{display:flex;align-items:center;justify-content:space-between;margin-top:14px}.pill{font-size:11px;color:var(--blue2);border:1px solid #1767a8;border-radius:20px;padding:5px 9px}.arrow{width:38px;height:38px;border-radius:50%;background:var(--blue);display:grid;place-items:center;font-size:20px}
+.about{background:#061c32;border-top:1px solid rgba(39,177,255,.13);border-bottom:1px solid rgba(39,177,255,.13)}.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}.about h2{font-size:38px}.about p{color:var(--muted);margin-top:15px}.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}.stat{padding:25px;background:#082542;border:1px solid #174b76;border-radius:14px}.stat strong{font-size:30px;color:var(--blue2);display:block}.stat span{color:var(--muted);font-size:13px}
+.login{max-width:500px;margin:50px auto;padding:30px;background:#082542;border:1px solid #205d8f;border-radius:18px;display:none}.login h2{margin-bottom:15px}.field{width:100%;padding:14px;margin:7px 0;background:#06192d;border:1px solid #285d88;border-radius:10px;color:white}.login .primary{width:100%;margin-top:10px}
+footer{padding:35px 5.2%;border-top:1px solid rgba(39,177,255,.15);color:var(--muted);display:flex;justify-content:space-between;gap:20px}
+.toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%) translateY(100px);background:#0b3153;border:1px solid #2586c8;padding:13px 20px;border-radius:30px;z-index:50;transition:.3s}.toast.show{transform:translateX(-50%) translateY(0)}
+@media(max-width:900px){.links{display:none}.menu{display:block}.start{display:none}.hero-grid{grid-template-columns:1fr}.visual{min-height:330px}.cards{grid-template-columns:1fr 1fr}.about-grid{grid-template-columns:1fr}}
+@media(max-width:600px){.nav{height:70px;padding:0 18px}.brand{font-size:15px}.brand small{display:none}.logo{width:39px;height:39px}.hero{padding:45px 18px 35px}.eyebrow{font-size:10px;letter-spacing:2px}h1{font-size:42px;letter-spacing:-1px}.lead{font-size:16px}.features{gap:18px}.features div{min-width:105px}.section{padding:45px 18px}.section-head{display:block}.section h2,.about h2{font-size:30px}.desc{margin-top:10px}.view{display:block;margin-top:12px}.cards{grid-template-columns:1fr}.card-img{height:170px}.person{height:300px}.visual{min-height:300px}footer{display:block}.footer-links{margin-top:10px}}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <a class="brand" href="#" onclick="home()">
+    <div class="logo">H</div>
+    <div><span>Hamdi Elkhateeb <b style="color:#0aa1ff">Academy</b></span><small>LEARN · PRACTICE · BUILD YOUR FUTURE</small></div>
+  </a>
+  <nav class="links">
+    <a class="active" href="#home">Home</a>
+    <a href="#courses">Courses</a>
+    <a href="#cases">Case Studies</a>
+    <a href="#resources">Resources</a>
+    <button class="start" onclick="openLogin()">Start Learning →</button>
+  </nav>
+  <button class="menu" onclick="toggleMenu()">☰</button>
+</header>
+
+<main id="home">
+<section class="hero">
+ <div class="hero-grid">
+  <div>
+   <div class="eyebrow">DIGITAL DENTAL DESIGN & EXOCAD TRAINING</div>
+   <h1>Great Dental Design<br>Starts with <em>Understanding</em></h1>
+   <p class="lead">Learn exocad through real cases, clear design principles, and practical digital workflows.</p>
+   <div class="actions">
+    <button class="primary" onclick="scrollToId('courses')">Explore Courses →</button>
+    <button class="secondary" onclick="showToast('Instructor profile is ready for your content.')">▷ &nbsp; Meet Your Instructor</button>
+   </div>
+   <div class="features">
+    <div><b>▣</b>Practical<br>Learning</div>
+    <div><b>♢</b>Real Case<br>Application</div>
+    <div><b>▥</b>Skills for<br>Bigger Opportunities</div>
+   </div>
+  </div>
+  <div class="visual">
+    <div class="person">
+      <div class="screen">◈<br><br>EXOCAD<br>Dental Design</div>
+      <div class="face">👨🏻</div>
+      <div class="tooth">🦷</div>
+    </div>
+  </div>
+ </div>
+</section>
+
+<section id="courses" class="section">
+ <div class="section-head">
+  <div><div class="tag">FEATURED COURSES</div><h2>Build Your Digital Design Skills</h2></div>
+  <div><div class="desc">Practical, case-based training to help you design better smiles with confidence.</div><a class="view" href="#courses">View All Courses →</a></div>
+ </div>
+ <div class="cards">
+  <article class="card"><div class="card-img">🦷</div><div class="card-body"><h3>exocad Fundamentals</h3><p>Start with strong foundations</p><div class="card-row"><span class="pill">Beginner</span><button class="arrow" onclick="enroll('exocad Fundamentals')">→</button></div></div></article>
+  <article class="card"><div class="card-img">◇</div><div class="card-body"><h3>Advanced Dental Design</h3><p>Refine anatomy, contours, and occlusion</p><div class="card-row"><span class="pill">Advanced</span><button class="arrow" onclick="enroll('Advanced Dental Design')">→</button></div></div></article>
+  <article class="card"><div class="card-img">🦷</div><div class="card-body"><h3>Implant Prosthetics</h3><p>Plan and design implant restorations</p><div class="card-row"><span class="pill">Professional</span><button class="arrow" onclick="enroll('Implant Prosthetics')">→</button></div></div></article>
+ </div>
+</section>
+
+<section id="cases" class="about">
+ <div class="section about-grid">
+  <div><div class="tag">WHY THE ACADEMY</div><h2>Learn. Design. Refine.</h2><p>One professional learning platform for courses, lectures, practical cases, resources, certificates, and student progress.</p><div class="actions" style="margin-top:22px"><button class="primary" onclick="openLogin()">Create Student Account</button></div></div>
+  <div class="stats"><div class="stat"><strong>01</strong><span>Structured learning paths</span></div><div class="stat"><strong>02</strong><span>Real case practice</span></div><div class="stat"><strong>03</strong><span>Student progress tracking</span></div><div class="stat"><strong>04</strong><span>Certificates & resources</span></div></div>
+ </div>
+</section>
+
+<section id="resources" class="section">
+ <div class="tag">RESOURCES</div><h2>Everything in One Place</h2>
+ <p class="desc" style="margin-top:8px">Access your learning materials, lectures, case studies, and academy resources from one dashboard.</p>
+</section>
+
+<div class="login" id="login">
+ <h2>Student Login</h2><p style="color:#a9bdd4;font-size:14px">Enter your details to continue to the academy.</p>
+ <input class="field" id="name" placeholder="Student name">
+ <input class="field" id="email" type="email" placeholder="Email address">
+ <button class="primary" onclick="login()">Continue to Academy</button>
+</div>
+</main>
+
+<footer><div>© 2026 Hamdi Elkhateeb Academy</div><div class="footer-links">Courses · Case Studies · Resources · Student Account</div></footer>
+<div class="toast" id="toast"></div>
+
+<script>
+function scrollToId(id){document.getElementById(id).scrollIntoView({behavior:'smooth'})}
+function showToast(t){let x=document.getElementById('toast');x.textContent=t;x.classList.add('show');setTimeout(()=>x.classList.remove('show'),2600)}
+function openLogin(){document.getElementById('login').style.display='block';document.getElementById('login').scrollIntoView({behavior:'smooth'})}
+function login(){let n=document.getElementById('name').value.trim();let e=document.getElementById('email').value.trim();if(!n||!e){showToast('Please enter your name and email.');return}localStorage.setItem('academyStudent',JSON.stringify({name:n,email:e}));showToast('Welcome, '+n+'! Your student session is active.')}
+function enroll(course){localStorage.setItem('academyCourse',course);showToast('Course selected: '+course)}
+function home(){scrollToId('home')}
+function toggleMenu(){let nav=document.querySelector('.links');nav.style.display=nav.style.display==='flex'?'none':'flex';nav.style.position='absolute';nav.style.top='70px';nav.style.right='18px';nav.style.background='#061b33';nav.style.padding='18px';nav.style.border='1px solid #205d8f';nav.style.borderRadius='14px';nav.style.flexDirection='column';nav.style.alignItems='stretch';nav.style.gap='8px';document.querySelectorAll('.links a').forEach(a=>a.style.padding='8px 10px')}
+</script>
+</body>
+</html>
