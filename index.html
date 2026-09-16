@@ -1,192 +1,57 @@
 <!doctype html>
-<html lang="en">
+<html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Hamdi Elkhateeb Academy</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>أكاديمية حمدي الخطيب</title>
 <style>
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:#03172d;color:#f7fbff;font-family:Arial,Tahoma,sans-serif}
-button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
-.page{min-height:100vh;background:
-radial-gradient(circle at 78% 8%,#0754a0 0,transparent 28%),
-radial-gradient(circle at 8% 55%,#06335e 0,transparent 30%),#03172d}
-.wrap{width:min(1400px,calc(100% - 70px));margin:auto}
-
-header{height:92px;display:flex;align-items:center;gap:25px}
-.logo{display:flex;align-items:center;gap:12px}
-.logo img{width:72px;height:62px;object-fit:contain;border-radius:8px}
-.logo-text{font-size:25px;font-weight:800;line-height:1}
-.logo-text span{display:block;color:#159cf1;margin-top:5px}
-.logo small{display:block;color:#9bb6d0;letter-spacing:5px;font-size:9px;margin-top:8px}
-nav{margin-left:auto;display:flex;gap:40px;align-items:center}
-nav a{color:#eef6ff;font-size:15px;padding:32px 0;border-bottom:3px solid transparent}
-nav a.active{color:#159cf1;border-bottom-color:#159cf1}
-.start{border:0;border-radius:30px;background:#079bf0;color:white;padding:15px 27px;font-weight:800}
-.menu{display:none;border:1px solid #587b9d;background:#082442;color:#fff;border-radius:12px;font-size:26px;padding:8px 13px}
-
-.hero{position:relative;min-height:520px;border-radius:0;overflow:hidden;
-background:#052342 url('cover.png') center/cover no-repeat;
-border-top:1px solid #1b4d75;border-bottom:1px solid #1b4d75}
-.hero:after{content:"";position:absolute;inset:0;
-background:linear-gradient(90deg,#03172df5 0%,#03172dcc 36%,#03172d55 65%,#03172d08 100%)}
-.hero-inner{position:relative;z-index:2;min-height:520px;display:flex;align-items:center}
-.hero-copy{width:54%;padding:40px 0}
-.eyebrow{color:#159cf1;letter-spacing:5px;font-weight:700;font-size:14px}
-h1{font-size:55px;line-height:1.03;margin:20px 0 18px;letter-spacing:-2px}
-h1 span{color:#159cf1}
-.hero p{font-size:20px;color:#c4d5e7;line-height:1.55;max-width:620px}
-.buttons{display:flex;gap:15px;margin-top:24px}
-.primary{border:0;border-radius:30px;background:#079bf0;color:#fff;padding:17px 30px;font-weight:800}
-.secondary{border:1px solid #8bb2d4;border-radius:30px;background:#03172d88;color:#fff;padding:16px 26px}
-.features{display:flex;gap:40px;margin-top:30px}
-.feature{display:flex;gap:10px;align-items:center;color:#bdd2e7;font-size:13px}
-.feature b{display:block;color:#fff;font-size:14px}
-.icon{font-size:30px;color:#159cf1}
-
-.divider{height:58px;display:flex;align-items:center;justify-content:center;gap:25px;color:#abc6df;letter-spacing:8px;font-size:13px}
-.divider:before,.divider:after{content:"";height:1px;width:180px;background:#47769b}
-
-.section-head{display:flex;align-items:end;justify-content:space-between;margin:25px 0 18px}
-.kicker{color:#159cf1;letter-spacing:4px;font-size:12px;font-weight:700}
-.section-head h2{font-size:38px;margin:10px 0 0}
-.section-head p{max-width:370px;color:#a9bfd5;line-height:1.5}
-.view{color:#159cf1;font-size:14px}
-
-.courses{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding-bottom:55px}
-.course{overflow:hidden;border:1px solid #315f82;border-radius:13px;background:#061d35;transition:.2s}
-.course:hover{transform:translateY(-4px);border-color:#159cf1;box-shadow:0 15px 35px #0007}
-.course-img{height:190px;background:#092b4b;overflow:hidden}
-.course-img img{width:100%;height:100%;object-fit:cover}
-.course-body{padding:16px 18px 18px}
-.course h3{font-size:20px;margin:0 0 7px}
-.course p{color:#9fb8cf;margin:0}
-.course-row{display:flex;justify-content:space-between;align-items:center;margin-top:15px}
-.course-row small{color:#7f9bb5}
-.arrow{width:44px;height:44px;border:0;border-radius:50%;background:#079bf0;color:#fff;font-size:24px}
-
-.bottom{border-top:1px solid #173f60;padding:28px 0 45px;display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
-.bottom-item{color:#dceaf6}.bottom-item+.bottom-item{border-left:1px solid #244d6c}
-.bottom-item span{display:block;font-size:34px;color:#159cf1;margin-bottom:8px}
-.bottom-item b{font-size:17px}
-
-.drawer{position:fixed;top:0;right:-330px;width:310px;height:100vh;background:#061d35;z-index:20;padding:25px;transition:.25s;box-shadow:-20px 0 50px #0008}
-.drawer.open{right:0}.drawer h2{margin-top:0}.close{float:right;border:0;background:transparent;color:#fff;font-size:30px}
-.drawer a{display:block;padding:16px;border-bottom:1px solid #183b59;color:#c5d8e9}
-.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:10}.overlay.show{display:block}
-
-@media(max-width:900px){
-.wrap{width:min(100% - 28px,680px)}
-header{height:76px}.logo-text{font-size:19px}.logo img{width:58px;height:52px}
-nav{display:none}.menu{display:block;margin-left:auto}
-.hero{border-radius:18px}.hero-inner{min-height:570px}.hero-copy{width:100%;padding:35px 20px}
-.hero:after{background:linear-gradient(90deg,#03172df7,#03172dce)}
-h1{font-size:43px}.hero p{font-size:18px}
-.features{gap:20px;flex-wrap:wrap}.feature{font-size:11px}
-.section-head{display:block}.section-head h2{font-size:30px}.section-head p{font-size:14px}
-.courses{grid-template-columns:1fr}.course-img{height:210px}
-.bottom{grid-template-columns:1fr;gap:18px}.bottom-item+.bottom-item{border-left:0;border-top:1px solid #244d6c;padding-top:18px}
-}
-
-@media(max-width:500px){
-.wrap{width:calc(100% - 20px)}.logo-text{font-size:16px}.logo small{font-size:7px;letter-spacing:3px}
-.hero-inner{min-height:510px}.eyebrow{font-size:10px;letter-spacing:3px}
-h1{font-size:36px}.hero p{font-size:16px}.buttons{flex-direction:column}
-.primary,.secondary{width:100%}.divider{letter-spacing:3px;font-size:10px}.divider:before,.divider:after{width:55px}
-.section-head h2{font-size:26px}.course-img{height:180px}
-}
-</style>
-</head>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#061426;color:#eef6ff;font-family:Tahoma,Arial,sans-serif}a{text-decoration:none;color:inherit;cursor:pointer}button{font:inherit;border:0;cursor:pointer}.sidebar{position:fixed;right:0;top:0;width:285px;height:100vh;background:#071a2d;border-left:1px solid #173653;padding:20px 18px;z-index:50;transition:.25s}.brand{display:flex;gap:12px;align-items:center;padding:4px 8px 20px;border-bottom:1px solid #173653}.brand-mark{width:48px;height:48px;border-radius:14px;background:linear-gradient(145deg,#0aa5ee,#0750a8);display:grid;place-items:center;font-size:27px;font-weight:bold}.brand strong{display:block;font-size:16px}.brand span{display:block;color:#19b8ef;margin-top:3px}.student{display:flex;gap:12px;align-items:center;padding:22px 8px}.side-avatar{width:48px;height:48px;border-radius:50%;overflow:hidden;background:#0e7ed1;border:2px solid #1e9ee7;flex-shrink:0}.side-avatar img{width:100%;height:100%;object-fit:cover;object-position:center top}.student b{display:block}.student small{display:block;color:#9bb0c5;margin-top:4px}.side-nav{display:grid;gap:5px}.side-nav a{padding:14px 15px;border-radius:9px;color:#c7d6e6;display:flex;justify-content:space-between}.side-nav a:hover,.side-nav .active{background:#0a79cf;color:#fff}main{margin-right:285px;padding:0 28px 40px}.topbar{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #173653;gap:15px}.search{width:min(560px,65%);height:43px;border:1px solid #214866;border-radius:12px;background:#0a2139;color:#9db6ce;padding:0 14px;display:flex;align-items:center;gap:10px}.search input{background:transparent;border:0;outline:0;color:#fff;width:100%;font-size:14px}.top-actions{display:flex;align-items:center;gap:8px}.lang{background:#09243b;color:#fff;border:1px solid #42627d;border-radius:9px;padding:9px 13px}.mobile-menu{display:none;background:#0a84d8;color:#fff;border-radius:11px;width:48px;height:43px;font-size:23px}.overlay{display:none}.profile-card{margin:18px 0 16px;background:#071c31;border:1px solid #214866;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.28)}.cover{height:320px;position:relative;overflow:hidden;background:#071d32}.cover:after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 52%,rgba(3,14,27,.7));pointer-events:none}.cover img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}.profile-body{position:relative;z-index:2;display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:22px;align-items:center;padding:0 28px 22px;margin-top:-72px}.profile-avatar-wrap{width:150px;height:150px;border-radius:50%;padding:7px;background:#071c31;box-shadow:0 6px 22px rgba(0,0,0,.45);position:relative}.profile-avatar{width:100%;height:100%;display:block;border-radius:50%;object-fit:cover;object-position:center top;border:3px solid #fff}.verified{position:absolute;right:4px;bottom:7px;width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:#0b91df;border:4px solid #071c31;color:#fff;font-size:18px;font-weight:bold}.profile-main{padding-top:65px}.profile-main h1{margin:0 0 7px;font-size:29px;line-height:1.25}.verified-title{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#0b91df;color:#fff;font-size:16px;vertical-align:middle}.type{margin:0;color:#a9bfd4;font-size:15px}.bio{margin:7px 0 0;color:#839bb1;font-size:14px}.profile-actions{display:flex;align-items:center;gap:10px;padding-top:65px}.follow{background:#0789df;color:#fff;border-radius:11px;padding:13px 22px;font-size:15px;font-weight:bold}.follow.following{background:#173e59}.more{width:52px;height:52px;border-radius:11px;background:#0a263d;border:1px solid #4b6c85;color:#fff;font-size:28px}.more-menu{display:none;position:absolute;top:132px;left:28px;background:#0a243b;border:1px solid #31536d;border-radius:10px;padding:6px;z-index:80}.more-menu button{background:transparent;color:#fff;padding:10px 16px;border-radius:7px}.more-menu button:hover{background:#087bd0}.profile-tabs{display:flex;overflow-x:auto;white-space:nowrap;border-top:1px solid #21435c;padding:0 18px}.profile-tabs a{position:relative;padding:17px 22px;color:#8fa7bc;font-size:15px}.profile-tabs a.active{color:#fff}.profile-tabs a.active:after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:3px;background:#0789df;border-radius:4px 4px 0 0}.welcome{margin-top:18px;min-height:150px;border:1px solid #155083;border-radius:12px;padding:25px 30px;display:flex;justify-content:space-between;align-items:center;background:radial-gradient(circle at 15% 50%,#073e68,#071d32 65%)}.welcome p{color:#a9c6df;margin:0 0 8px}.welcome h2{font-size:25px;margin:0;line-height:1.6}.welcome h2 b{font-size:32px}.quote{font-size:18px;line-height:2;color:#91d5ff;text-align:center}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:16px 0}.stat{background:#082039;border:1px solid #173e5d;border-radius:11px;padding:18px;display:grid;grid-template-columns:45px 1fr;gap:4px 10px}.stat span{grid-row:span 3;font-size:27px;background:#0a5f9e;border-radius:12px;display:grid;place-items:center}.stat small{color:#a8bdd1}.stat b{font-size:20px}.stat a{font-size:12px;color:#25b8ef}.grid{display:grid;grid-template-columns:1.55fr 1fr;gap:16px}.panel{background:#071c31;border:1px solid #173e5d;border-radius:11px;padding:17px}.courses{grid-row:span 2}.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.panel-head h2{font-size:17px;margin:0}.panel-head a{font-size:12px;color:#25b8ef}.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.course{border:1px solid #1b4868;background:#09233b;border-radius:10px;padding:10px;transition:.2s}.course:hover{transform:translateY(-2px);border-color:#0b91df}.course-img{height:120px;border-radius:8px;overflow:hidden}.course-img img{width:100%;height:100%;object-fit:cover;display:block}.course h3{font-size:14px;line-height:1.6;min-height:44px}.course p{color:#91aabd;font-size:12px;margin:0 0 9px}.progress{height:6px;background:#173a55;border-radius:8px;overflow:hidden}.progress i{height:100%;display:block;background:#1eb5ed;border-radius:8px}.course small{display:block;color:#91aabd;margin:8px 0}.course button,.session button,.record button{background:#0b75c5;color:#fff;border-radius:7px;padding:9px 12px;width:100%;font-size:12px}.session{border:1px solid #1a4767;border-radius:9px;padding:13px;margin-bottom:10px}.session b,.session small{display:block}.session small{color:#a7bdcf;font-size:12px;margin:7px 0 12px}.notice,.record{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #16354e}.notice:last-child,.record:last-child{border-bottom:0}.notice div,.record div{flex:1}.notice b,.record b{display:block}.notice small,.record small{display:block;color:#8fa9bd;font-size:11px;margin-top:4px}.record button{width:auto;padding:7px 12px}.empty{display:none;text-align:center;padding:30px;color:#91aabd}.toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:#0b75c5;color:#fff;padding:12px 20px;border-radius:10px;opacity:0;pointer-events:none;transition:.25s;z-index:100}.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(max-width:1050px){.sidebar{width:230px}main{margin-right:230px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.courses{grid-row:auto}}
+@media(max-width:720px){.sidebar{right:auto;left:0;transform:translateX(-105%);border-left:0;border-right:1px solid #173653}.sidebar.open{transform:translateX(0)}.overlay.show{display:block;position:fixed;inset:0;background:#0008;z-index:40}main{margin-right:0;padding:0 12px 25px}.topbar{height:66px}.mobile-menu{display:block;order:2}.search{order:1;flex:1;width:auto;height:43px}.top-actions{display:none}.profile-card{margin:12px 0;border-radius:13px}.cover{height:auto;aspect-ratio:16/9}.profile-body{grid-template-columns:1fr;gap:0;padding:0 14px 18px;margin-top:-53px;text-align:center}.profile-avatar-wrap{width:116px;height:116px;margin:0 auto 9px;padding:6px}.verified{width:30px;height:30px;right:2px;bottom:4px;border-width:3px;font-size:15px}.profile-main{padding-top:0}.profile-main h1{font-size:22px;line-height:1.35}.verified-title{width:22px;height:22px;font-size:13px}.type{font-size:12px}.bio{font-size:12px;line-height:1.7}.profile-actions{padding-top:13px;justify-content:center}.follow{padding:11px 25px;font-size:14px}.more{width:46px;height:46px}.more-menu{top:auto;left:50%;transform:translateX(-50%);margin-top:8px}.profile-tabs{padding:0 2px}.profile-tabs a{padding:15px 16px;font-size:13px}.welcome{flex-direction:column;align-items:flex-start;gap:10px;padding:20px 18px}.welcome h2{font-size:22px}.welcome h2 b{font-size:27px}.quote{display:none}.stats,.course-grid{grid-template-columns:1fr}.course{display:grid;grid-template-columns:100px 1fr;gap:0 10px}.course-img{grid-row:span 4;height:100%}.course h3{min-height:auto;margin:4px 0}.course p{margin-bottom:5px}.course button{grid-column:2}}
+@media(max-width:500px){.stats{grid-template-columns:1fr}.profile-main h1{font-size:20px}}
+</style></head>
 <body>
-<div class="page">
-<div class="wrap">
-<header>
-<a class="logo" href="#">
-<img src="teacher.jpg" alt="Hamdi Elkhateeb">
-<div class="logo-text">Hamdi Elkhateeb<span>Academy</span><small>LEARN · PRACTICE · BUILD YOUR FUTURE</small></div>
-</a>
-<nav>
-<a class="active" href="#">Home</a>
-<a href="#courses">Courses</a>
-<a href="#courses">Case Studies</a>
-<a href="#resources">Resources</a>
-<button class="start" onclick="document.getElementById('courses').scrollIntoView()">Start Learning →</button>
-</nav>
-<button class="menu" id="menuBtn">☰</button>
-</header>
-</div>
-
-<section class="hero">
-<div class="wrap hero-inner">
-<div class="hero-copy">
-<div class="eyebrow">DIGITAL DENTAL DESIGN & EXOCAD TRAINING</div>
-<h1>Great Dental Design<br>Starts with<br><span>Understanding</span></h1>
-<p>Learn exocad through real cases, clear design principles, and practical digital workflows.</p>
-<div class="buttons">
-<button class="primary" onclick="document.getElementById('courses').scrollIntoView()">Explore Courses →</button>
-<button class="secondary" onclick="alert('Instructor introduction coming soon')">▶ &nbsp; Meet Your Instructor</button>
-</div>
-<div class="features">
-<div class="feature"><span class="icon">▣</span><div><b>PRACTICAL</b>LEARNING</div></div>
-<div class="feature"><span class="icon">♧</span><div><b>REAL CASE</b>APPLICATION</div></div>
-<div class="feature"><span class="icon">▥</span><div><b>SKILLS FOR</b>BIGGER OPPORTUNITIES</div></div>
-</div>
-</div>
-</div>
-</section>
-
-<div class="wrap">
-<div class="divider">LEARN · DESIGN · REFINE</div>
-
-<div class="section-head" id="courses">
-<div>
-<div class="kicker">FEATURED COURSES</div>
-<h2>Build Your Digital Design Skills</h2>
-</div>
-<div>
-<p>Practical, case-based training to help you design better smiles with confidence.</p>
-<a class="view" href="#courses">View All Courses →</a>
-</div>
-</div>
-
-<section class="courses">
-<article class="course">
-<div class="course-img"><img src="cover.png" alt="exocad Fundamentals"></div>
-<div class="course-body"><h3>exocad Fundamentals</h3><p>Start with strong foundations</p><div class="course-row"><small>Practical training</small><button class="arrow" onclick="selectCourse('exocad Fundamentals')">›</button></div></div>
-</article>
-<article class="course">
-<div class="course-img"><img src="cover.png" alt="Advanced Dental Design"></div>
-<div class="course-body"><h3>Advanced Dental Design</h3><p>Refine anatomy, contours, and occlusion</p><div class="course-row"><small>Real case workflow</small><button class="arrow" onclick="selectCourse('Advanced Dental Design')">›</button></div></div>
-</article>
-<article class="course">
-<div class="course-img"><img src="cover.png" alt="Implant Prosthetics"></div>
-<div class="course-body"><h3>Implant Prosthetics</h3><p>Plan and design implant restorations</p><div class="course-row"><small>From units to arches</small><button class="arrow" onclick="selectCourse('Implant Prosthetics')">›</button></div></div>
-</article>
-</section>
-
-<div class="bottom" id="resources">
-<div class="bottom-item"><span>▷</span><b>Video Lessons</b></div>
-<div class="bottom-item"><span>▤</span><b>Case Studies</b></div>
-<div class="bottom-item"><span>□</span><b>Resources</b></div>
-</div>
-</div>
-</div>
-
 <div class="overlay" id="overlay"></div>
-<aside class="drawer" id="drawer">
-<button class="close" id="closeBtn">×</button>
-<h2>Hamdi Elkhateeb Academy</h2>
-<a href="#">Home</a><a href="#courses">Courses</a><a href="#courses">Case Studies</a><a href="#resources">Resources</a><a href="#">My Account</a><a href="#">Certificates</a>
+<aside class="sidebar" id="sidebar">
+ <div class="brand"><div class="brand-mark">ح</div><div><strong data-ar="أكاديمية حمدي الخطيب" data-en="Hamdi Elkhateeb Academy">أكاديمية حمدي الخطيب</strong><span data-ar="منصة تعليمية" data-en="Educational Platform">منصة تعليمية</span></div></div>
+ <div class="student"><div class="side-avatar"><img src="assets/teacher.jpg" alt=""></div><div><b>أكاديمية حمدي الخطيب</b><small data-ar="منصة تعليمية" data-en="Educational Platform">منصة تعليمية</small></div></div>
+ <nav class="side-nav"><a class="active" href="#home"><span data-ar="الرئيسية" data-en="Home">الرئيسية</span><span>⌂</span></a><a href="#courses"><span data-ar="الدورات" data-en="Courses">الدورات</span><span>▣</span></a><a href="#live"><span data-ar="المحاضرات المباشرة" data-en="Live Sessions">المحاضرات المباشرة</span><span>◉</span></a><a href="#recordings"><span data-ar="التسجيلات" data-en="Recordings">التسجيلات</span><span>▶</span></a><a href="#resources"><span data-ar="ملفات التدريب" data-en="Training Files">ملفات التدريب</span><span>□</span></a><a href="#questions"><span data-ar="التطبيقات والأسئلة" data-en="Questions & Apps">التطبيقات والأسئلة</span><span>☷</span></a><a href="#certificates"><span data-ar="الشهادات" data-en="Certificates">الشهادات</span><span>◇</span></a><a href="#account"><span data-ar="حسابي" data-en="My Account">حسابي</span><span>♙</span></a></nav>
 </aside>
-
+<main>
+<header class="topbar"><button class="mobile-menu" id="menuBtn">☰</button><div class="search">⌕<input id="searchInput" data-ar-placeholder="ابحث عن دورة أو محاضرة أو ملف..." data-en-placeholder="Search for a course, lecture or file..." placeholder="ابحث عن دورة أو محاضرة أو ملف..."></div><div class="top-actions"><button class="lang" id="langBtn">English</button></div></header>
+<section class="profile-card" id="home">
+ <div class="cover"><img src="assets/cover.png" alt="غلاف الأكاديمية"></div>
+ <div class="profile-body"><div class="profile-avatar-wrap"><img class="profile-avatar" src="assets/teacher.jpg" alt="حمدي الخطيب"><span class="verified">✓</span></div>
+ <div class="profile-main"><h1>Hamdi Elkhateeb Academy <span class="verified-title">✓</span></h1><p class="type" data-ar="منصة تعليمية • تدريب وتعليم احترافي" data-en="Educational Platform • Professional Training & Education">منصة تعليمية • تدريب وتعليم احترافي</p><p class="bio" data-ar="تعلّم، طبّق، وطوّر مهاراتك مع أكاديمية حمدي الخطيب." data-en="Learn, practice, and grow with Hamdi Elkhateeb Academy.">تعلّم، طبّق، وطوّر مهاراتك مع أكاديمية حمدي الخطيب.</p></div>
+ <div class="profile-actions"><button class="follow" id="followBtn" data-ar-follow="متابعة الأكاديمية" data-ar-following="تمت المتابعة ✓" data-en-follow="Follow Academy" data-en-following="Following ✓">متابعة الأكاديمية</button><button class="more" id="moreBtn">⋮</button><div class="more-menu" id="moreMenu"><button id="menuLang">English</button></div></div></div>
+ <nav class="profile-tabs"><a class="active" href="#home" data-ar="الرئيسية" data-en="Home">الرئيسية</a><a href="#courses" data-ar="الدورات" data-en="Courses">الدورات</a><a href="#live" data-ar="المحاضرات" data-en="Lectures">المحاضرات</a><a href="#recordings" data-ar="التسجيلات" data-en="Recordings">التسجيلات</a><a href="#about" data-ar="عن الأكاديمية" data-en="About">عن الأكاديمية</a></nav>
+</section>
+<section class="welcome"><div><p data-ar="أهلًا بك في أكاديمية حمدي الخطيب، وابدأ رحلتك التعليمية معنا." data-en="Welcome to Hamdi Elkhateeb Academy. Start your learning journey with us.">أهلًا بك في أكاديمية حمدي الخطيب، وابدأ رحلتك التعليمية معنا.</p><h2 data-ar="مرحبًا بك مجددًا 👋" data-en="Welcome Back 👋">مرحبًا بك مجددًا 👋<br><b>أكاديمية حمدي الخطيب</b></h2></div><div class="quote">» العلم + التطبيق<br>يصنعان الخبرة «</div></section>
+<section class="stats"><div class="stat"><span>🎓</span><small data-ar="الدورات المتاحة" data-en="Available Courses">الدورات المتاحة</small><b>3</b><a href="#courses" data-ar="عرض الكل ←" data-en="View all →">عرض الكل ←</a></div><div class="stat"><span>▶</span><small data-ar="المحاضرات المسجلة" data-en="Recorded Lessons">المحاضرات المسجلة</small><b>24+</b><a href="#recordings" data-ar="مشاهدة التسجيلات →" data-en="Watch recordings →">مشاهدة التسجيلات →</a></div><div class="stat"><span>◉</span><small data-ar="المحاضرات المباشرة" data-en="Live Sessions">المحاضرات المباشرة</small><b>قريبًا</b><a href="#live" data-ar="عرض الجدول →" data-en="View schedule →">عرض الجدول →</a></div><div class="stat"><span>◇</span><small data-ar="الشهادات" data-en="Certificates">الشهادات</small><b>متاحة</b><a href="#certificates" data-ar="التفاصيل →" data-en="Details →">التفاصيل →</a></div></section>
+<div class="grid">
+<section class="panel courses" id="courses"><div class="panel-head"><h2 data-ar="الدورات التعليمية" data-en="Training Courses">الدورات التعليمية</h2><a href="#courses" data-ar="عرض الكل" data-en="View all">عرض الكل</a></div><div class="course-grid" id="courseGrid">
+<article class="course" data-search="exocad fundamentals exocad أساسيات"><div class="course-img"><img src="assets/exocad.jpg" alt="exocad Fundamentals"></div><h3 data-ar="أساسيات exocad" data-en="exocad Fundamentals">أساسيات exocad</h3><p data-ar="ابدأ من الصفر بخطوات عملية واضحة" data-en="Build strong foundations with practical workflows">ابدأ من الصفر بخطوات عملية واضحة</p><div class="progress"><i style="width:35%"></i></div><small data-ar="35% مكتمل" data-en="35% complete">35% مكتمل</small><button class="courseBtn" data-ar="ابدأ الدورة ▶" data-en="Start Course ▶">ابدأ الدورة ▶</button></article>
+<article class="course" data-search="advanced dental design advanced تصميم أسنان"><div class="course-img"><img src="assets/advanced.jpg" alt="Advanced Dental Design"></div><h3 data-ar="تصميم الأسنان المتقدم" data-en="Advanced Dental Design">تصميم الأسنان المتقدم</h3><p data-ar="تطوير التشريح والإطباق على حالات حقيقية" data-en="Refine anatomy and occlusion using real cases">تطوير التشريح والإطباق على حالات حقيقية</p><div class="progress"><i style="width:20%"></i></div><small data-ar="20% مكتمل" data-en="20% complete">20% مكتمل</small><button class="courseBtn" data-ar="ابدأ الدورة ▶" data-en="Start Course ▶">ابدأ الدورة ▶</button></article>
+<article class="course" data-search="implant prosthetics implant زراعة تعويضات"><div class="course-img"><img src="assets/implant.jpg" alt="Implant Prosthetics"></div><h3 data-ar="تعويضات الزرعات" data-en="Implant Prosthetics">تعويضات الزرعات</h3><p data-ar="من الحالات الفردية إلى الأقواس الكاملة" data-en="From single units to full-arch workflows">من الحالات الفردية إلى الأقواس الكاملة</p><div class="progress"><i style="width:10%"></i></div><small data-ar="10% مكتمل" data-en="10% complete">10% مكتمل</small><button class="courseBtn" data-ar="ابدأ الدورة ▶" data-en="Start Course ▶">ابدأ الدورة ▶</button></article>
+</div><div class="empty" id="noResults" data-ar="لا توجد دورة مطابقة للبحث." data-en="No matching course found.">لا توجد دورة مطابقة للبحث.</div></section>
+<section class="panel" id="live"><div class="panel-head"><h2 data-ar="المحاضرات المباشرة" data-en="Live Sessions">المحاضرات المباشرة</h2><a href="#live" data-ar="عرض الكل" data-en="View all">عرض الكل</a></div><div class="session"><b data-ar="جلسة تدريبية مباشرة" data-en="Live Training Session">جلسة تدريبية مباشرة</b><small data-ar="سيتم الإعلان عن الموعد داخل المنصة" data-en="The schedule will be announced inside the platform">سيتم الإعلان عن الموعد داخل المنصة</small><button class="actionBtn" data-ar="سجّل اهتمامك" data-en="Register Interest">سجّل اهتمامك</button></div><div class="session"><b data-ar="مراجعة حالات عملية" data-en="Real Case Review">مراجعة حالات عملية</b><small data-ar="تابع الإعلانات لمعرفة الموعد القادم" data-en="Follow announcements for the next session">تابع الإعلانات لمعرفة الموعد القادم</small><button class="actionBtn" data-ar="اعرف المزيد" data-en="Learn More">اعرف المزيد</button></div></section>
+<section class="panel" id="recordings"><div class="panel-head"><h2 data-ar="آخر التسجيلات" data-en="Latest Recordings">آخر التسجيلات</h2><a href="#recordings" data-ar="عرض الكل" data-en="View all">عرض الكل</a></div><div class="record">🎬 <div><b data-ar="أساسيات العمل على exocad" data-en="exocad Workflow Fundamentals">أساسيات العمل على exocad</b><small data-ar="تسجيل تدريبي" data-en="Training recording">تسجيل تدريبي</small></div><button class="actionBtn" data-ar="مشاهدة" data-en="Watch">مشاهدة</button></div><div class="record">🎬 <div><b data-ar="حالة عملية في التصميم" data-en="Real Design Case">حالة عملية في التصميم</b><small data-ar="تطبيق عملي" data-en="Practical application">تطبيق عملي</small></div><button class="actionBtn" data-ar="مشاهدة" data-en="Watch">مشاهدة</button></div></section>
+<section class="panel" id="resources"><div class="panel-head"><h2 data-ar="ملفات التدريب" data-en="Training Files">ملفات التدريب</h2><a href="#resources" data-ar="عرض الكل" data-en="View all">عرض الكل</a></div><div class="notice">□ <div><b data-ar="ملفات الحالات والتطبيقات" data-en="Case and practice files">ملفات الحالات والتطبيقات</b><small data-ar="ستظهر الملفات المتاحة للطلاب هنا" data-en="Available student files will appear here">ستظهر الملفات المتاحة للطلاب هنا</small></div></div><div class="notice">✓ <div><b data-ar="الشهادات والإنجازات" data-en="Certificates and achievements">الشهادات والإنجازات</b><small data-ar="سيتم حفظ شهاداتك داخل حسابك" data-en="Your certificates will be saved in your account">سيتم حفظ شهاداتك داخل حسابك</small></div></div></section>
+</div>
+<section class="panel" id="about" style="margin-top:16px"><div class="panel-head"><h2 data-ar="عن الأكاديمية" data-en="About the Academy">عن الأكاديمية</h2></div><p style="color:#a9bfd4;line-height:2;margin:0" data-ar="منصة تعليمية متخصصة في التدريب العملي والتصميم الرقمي، مع محتوى منظم ودروس وتطبيقات تساعدك على تطوير مهاراتك خطوة بخطوة." data-en="A training platform focused on practical learning and digital design, with organized lessons and applications to help you build your skills step by step.">منصة تعليمية متخصصة في التدريب العملي والتصميم الرقمي، مع محتوى منظم ودروس وتطبيقات تساعدك على تطوير مهاراتك خطوة بخطوة.</p></section>
+<section id="certificates" style="height:1px"></section><section id="account" style="height:1px"></section><section id="questions" style="height:1px"></section>
+</main><div class="toast" id="toast"></div>
 <script>
-const drawer=document.getElementById('drawer'),overlay=document.getElementById('overlay');
-function toggleMenu(){drawer.classList.toggle('open');overlay.classList.toggle('show')}
-document.getElementById('menuBtn').onclick=toggleMenu;
-document.getElementById('closeBtn').onclick=toggleMenu;
-overlay.onclick=toggleMenu;
-function selectCourse(name){alert('Selected course: '+name)}
-</script>
-</body>
-</html>
+const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('overlay'),langBtn=document.getElementById('langBtn'),menuLang=document.getElementById('menuLang'),toast=document.getElementById('toast');
+let lang=localStorage.getItem('academyLang')||'ar';
+function applyLang(){document.documentElement.lang=lang;document.documentElement.dir=lang==='ar'?'rtl':'ltr';document.querySelectorAll('[data-ar][data-en]').forEach(el=>el.textContent=el.dataset[lang]);const input=document.getElementById('searchInput');input.placeholder=input.dataset[lang+'Placeholder'];langBtn.textContent=lang==='ar'?'English':'العربية';menuLang.textContent=lang==='ar'?'English':'العربية';document.title=lang==='ar'?'أكاديمية حمدي الخطيب':'Hamdi Elkhateeb Academy';const f=document.getElementById('followBtn');f.textContent=f.classList.contains('following')?f.dataset[lang+'Following']:f.dataset[lang+'Follow']}
+function switchLang(){lang=lang==='ar'?'en':'ar';localStorage.setItem('academyLang',lang);applyLang();closeMenu();}
+function closeMenu(){sidebar.classList.remove('open');overlay.classList.remove('show');document.getElementById('moreMenu').style.display='none'}
+document.getElementById('menuBtn').onclick=()=>{sidebar.classList.add('open');overlay.classList.add('show')};overlay.onclick=closeMenu;langBtn.onclick=switchLang;menuLang.onclick=switchLang;
+document.getElementById('followBtn').onclick=function(){this.classList.toggle('following');applyLang();showToast(lang==='ar'?(this.classList.contains('following')?'تمت متابعة الأكاديمية':'تم إلغاء المتابعة'):(this.classList.contains('following')?'Academy followed':'Unfollowed'))};
+const more=document.getElementById('moreBtn'),moreMenu=document.getElementById('moreMenu');more.onclick=e=>{e.stopPropagation();moreMenu.style.display=moreMenu.style.display==='block'?'none':'block'};document.addEventListener('click',()=>moreMenu.style.display='none');
+function showToast(msg){toast.textContent=msg;toast.classList.add('show');clearTimeout(window.tt);window.tt=setTimeout(()=>toast.classList.remove('show'),2200)}
+document.querySelectorAll('.courseBtn,.actionBtn').forEach(btn=>btn.onclick=()=>showToast(lang==='ar'?'سيتم فتح المحتوى عند تفعيل حساب الطالب.':'Content will open when the student account is activated.'));
+const input=document.getElementById('searchInput'),cards=[...document.querySelectorAll('.course')],no=document.getElementById('noResults');input.oninput=()=>{const q=input.value.trim().toLowerCase();let n=0;cards.forEach(c=>{const ok=!q||c.dataset.search.toLowerCase().includes(q);c.style.display=ok?'':'none';if(ok)n++});no.style.display=n?'none':'block'};
+document.querySelectorAll('.side-nav a').forEach(a=>a.addEventListener('click',closeMenu));
+applyLang();
+</script></body></html>
