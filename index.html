@@ -1,169 +1,115 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Hamdi Elkhateeb Academy — Digital Learning & Professional Training">
-  <title>Hamdi Elkhateeb Academy</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Hamdi Elkhateeb Academy</title>
+<meta name="description" content="Hamdi Elkhateeb Academy - Digital Learning & Professional Training">
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-inner">
-      <a class="brand" href="#home" aria-label="Hamdi Elkhateeb Academy home">
-        <span class="brand-mark">HE</span>
-        <span><b>HAMDI ELKHATEEB</b><small>ACADEMY</small></span>
-      </a>
 
-      <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
-        <span></span><span></span><span></span>
-      </button>
-
-      <nav class="nav" id="mainNav">
-        <a href="#home">Home</a>
-        <a href="#courses">Courses</a>
-        <a href="#lectures">Lectures</a>
-        <a href="#resources">Resources</a>
-        <a href="#about">About</a>
-      </nav>
-
-      <div class="header-actions">
-        <button class="icon-btn" id="searchBtn" aria-label="Search">⌕</button>
-        <button class="login-btn" id="loginBtn">Log in</button>
-        <a class="primary small" href="#courses">Get Started</a>
-      </div>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="logo" href="#home">
+      <span class="logo-icon">HE</span>
+      <span class="logo-text"><b>HAMDI ELKHATEEB</b><small>ACADEMY</small></span>
+    </a>
+    <div class="desktop-search">
+      <input id="searchInput" type="search" placeholder="Search for a course, lecture or file">
+      <button id="searchBtn">⌕</button>
     </div>
-  </header>
-
-  <div class="search-panel" id="searchPanel">
-    <div class="search-box">
-      <input id="searchInput" type="search" placeholder="Search for a course, lecture or resource...">
-      <button id="closeSearch">Close</button>
-    </div>
-    <div id="searchResults" class="search-results"></div>
+    <nav>
+      <a href="#home">Home</a><a href="#courses">Courses</a><a href="#lectures">Lectures</a><a href="#resources">Resources</a><a href="#about">About</a>
+    </nav>
+    <button class="menu" id="menu"><i></i><i></i><i></i></button>
   </div>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#home">Home</a><a href="#courses">Courses</a><a href="#lectures">Lectures</a><a href="#resources">Resources</a><a href="#about">About</a>
+  </div>
+</header>
 
-  <main id="home">
-    <section class="hero container">
-      <div class="hero-copy">
-        <span class="eyebrow">DIGITAL LEARNING & PROFESSIONAL TRAINING</span>
-        <h1>Learn clearly.<br><span>Practice professionally.</span><br>Build your future.</h1>
-        <p>High-quality courses, practical training, lectures and resources — organized in one place.</p>
-        <div class="hero-actions">
-          <a class="primary" href="#courses">Explore Courses <span>→</span></a>
-          <a class="secondary" href="#about">Discover the Academy <span>▷</span></a>
-        </div>
-        <div class="stats">
-          <div><b>Practical</b><span>Hands-on learning</span></div>
-          <div><b>Real Cases</b><span>Applied training</span></div>
-          <div><b>Growth</b><span>Skills & opportunities</span></div>
-        </div>
-      </div>
-      <div class="hero-visual">
-        <img src="assets/cover.jpg" alt="Hamdi Elkhateeb Digital Lab Solutions cover">
-        <div class="profile-card">
-          <img src="assets/profile.jpg" alt="Hamdi Elkhateeb">
-          <div><strong>Hamdi Elkhateeb</strong><span>Instructor & Academy Founder</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="welcome section container" id="about">
-      <div class="section-heading">
-        <span class="eyebrow">WELCOME</span>
-        <h2>Learn. Practice. Build your future.</h2>
-        <p>A focused learning platform for professional skills, digital dentistry, CAD/CAM workflows and practical education.</p>
-      </div>
-      <div class="about-grid">
-        <div class="about-card">
-          <img src="assets/profile.jpg" alt="Hamdi Elkhateeb portrait">
-          <div>
-            <h3>Hamdi Elkhateeb Academy</h3>
-            <p>Learn through structured lessons, practical examples and downloadable resources designed to turn knowledge into usable skills.</p>
-          </div>
-        </div>
-        <div class="feature-list">
-          <div><span>01</span><b>Clear lessons</b><p>Structured material that is easy to follow.</p></div>
-          <div><span>02</span><b>Practical application</b><p>Examples and workflows built around real-world practice.</p></div>
-          <div><span>03</span><b>Useful resources</b><p>Files, references and learning materials in one place.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section container" id="courses">
-      <div class="section-heading row">
-        <div>
-          <span class="eyebrow">FEATURED COURSES</span>
-          <h2>Learn by doing</h2>
-        </div>
-        <button class="text-btn" id="viewAllCourses">View all →</button>
-      </div>
-      <div class="course-grid" id="courseGrid">
-        <article class="course-card" data-search="exocad digital dentistry cad design">
-          <div class="course-image"><img src="assets/course-1.jpg" alt="Digital dentistry course visual"><span>COURSE</span></div>
-          <div class="course-body"><small>Digital Dentistry</small><h3>Exocad Design Workflow</h3><p>Understand the digital workflow from design concepts to precision results.</p><button class="outline course-open" data-course="Exocad Design Workflow">View Course</button></div>
-        </article>
-        <article class="course-card" data-search="implant prosthetics implant digital workflow">
-          <div class="course-image"><img src="assets/course-2.jpg" alt="Implant prosthetics course visual"><span>COURSE</span></div>
-          <div class="course-body"><small>Implant Prosthetics</small><h3>Digital Implant Workflow</h3><p>Explore digital planning and prosthetic workflow concepts step by step.</p><button class="outline course-open" data-course="Digital Implant Workflow">View Course</button></div>
-        </article>
-        <article class="course-card" data-search="dental design smile digital dentistry">
-          <div class="course-image"><img src="assets/course-3.jpg" alt="Dental design course visual"><span>COURSE</span></div>
-          <div class="course-body"><small>Digital Dentistry</small><h3>Dental Design Essentials</h3><p>Build a strong foundation in digital design, anatomy and practical decision-making.</p><button class="outline course-open" data-course="Dental Design Essentials">View Course</button></div>
-        </article>
-      </div>
-    </section>
-
-    <section class="section dark-section" id="lectures">
-      <div class="container">
-        <div class="section-heading row">
-          <div><span class="eyebrow">LIVE & RECORDED</span><h2>Lectures & sessions</h2></div>
-          <span class="badge">Coming soon</span>
-        </div>
-        <div class="lecture-grid">
-          <article class="lecture"><div class="play">▶</div><div><small>LECTURE</small><h3>Digital Workflow Fundamentals</h3><p>Introduction to modern digital workflows and practical concepts.</p></div></article>
-          <article class="lecture"><div class="play">▶</div><div><small>SESSION</small><h3>Design Thinking in Dentistry</h3><p>How to approach cases, planning and precision in a digital environment.</p></div></article>
-        </div>
-      </div>
-    </section>
-
-    <section class="section container" id="resources">
-      <div class="section-heading">
-        <span class="eyebrow">LEARNING LIBRARY</span>
-        <h2>Resources</h2>
-        <p>Keep your learning material organized and accessible.</p>
-      </div>
-      <div class="resource-grid">
-        <button class="resource-card" data-resource="Course Notes"><span>▣</span><b>Course Notes</b><small>Study guides & summaries</small></button>
-        <button class="resource-card" data-resource="Downloads"><span>↓</span><b>Downloads</b><small>Files & practical materials</small></button>
-        <button class="resource-card" data-resource="Certificates"><span>✓</span><b>Certificates</b><small>Track completed learning</small></button>
-      </div>
-    </section>
-
-    <section class="cta container">
-      <div><span class="eyebrow">START LEARNING</span><h2>Your journey to better skills starts here.</h2><p>Explore the academy and choose the learning path that fits your goals.</p></div>
-      <a class="primary" href="#courses">Explore Courses →</a>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container footer-inner">
-      <div><b>HAMDI ELKHATEEB ACADEMY</b><p>Learn • Practice • Build your future</p></div>
-      <div class="footer-links"><a href="#home">Home</a><a href="#courses">Courses</a><a href="#lectures">Lectures</a><a href="#resources">Resources</a><a href="#about">About</a></div>
-      <span>© <span id="year"></span> Hamdi Elkhateeb Academy</span>
-    </div>
-  </footer>
-
-  <div class="modal" id="modal" aria-hidden="true">
-    <div class="modal-box">
-      <button class="modal-close" id="modalClose">×</button>
-      <span class="eyebrow">ACADEMY</span>
-      <h2 id="modalTitle">Welcome</h2>
-      <p id="modalText"></p>
-      <a class="primary" href="#courses" id="modalAction">Continue →</a>
+<main id="home">
+<section class="hero">
+  <div class="hero-cover">
+    <img src="assets/cover.jpg" alt="Hamdi Elkhateeb Digital Lab Solutions">
+    <div class="cover-shade"></div>
+    <div class="profile">
+      <img src="assets/profile.jpg" alt="Hamdi Elkhateeb">
+      <span class="verified">✓</span>
     </div>
   </div>
+  <div class="hero-content">
+    <div class="eyebrow">DIGITAL LEARNING & PROFESSIONAL TRAINING</div>
+    <h1>Learn clearly.<br><em>Practice professionally.</em><br>Build your future.</h1>
+    <p>High-quality courses, practical training, lectures and resources to help you develop your skills and achieve your goals.</p>
+    <div class="actions">
+      <a class="btn primary" href="#courses">Explore Courses <b>→</b></a>
+      <a class="btn secondary" href="#about">Discover the Academy <b>▷</b></a>
+    </div>
+  </div>
+  <div class="hero-bottom">
+    <div><b>Practical Learning</b><span>Hands-on education</span></div>
+    <div><b>Real Applications</b><span>Practical cases</span></div>
+    <div><b>Skills & Growth</b><span>Build opportunities</span></div>
+  </div>
+</section>
 
-  <script src="script.js"></script>
+<section class="academy container" id="about">
+  <div class="section-title"><span>THE ACADEMY</span><h2>Hamdi Elkhateeb Academy</h2><p>Learn, practice and grow through organized professional education.</p></div>
+  <div class="academy-card">
+    <img src="assets/profile.jpg" alt="Hamdi Elkhateeb">
+    <div><h3>Professional Training</h3><p>Courses, lectures and resources focused on practical learning and modern digital workflows.</p><button class="btn primary" data-modal="About the Academy">Learn More →</button></div>
+  </div>
+</section>
+
+<section class="courses container" id="courses">
+  <div class="section-title"><span>FEATURED COURSES</span><h2>Learn by doing</h2><p>Explore the three featured learning paths.</p></div>
+  <div class="course-grid" id="courseGrid">
+    <article class="course">
+      <img src="assets/course-1.jpg" alt="Exocad Design Workflow">
+      <div><small>Digital Dentistry</small><h3>Exocad Design Workflow</h3><p>Digital design concepts and practical workflow.</p><button class="btn outline" data-modal="Exocad Design Workflow">View Course →</button></div>
+    </article>
+    <article class="course">
+      <img src="assets/course-2.jpg" alt="Digital Implant Workflow">
+      <div><small>Implant Prosthetics</small><h3>Digital Implant Workflow</h3><p>Planning and prosthetic workflow concepts.</p><button class="btn outline" data-modal="Digital Implant Workflow">View Course →</button></div>
+    </article>
+    <article class="course">
+      <img src="assets/course-3.jpg" alt="Dental Design Essentials">
+      <div><small>Digital Dentistry</small><h3>Dental Design Essentials</h3><p>A foundation in digital dental design.</p><button class="btn outline" data-modal="Dental Design Essentials">View Course →</button></div>
+    </article>
+  </div>
+</section>
+
+<section class="strip" id="lectures">
+ <div class="container">
+  <div class="section-title"><span>LECTURES & SESSIONS</span><h2>Learn from practical sessions</h2></div>
+  <div class="lecture-grid">
+    <button class="lecture" data-modal="Digital Workflow Fundamentals"><span>▶</span><div><b>Digital Workflow Fundamentals</b><small>Lecture • Coming soon</small></div></button>
+    <button class="lecture" data-modal="Design Thinking in Dentistry"><span>▶</span><div><b>Design Thinking in Dentistry</b><small>Session • Coming soon</small></div></button>
+  </div>
+ </div>
+</section>
+
+<section class="resources container" id="resources">
+  <div class="section-title"><span>RESOURCES</span><h2>Everything in one place</h2></div>
+  <div class="resource-grid">
+    <button data-modal="Course Notes">▣<b>Course Notes</b><small>Guides & summaries</small></button>
+    <button data-modal="Downloads">↓<b>Downloads</b><small>Files & practical material</small></button>
+    <button data-modal="Certificates">✓<b>Certificates</b><small>Learning certificates</small></button>
+  </div>
+</section>
+
+<section class="cta container">
+  <div><span>START LEARNING</span><h2>Your journey to better skills starts here.</h2></div>
+  <a class="btn primary" href="#courses">Explore Courses →</a>
+</section>
+</main>
+
+<footer><div class="container"><b>HAMDI ELKHATEEB ACADEMY</b><span>Learn • Practice • Build your future</span><small>© <span id="year"></span> Hamdi Elkhateeb Academy</small></div></footer>
+
+<div class="modal" id="modal"><div class="modal-box"><button id="close">×</button><span>ACADEMY</span><h2 id="modalTitle"></h2><p id="modalText">This section is ready for your real course content, videos, files and student system.</p><button class="btn primary" id="modalOk">Close</button></div></div>
+
+<script src="script.js"></script>
 </body>
 </html>
