@@ -1,54 +1,192 @@
 <!doctype html>
-<html lang="en" dir="ltr">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hamdi Elkhateeb Academy</title>
 <style>
-*{box-sizing:border-box}html,body{margin:0;padding:0;background:#061426;color:#eef6ff;font-family:Arial,Tahoma,sans-serif}body{min-height:100vh}button,a{font-family:inherit}a{text-decoration:none;color:inherit}
-.sidebar{position:fixed;left:0;top:0;width:260px;height:100vh;background:#071a2d;border-right:1px solid #173653;padding:20px;z-index:50;transition:.25s}.brand{display:flex;align-items:center;gap:12px;padding-bottom:18px;border-bottom:1px solid #173653}.brand-mark{width:48px;height:48px;border-radius:14px;background:#087ed1;display:grid;place-items:center;font-size:26px;font-weight:bold}.brand strong{display:block;font-size:15px}.brand span{display:block;color:#22b8ee;font-size:12px;margin-top:4px}.student{display:flex;align-items:center;gap:12px;padding:20px 5px}.side-avatar{width:48px;height:48px;border-radius:50%;overflow:hidden;border:2px solid #168ddd;flex-shrink:0}.side-avatar img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}.student b{display:block;font-size:13px}.student small{display:block;color:#8faac1;margin-top:4px}.side-nav{display:grid;gap:5px}.side-nav a{padding:13px;border-radius:9px;color:#bfd0df;display:flex;justify-content:space-between}.side-nav a.active,.side-nav a:hover{background:#087bd0;color:#fff}
-main{margin-left:260px;padding:0 25px 40px}.topbar{height:72px;display:flex;align-items:center;gap:14px;border-bottom:1px solid #173653}.mobile-menu{display:none}.search{height:44px;width:min(560px,100%);border:1px solid #42627d;border-radius:12px;background:#0a2139;display:flex;align-items:center;gap:10px;padding:0 15px;color:#9bb3c9}.search input{width:100%;border:0;outline:0;background:transparent;color:#fff;font-size:14px}.top-actions{margin-left:auto;display:flex;align-items:center;gap:8px}.lang{border:1px solid #4d718c;background:#09243b;color:#fff;border-radius:9px;padding:9px 12px;cursor:pointer}.overlay{display:none}
-.profile-card{margin-top:22px;background:#071c31;border:1px solid #31536d;border-radius:16px;overflow:hidden;box-shadow:0 10px 35px rgba(0,0,0,.25)}.cover{width:100%;height:300px;overflow:hidden;background:#071a2d}.cover img{width:100%;height:100%;display:block;object-fit:cover;object-position:center}.profile-body{position:relative;padding:78px 30px 25px;text-align:center}.profile-avatar-wrap{position:absolute;top:-75px;left:50%;transform:translateX(-50%);width:150px;height:150px;z-index:5}.profile-avatar{width:150px;height:150px;display:block;border-radius:50%;object-fit:cover;object-position:center top;border:7px solid #071c31;outline:3px solid #168ddd;background:#fff}.verified{position:absolute;right:3px;bottom:8px;width:38px;height:38px;border-radius:50%;background:#0799e8;border:4px solid #071c31;display:grid;place-items:center;font-size:20px;font-weight:bold;color:#fff}.profile-main h1{margin:0;font-size:30px;line-height:1.4}.verified-title{display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#0799e8;font-size:16px;vertical-align:middle}.type{margin:8px 0;color:#a9bfd3}.bio{margin:0;color:#819bb2}.profile-actions{margin-top:20px;display:flex;justify-content:center;gap:12px}.follow{border:0;border-radius:12px;background:#087fd4;color:#fff;padding:13px 35px;font-size:17px;cursor:pointer}.follow.following{background:#173e59}.more{width:52px;border:1px solid #53728c;border-radius:12px;background:#09243b;color:#fff;font-size:24px;cursor:pointer}.more-menu{display:none;position:absolute;left:50%;transform:translateX(-50%);margin-top:8px;background:#0a243b;border:1px solid #31536d;border-radius:10px;padding:7px;z-index:20;box-shadow:0 10px 25px #0008}.more-menu button{border:0;background:transparent;color:#fff;padding:9px 18px;cursor:pointer;border-radius:7px}.more-menu button:hover{background:#087bd0}.profile-tabs{display:flex;overflow-x:auto;border-top:1px solid #1b405c}.profile-tabs a{min-width:120px;padding:17px 15px;text-align:center;color:#8ea8bd;white-space:nowrap}.profile-tabs a.active{color:#fff;border-bottom:4px solid #0799e8}
-.welcome{margin-top:20px;padding:25px;border:1px solid #155083;border-radius:14px;background:radial-gradient(circle at 15% 50%,#073e68,#071d32 65%)}.welcome p{color:#a9c6df;margin:0 0 8px;font-size:17px}.welcome h2{margin:0;font-size:28px;line-height:1.6}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:16px 0}.stat{background:#082039;border:1px solid #173e5d;border-radius:12px;padding:16px}.stat span{font-size:25px;display:block;margin-bottom:8px}.stat small{display:block;color:#9db4c8}.stat b{display:block;font-size:20px;margin:5px 0}.stat a{font-size:12px;color:#20b8ef}.grid{display:grid;grid-template-columns:1.5fr 1fr;gap:15px}.panel{background:#071c31;border:1px solid #173e5d;border-radius:12px;padding:17px}.panel-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}.panel-head h2{font-size:17px;margin:0}.panel-head a{font-size:12px;color:#20b8ef}.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.course{background:#09233b;border:1px solid #1b4868;border-radius:10px;padding:10px}.thumb{height:100px;border-radius:8px;display:grid;place-items:center;font-weight:bold;font-size:24px}.excel{background:#0b6d5b}.ps{background:#243c82}.data{background:#155f91}.course h3{font-size:14px;line-height:1.5}.progress{height:6px;background:#173a55;border-radius:10px;overflow:hidden}.progress i{display:block;height:100%;background:#1eb5ed}.course small{display:block;color:#91aabd;margin:8px 0}.course button,.session button,.record button{width:100%;border:0;border-radius:7px;padding:9px;background:#0878c8;color:#fff;cursor:pointer}.session{border:1px solid #1a4767;border-radius:9px;padding:13px;margin-bottom:10px}.session b,.session small{display:block}.session small{color:#a7bdcf;margin:7px 0 12px;font-size:12px}.notice,.record{display:flex;align-items:center;gap:10px;padding:12px 0;border-bottom:1px solid #16354e}.notice:last-child,.record:last-child{border-bottom:0}.notice div,.record div{flex:1}.notice b,.record b{display:block}.notice small,.record small{display:block;color:#8fa9bd;font-size:11px;margin-top:4px}.record button{width:auto;padding:7px 12px}
-@media(max-width:900px){.sidebar{transform:translateX(-105%);box-shadow:15px 0 35px #0008}.sidebar.open{transform:translateX(0)}.overlay.show{display:block;position:fixed;inset:0;background:#0008;z-index:40}main{margin-left:0;padding:0 12px 30px}.mobile-menu{display:block;width:58px;height:48px;border:0;border-radius:12px;background:#087fd4;color:#fff;font-size:27px;cursor:pointer}.topbar{height:auto;padding:12px 0}.search{flex:1}.profile-card{margin-top:12px}.cover{height:210px}.profile-body{padding:72px 15px 22px}.profile-avatar-wrap{width:130px;height:130px;top:-65px}.profile-avatar{width:130px;height:130px}.verified{width:34px;height:34px;font-size:17px}.profile-main h1{font-size:24px}.type{font-size:14px}.bio{font-size:13px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.course-grid{grid-template-columns:1fr}.top-actions{display:none}}
-@media(max-width:520px){.cover{height:180px}.profile-main h1{font-size:21px}.follow{font-size:15px;padding:12px 25px}.profile-tabs a{min-width:105px;font-size:13px}.welcome h2{font-size:23px}.stats{grid-template-columns:1fr}}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#03172d;color:#f7fbff;font-family:Arial,Tahoma,sans-serif}
+button,input{font:inherit}button{cursor:pointer}a{text-decoration:none;color:inherit}
+.page{min-height:100vh;background:
+radial-gradient(circle at 78% 8%,#0754a0 0,transparent 28%),
+radial-gradient(circle at 8% 55%,#06335e 0,transparent 30%),#03172d}
+.wrap{width:min(1400px,calc(100% - 70px));margin:auto}
+
+header{height:92px;display:flex;align-items:center;gap:25px}
+.logo{display:flex;align-items:center;gap:12px}
+.logo img{width:72px;height:62px;object-fit:contain;border-radius:8px}
+.logo-text{font-size:25px;font-weight:800;line-height:1}
+.logo-text span{display:block;color:#159cf1;margin-top:5px}
+.logo small{display:block;color:#9bb6d0;letter-spacing:5px;font-size:9px;margin-top:8px}
+nav{margin-left:auto;display:flex;gap:40px;align-items:center}
+nav a{color:#eef6ff;font-size:15px;padding:32px 0;border-bottom:3px solid transparent}
+nav a.active{color:#159cf1;border-bottom-color:#159cf1}
+.start{border:0;border-radius:30px;background:#079bf0;color:white;padding:15px 27px;font-weight:800}
+.menu{display:none;border:1px solid #587b9d;background:#082442;color:#fff;border-radius:12px;font-size:26px;padding:8px 13px}
+
+.hero{position:relative;min-height:520px;border-radius:0;overflow:hidden;
+background:#052342 url('cover.png') center/cover no-repeat;
+border-top:1px solid #1b4d75;border-bottom:1px solid #1b4d75}
+.hero:after{content:"";position:absolute;inset:0;
+background:linear-gradient(90deg,#03172df5 0%,#03172dcc 36%,#03172d55 65%,#03172d08 100%)}
+.hero-inner{position:relative;z-index:2;min-height:520px;display:flex;align-items:center}
+.hero-copy{width:54%;padding:40px 0}
+.eyebrow{color:#159cf1;letter-spacing:5px;font-weight:700;font-size:14px}
+h1{font-size:55px;line-height:1.03;margin:20px 0 18px;letter-spacing:-2px}
+h1 span{color:#159cf1}
+.hero p{font-size:20px;color:#c4d5e7;line-height:1.55;max-width:620px}
+.buttons{display:flex;gap:15px;margin-top:24px}
+.primary{border:0;border-radius:30px;background:#079bf0;color:#fff;padding:17px 30px;font-weight:800}
+.secondary{border:1px solid #8bb2d4;border-radius:30px;background:#03172d88;color:#fff;padding:16px 26px}
+.features{display:flex;gap:40px;margin-top:30px}
+.feature{display:flex;gap:10px;align-items:center;color:#bdd2e7;font-size:13px}
+.feature b{display:block;color:#fff;font-size:14px}
+.icon{font-size:30px;color:#159cf1}
+
+.divider{height:58px;display:flex;align-items:center;justify-content:center;gap:25px;color:#abc6df;letter-spacing:8px;font-size:13px}
+.divider:before,.divider:after{content:"";height:1px;width:180px;background:#47769b}
+
+.section-head{display:flex;align-items:end;justify-content:space-between;margin:25px 0 18px}
+.kicker{color:#159cf1;letter-spacing:4px;font-size:12px;font-weight:700}
+.section-head h2{font-size:38px;margin:10px 0 0}
+.section-head p{max-width:370px;color:#a9bfd5;line-height:1.5}
+.view{color:#159cf1;font-size:14px}
+
+.courses{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;padding-bottom:55px}
+.course{overflow:hidden;border:1px solid #315f82;border-radius:13px;background:#061d35;transition:.2s}
+.course:hover{transform:translateY(-4px);border-color:#159cf1;box-shadow:0 15px 35px #0007}
+.course-img{height:190px;background:#092b4b;overflow:hidden}
+.course-img img{width:100%;height:100%;object-fit:cover}
+.course-body{padding:16px 18px 18px}
+.course h3{font-size:20px;margin:0 0 7px}
+.course p{color:#9fb8cf;margin:0}
+.course-row{display:flex;justify-content:space-between;align-items:center;margin-top:15px}
+.course-row small{color:#7f9bb5}
+.arrow{width:44px;height:44px;border:0;border-radius:50%;background:#079bf0;color:#fff;font-size:24px}
+
+.bottom{border-top:1px solid #173f60;padding:28px 0 45px;display:grid;grid-template-columns:repeat(3,1fr);text-align:center}
+.bottom-item{color:#dceaf6}.bottom-item+.bottom-item{border-left:1px solid #244d6c}
+.bottom-item span{display:block;font-size:34px;color:#159cf1;margin-bottom:8px}
+.bottom-item b{font-size:17px}
+
+.drawer{position:fixed;top:0;right:-330px;width:310px;height:100vh;background:#061d35;z-index:20;padding:25px;transition:.25s;box-shadow:-20px 0 50px #0008}
+.drawer.open{right:0}.drawer h2{margin-top:0}.close{float:right;border:0;background:transparent;color:#fff;font-size:30px}
+.drawer a{display:block;padding:16px;border-bottom:1px solid #183b59;color:#c5d8e9}
+.overlay{display:none;position:fixed;inset:0;background:#0009;z-index:10}.overlay.show{display:block}
+
+@media(max-width:900px){
+.wrap{width:min(100% - 28px,680px)}
+header{height:76px}.logo-text{font-size:19px}.logo img{width:58px;height:52px}
+nav{display:none}.menu{display:block;margin-left:auto}
+.hero{border-radius:18px}.hero-inner{min-height:570px}.hero-copy{width:100%;padding:35px 20px}
+.hero:after{background:linear-gradient(90deg,#03172df7,#03172dce)}
+h1{font-size:43px}.hero p{font-size:18px}
+.features{gap:20px;flex-wrap:wrap}.feature{font-size:11px}
+.section-head{display:block}.section-head h2{font-size:30px}.section-head p{font-size:14px}
+.courses{grid-template-columns:1fr}.course-img{height:210px}
+.bottom{grid-template-columns:1fr;gap:18px}.bottom-item+.bottom-item{border-left:0;border-top:1px solid #244d6c;padding-top:18px}
+}
+
+@media(max-width:500px){
+.wrap{width:calc(100% - 20px)}.logo-text{font-size:16px}.logo small{font-size:7px;letter-spacing:3px}
+.hero-inner{min-height:510px}.eyebrow{font-size:10px;letter-spacing:3px}
+h1{font-size:36px}.hero p{font-size:16px}.buttons{flex-direction:column}
+.primary,.secondary{width:100%}.divider{letter-spacing:3px;font-size:10px}.divider:before,.divider:after{width:55px}
+.section-head h2{font-size:26px}.course-img{height:180px}
+}
 </style>
 </head>
 <body>
-<div class="overlay" id="overlay"></div>
-<aside class="sidebar" id="sidebar">
-<div class="brand"><div class="brand-mark">H</div><div><strong>Hamdi Elkhateeb Academy</strong><span>Educational Platform</span></div></div>
-<div class="student"><div class="side-avatar"><img src="teacher.jpg" alt="Hamdi Elkhateeb"></div><div><b>Hamdi Elkhateeb Academy</b><small>Educational Platform</small></div></div>
-<nav class="side-nav"><a class="active" href="#">Home <span>⌂</span></a><a href="#">Courses <span>▣</span></a><a href="#">Live Sessions <span>◉</span></a><a href="#">Recordings <span>▶</span></a><a href="#">Training Files <span>□</span></a><a href="#">Questions & Apps <span>☷</span></a><a href="#">Certificates <span>◇</span></a><a href="#">My Account <span>♙</span></a></nav>
-</aside>
-<main>
-<header class="topbar"><button class="mobile-menu" id="menuBtn">☰</button><div class="search">⌕<input placeholder="Search for a course, lecture or file..."></div><div class="top-actions"><button class="lang" id="langBtn">عربي</button></div></header>
-<section class="profile-card">
-<div class="cover"><img src="cover.png" alt="Hamdi Elkhateeb Academy cover"></div>
-<div class="profile-body">
-<div class="profile-avatar-wrap"><img class="profile-avatar" src="teacher.jpg" alt="Hamdi Elkhateeb"><span class="verified">✓</span></div>
-<div class="profile-main"><h1>Hamdi Elkhateeb Academy <span class="verified-title">✓</span></h1><p class="type">Educational Platform • Professional Training & Education</p><p class="bio">Learn, practice, and grow with Hamdi Elkhateeb Academy.</p></div>
-<div class="profile-actions"><button class="follow" id="followBtn">Follow Academy</button><button class="more" id="moreBtn">⋮</button><div class="more-menu" id="moreMenu"><button id="menuLang">Switch to Arabic</button></div></div>
+<div class="page">
+<div class="wrap">
+<header>
+<a class="logo" href="#">
+<img src="teacher.jpg" alt="Hamdi Elkhateeb">
+<div class="logo-text">Hamdi Elkhateeb<span>Academy</span><small>LEARN · PRACTICE · BUILD YOUR FUTURE</small></div>
+</a>
+<nav>
+<a class="active" href="#">Home</a>
+<a href="#courses">Courses</a>
+<a href="#courses">Case Studies</a>
+<a href="#resources">Resources</a>
+<button class="start" onclick="document.getElementById('courses').scrollIntoView()">Start Learning →</button>
+</nav>
+<button class="menu" id="menuBtn">☰</button>
+</header>
 </div>
-<nav class="profile-tabs"><a class="active" href="#">Home</a><a href="#">Courses</a><a href="#">Lectures</a><a href="#">Recordings</a><a href="#">About</a></nav>
+
+<section class="hero">
+<div class="wrap hero-inner">
+<div class="hero-copy">
+<div class="eyebrow">DIGITAL DENTAL DESIGN & EXOCAD TRAINING</div>
+<h1>Great Dental Design<br>Starts with<br><span>Understanding</span></h1>
+<p>Learn exocad through real cases, clear design principles, and practical digital workflows.</p>
+<div class="buttons">
+<button class="primary" onclick="document.getElementById('courses').scrollIntoView()">Explore Courses →</button>
+<button class="secondary" onclick="alert('Instructor introduction coming soon')">▶ &nbsp; Meet Your Instructor</button>
+</div>
+<div class="features">
+<div class="feature"><span class="icon">▣</span><div><b>PRACTICAL</b>LEARNING</div></div>
+<div class="feature"><span class="icon">♧</span><div><b>REAL CASE</b>APPLICATION</div></div>
+<div class="feature"><span class="icon">▥</span><div><b>SKILLS FOR</b>BIGGER OPPORTUNITIES</div></div>
+</div>
+</div>
+</div>
 </section>
-<section class="welcome"><p>Welcome to Hamdi Elkhateeb Academy. Start your learning journey with us.</p><h2>Welcome Back 👋<br><b>Hamdi Elkhateeb Academy</b></h2></section>
-<section class="stats"><div class="stat"><span>🎓</span><small>Enrolled Courses</small><b>3</b><a href="#">View all →</a></div><div class="stat"><span>▶</span><small>Average Progress</small><b>65%</b><a href="#">View details →</a></div><div class="stat"><span>◉</span><small>Next Live Session</small><b>Tomorrow - 7:00 PM</b><a href="#">View schedule →</a></div><div class="stat"><span>◇</span><small>Certificates</small><b>1</b><a href="#">View all →</a></div></section>
-<div class="grid">
-<section class="panel"><div class="panel-head"><h2>Enrolled Courses</h2><a href="#">View all</a></div><div class="course-grid"><article class="course"><div class="thumb excel">EXCEL</div><h3>Excel From Zero to Professional</h3><div class="progress"><i style="width:65%"></i></div><small>65% complete</small><button>Continue Lesson ▶</button></article><article class="course"><div class="thumb ps">PS</div><h3>Graphic Design Fundamentals</h3><div class="progress"><i style="width:28%"></i></div><small>28% complete</small><button>Continue Lesson ▶</button></article><article class="course"><div class="thumb data">DATA</div><h3>Data Analysis with Excel</h3><div class="progress"><i style="width:12%"></i></div><small>12% complete</small><button>Continue Lesson ▶</button></article></div></section>
-<section class="panel"><div class="panel-head"><h2>Upcoming Live Sessions</h2><a href="#">View all</a></div><div class="session"><b>Batch 2 - Excel</b><small>Saturday · 7:00 PM - 9:00 PM</small><button>Book Session</button></div><div class="session"><b>Batch 1 - Photoshop</b><small>Monday · 6:00 PM - 8:00 PM</small><button>Book Now</button></div></section>
-<section class="panel"><div class="panel-head"><h2>Latest Notifications</h2><a href="#">View all</a></div><div class="notice">▶ <div><b>New lecture recording uploaded</b><small>Excel course · 2 hours ago</small></div></div><div class="notice">✓ <div><b>Your application has been approved</b><small>Reviewed 5 hours ago</small></div></div></section>
-<section class="panel"><div class="panel-head"><h2>Latest Lectures</h2><a href="#">View all</a></div><div class="record">🎬 <div><b>Lecture 4 - Excel</b><small>2 hours ago</small></div><button>Watch</button></div><div class="record">🎬 <div><b>Lecture 2 - Photoshop</b><small>1 day ago</small></div><button>Watch</button></div></section>
+
+<div class="wrap">
+<div class="divider">LEARN · DESIGN · REFINE</div>
+
+<div class="section-head" id="courses">
+<div>
+<div class="kicker">FEATURED COURSES</div>
+<h2>Build Your Digital Design Skills</h2>
 </div>
-</main>
+<div>
+<p>Practical, case-based training to help you design better smiles with confidence.</p>
+<a class="view" href="#courses">View All Courses →</a>
+</div>
+</div>
+
+<section class="courses">
+<article class="course">
+<div class="course-img"><img src="cover.png" alt="exocad Fundamentals"></div>
+<div class="course-body"><h3>exocad Fundamentals</h3><p>Start with strong foundations</p><div class="course-row"><small>Practical training</small><button class="arrow" onclick="selectCourse('exocad Fundamentals')">›</button></div></div>
+</article>
+<article class="course">
+<div class="course-img"><img src="cover.png" alt="Advanced Dental Design"></div>
+<div class="course-body"><h3>Advanced Dental Design</h3><p>Refine anatomy, contours, and occlusion</p><div class="course-row"><small>Real case workflow</small><button class="arrow" onclick="selectCourse('Advanced Dental Design')">›</button></div></div>
+</article>
+<article class="course">
+<div class="course-img"><img src="cover.png" alt="Implant Prosthetics"></div>
+<div class="course-body"><h3>Implant Prosthetics</h3><p>Plan and design implant restorations</p><div class="course-row"><small>From units to arches</small><button class="arrow" onclick="selectCourse('Implant Prosthetics')">›</button></div></div>
+</article>
+</section>
+
+<div class="bottom" id="resources">
+<div class="bottom-item"><span>▷</span><b>Video Lessons</b></div>
+<div class="bottom-item"><span>▤</span><b>Case Studies</b></div>
+<div class="bottom-item"><span>□</span><b>Resources</b></div>
+</div>
+</div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer">
+<button class="close" id="closeBtn">×</button>
+<h2>Hamdi Elkhateeb Academy</h2>
+<a href="#">Home</a><a href="#courses">Courses</a><a href="#courses">Case Studies</a><a href="#resources">Resources</a><a href="#">My Account</a><a href="#">Certificates</a>
+</aside>
+
 <script>
-const sidebar=document.getElementById('sidebar'),overlay=document.getElementById('overlay');
-document.getElementById('menuBtn').addEventListener('click',()=>{sidebar.classList.add('open');overlay.classList.add('show')});overlay.addEventListener('click',()=>{sidebar.classList.remove('open');overlay.classList.remove('show')});
-document.getElementById('followBtn').addEventListener('click',function(){this.classList.toggle('following');this.textContent=this.classList.contains('following')?'Following ✓':'Follow Academy'});
-const more=document.getElementById('moreBtn'),moreMenu=document.getElementById('moreMenu');more.addEventListener('click',e=>{e.stopPropagation();moreMenu.style.display=moreMenu.style.display==='block'?'none':'block'});document.addEventListener('click',()=>moreMenu.style.display='none');
-function setArabic(){localStorage.setItem('academyLang','ar');location.href='?lang=ar'}
-function setEnglish(){localStorage.setItem('academyLang','en');location.href='?lang=en'}
-document.getElementById('langBtn').addEventListener('click',setArabic);document.getElementById('menuLang').addEventListener('click',setArabic);
+const drawer=document.getElementById('drawer'),overlay=document.getElementById('overlay');
+function toggleMenu(){drawer.classList.toggle('open');overlay.classList.toggle('show')}
+document.getElementById('menuBtn').onclick=toggleMenu;
+document.getElementById('closeBtn').onclick=toggleMenu;
+overlay.onclick=toggleMenu;
+function selectCourse(name){alert('Selected course: '+name)}
 </script>
 </body>
 </html>
