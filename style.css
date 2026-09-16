@@ -35,4 +35,201 @@
     object-fit:cover;
     object-position:center;
   }
+}/* إصلاح شكل غلاف الأكاديمية والصورة الشخصية */
+
+.channel-header{
+  margin-top:20px;
+  background:#071c31;
+  border:1px solid #173e5d;
+  border-radius:14px;
+  overflow:hidden;
+}
+
+.channel-cover{
+  position:relative;
+  width:100%;
+  height:320px;
+  overflow:hidden;
+  background:#071426;
+}
+
+.channel-cover img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center;
+}
+
+.cover-shade{
+  position:absolute;
+  inset:0;
+  background:linear-gradient(to bottom,transparent 55%,rgba(0,0,0,.45));
+}
+
+.channel-info{
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:20px;
+  padding:0 25px 20px;
+  min-height:145px;
+}
+
+.channel-avatar{
+  width:145px;
+  height:145px;
+  min-width:145px;
+  border-radius:50%;
+  overflow:hidden;
+  border:6px solid #071c31;
+  background:#111;
+  margin-top:-65px;
+  position:relative;
+  z-index:3;
+  box-shadow:0 8px 25px rgba(0,0,0,.45);
+}
+
+.channel-avatar img{
+  width:100%;
+  height:100%;
+  display:block;
+  object-fit:cover;
+  object-position:center top;
+}
+
+.channel-details{
+  flex:1;
+}
+
+.channel-title-row{
+  display:flex;
+  align-items:center;
+  gap:9px;
+}
+
+.channel-title-row h1{
+  margin:0;
+  font-size:28px;
+}
+
+.verified{
+  width:22px;
+  height:22px;
+  border-radius:50%;
+  background:#0aa5ee;
+  color:white;
+  display:grid;
+  place-items:center;
+  font-size:13px;
+  font-weight:bold;
+}
+
+.channel-handle{
+  color:#9bb0c5;
+  margin:4px 0;
+}
+
+.channel-description{
+  color:#71879b;
+  margin:0;
+}
+
+.channel-actions{
+  display:flex;
+  gap:8px;
+}
+
+.follow-btn{
+  background:#0a79cf;
+  color:white;
+  border-radius:8px;
+  padding:11px 17px;
+}
+
+.more-btn{
+  background:#0a2943;
+  color:white;
+  border:1px solid #214866;
+  border-radius:8px;
+  padding:8px 13px;
+}
+
+.channel-tabs{
+  display:flex;
+  gap:5px;
+  padding:0 25px;
+  border-top:1px solid #173e5d;
+  overflow-x:auto;
+}
+
+.channel-tabs a{
+  color:#9bb0c5;
+  padding:13px 16px;
+  white-space:nowrap;
+  border-bottom:3px solid transparent;
+}
+
+.channel-tabs a.active,
+.channel-tabs a:hover{
+  color:#fff;
+  border-bottom-color:#0aa5ee;
+}
+
+/* شكل الموبايل */
+
+@media(max-width:720px){
+
+  .channel-header{
+    margin-top:12px;
+    border-radius:10px;
+  }
+
+  .channel-cover{
+    height:190px;
+  }
+
+  .channel-info{
+    display:block;
+    text-align:center;
+    padding:0 12px 15px;
+  }
+
+  .channel-avatar{
+    width:115px;
+    height:115px;
+    min-width:115px;
+    margin:-58px auto 8px;
+    border-width:5px;
+  }
+
+  .channel-title-row{
+    justify-content:center;
+  }
+
+  .channel-title-row h1{
+    font-size:21px;
+  }
+
+  .channel-handle{
+    font-size:12px;
+  }
+
+  .channel-description{
+    font-size:12px;
+  }
+
+  .channel-actions{
+    justify-content:center;
+    margin-top:10px;
+  }
+
+  .channel-tabs{
+    padding:0 8px;
+  }
+
+  .channel-tabs a{
+    padding:11px 12px;
+    font-size:12px;
+  }
 }
