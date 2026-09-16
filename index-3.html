@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#031a35">
+<title>Hamdi Elkhateeb Academy</title>
+<style>
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#031a35;color:#f5f8ff;font-family:Arial,Helvetica,sans-serif;overflow-x:hidden}
+:root{--blue:#079cf5;--deep:#031a35;--panel:#062342;--line:#28669b;--muted:#a7bdd7}
+button,input{font:inherit}button{cursor:pointer}.wrap{width:min(930px,92%);margin:auto}
+header{height:105px;display:flex;align-items:center;justify-content:space-between;width:min(930px,92%);margin:auto}
+.logo{display:flex;align-items:center;gap:13px}.logoMark{width:70px;height:70px;position:relative;font-size:58px;font-weight:900;line-height:1;color:#fff;text-shadow:0 0 15px #087ed0}.cap{position:absolute;left:3px;top:-10px;color:#079cf5;font-size:34px;transform:rotate(-7deg)}.brand{font-size:29px;font-weight:800;line-height:1.02}.brand b{color:#079cf5;display:block}.hamb{font-size:45px;line-height:1;background:none;border:0;color:white;width:58px}
+.search{height:74px;border:2px solid #50759b;border-radius:38px;display:flex;align-items:center;padding:0 27px;margin:0 auto 28px;background:rgba(4,30,57,.5);color:#91a9c4}.searchIcon{font-size:38px;margin-right:22px}.search input{flex:1;background:transparent;border:0;outline:0;color:white;font-size:24px}.search input::placeholder{color:#8199b5}
+.hero{position:relative;min-height:500px;display:grid;grid-template-columns:48% 52%;align-items:center;overflow:hidden;padding:20px 0 0}
+.hero:after{content:"";position:absolute;inset:auto -10% -150px 5%;height:280px;border-radius:50%;background:#057fe0;filter:blur(80px);opacity:.13}
+.heroText{position:relative;z-index:3;padding-left:5px}.eyebrow{color:#12a5ff;font-size:17px;letter-spacing:7px;font-weight:700;margin-bottom:22px}.hero h1{font-size:58px;line-height:1.01;margin:0;font-weight:850;letter-spacing:-2px}.hero h1 span{color:#079cf5}.lead{font-size:25px;color:#c1d0e2;line-height:1.28;margin:24px 0 30px;max-width:500px}.cta{border:0;background:#079cf5;color:#fff;border-radius:18px;padding:18px 38px;font-size:23px;font-weight:800;box-shadow:0 10px 30px #006ab455}.heroArt{height:470px;position:relative}.glow{position:absolute;width:410px;height:410px;border-radius:50%;right:15px;top:20px;background:radial-gradient(circle,#0b6ebc66,transparent 68%)}.screen{position:absolute;right:-10px;top:50px;width:430px;height:270px;border:2px solid #216aa1;border-radius:15px;background:linear-gradient(145deg,#082c50,#041a32);box-shadow:0 0 35px #087fd344;transform:perspective(600px) rotateY(-6deg);color:#6bbfff;padding:25px;font-size:20px;text-align:right}.screen .teeth{font-size:100px;text-align:center;margin-top:55px;filter:drop-shadow(0 0 14px #23b7ff)}
+.person{position:absolute;right:85px;bottom:-10px;width:300px;height:390px;border-radius:150px 150px 0 0;background:linear-gradient(#1a6ea4,#071d37);z-index:2}.head{position:absolute;top:10px;left:75px;width:155px;height:185px;border-radius:48% 48% 45% 45%;background:linear-gradient(145deg,#d7a27d,#9c6046);box-shadow:0 0 0 5px #07182b}.hair{position:absolute;top:-3px;left:15px;width:125px;height:60px;border-radius:60% 60% 25% 25%;background:#111}.suit{position:absolute;bottom:0;left:35px;width:230px;height:230px;background:#080d15;border-radius:100px 100px 0 0}.toothBig{position:absolute;right:20px;bottom:8px;font-size:125px;z-index:4;filter:drop-shadow(0 12px 18px #000)}
+.divider{display:flex;align-items:center;gap:22px;justify-content:center;color:#b5c7dc;font-size:17px;letter-spacing:8px;margin:5px 0 28px}.divider:before,.divider:after{content:"";height:1px;background:#37698e;flex:1}
+h2{font-size:40px;margin:0 0 23px}.courses{display:flex;flex-direction:column;gap:14px}.course{height:150px;border:2px solid #23577f;border-radius:19px;background:linear-gradient(100deg,#062746,#061e39);display:grid;grid-template-columns:340px 1fr 75px;align-items:center;overflow:hidden}.courseImg{height:100%;display:grid;place-items:center;font-size:80px;background:radial-gradient(circle at 50% 45%,#2a78a9,#092d4c 48%,#061b33)}.course:nth-child(2) .courseImg{background:radial-gradient(circle,#bd7e73,#512e31 45%,#08203a)}.course:nth-child(3) .courseImg{background:radial-gradient(circle,#e9d5bc,#507b98 30%,#08213b)}.courseInfo{padding:0 25px}.course h3{font-size:29px;margin:0 0 3px}.course p{font-size:21px;color:#a7bfd7;margin:0}.arrow{width:55px;height:55px;border-radius:50%;border:0;background:#079cf5;color:#fff;font-size:35px;margin-right:20px}
+.quick{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid #285b83;margin-top:38px;padding:32px 0 65px}.quickItem{text-align:center;border-right:1px solid #285b83;color:#fff;font-size:19px}.quickItem:last-child{border:0}.qicon{font-size:38px;color:#9bdcff;margin-bottom:8px}
+footer{padding:25px;text-align:center;border-top:1px solid #18496f;color:#718ba7;font-size:13px}
+.drawer{display:none;position:fixed;z-index:50;right:18px;top:75px;width:260px;background:#062441;border:1px solid #2772a9;border-radius:15px;padding:15px;box-shadow:0 15px 40px #0008}.drawer a{display:block;padding:14px;color:white;border-bottom:1px solid #17466b}.drawer a:last-child{border:0}
+.login{display:none;position:fixed;inset:0;background:#0009;z-index:60;place-items:center;padding:20px}.loginBox{width:min(430px,100%);background:#062441;border:1px solid #2872a9;border-radius:20px;padding:25px}.loginBox h2{font-size:30px}.field{width:100%;padding:14px;margin:7px 0;background:#031a35;border:1px solid #326789;border-radius:10px;color:#fff}.submit{width:100%;border:0;background:#079cf5;color:white;padding:14px;border-radius:12px;font-weight:800;margin-top:8px}.close{float:right;background:none;border:0;color:#fff;font-size:25px}
+@media(max-width:720px){header{height:90px}.logoMark{font-size:48px;width:55px}.cap{font-size:28px}.brand{font-size:22px}.hamb{font-size:38px}.search{height:64px;padding:0 20px}.search input{font-size:18px}.hero{grid-template-columns:1fr;min-height:auto}.heroText{padding-top:20px}.eyebrow{font-size:12px;letter-spacing:4px}.hero h1{font-size:49px}.lead{font-size:21px}.heroArt{height:390px;margin-top:0}.screen{width:90%;right:-2%;height:230px}.person{right:12%;width:240px;height:320px}.head{left:60px}.suit{left:25px;width:190px}.toothBig{font-size:90px;right:0}.divider{font-size:13px;letter-spacing:4px}.wrap{width:90%}h2{font-size:33px}.course{height:120px;grid-template-columns:125px 1fr 55px}.courseImg{font-size:58px}.courseInfo{padding:0 14px}.course h3{font-size:20px}.course p{font-size:15px}.arrow{width:45px;height:45px;font-size:27px;margin-right:10px}.quickItem{font-size:14px}.qicon{font-size:30px}}
+</style>
+</head>
+<body>
+<header>
+  <a class="logo" href="#home">
+    <div class="logoMark"><span class="cap">◆</span>H</div>
+    <div class="brand">Hamdi Elkhateeb <b>Academy</b></div>
+  </a>
+  <button class="hamb" onclick="toggleDrawer()" aria-label="Menu">☰</button>
+</header>
+
+<div class="drawer" id="drawer">
+  <a href="#home" onclick="toggleDrawer()">Home</a>
+  <a href="#courses" onclick="toggleDrawer()">Courses</a>
+  <a href="#cases" onclick="toggleDrawer()">Case Studies</a>
+  <a href="#resources" onclick="toggleDrawer()">Resources</a>
+  <a href="#" onclick="openLogin();toggleDrawer()">Student Login</a>
+</div>
+
+<main id="home">
+<div class="wrap">
+  <div class="search"><span class="searchIcon">⌕</span><input id="search" placeholder="Search courses and tutorials" oninput="filterCourses()"></div>
+
+  <section class="hero">
+    <div class="heroText">
+      <div class="eyebrow">DIGITAL DENTAL DESIGN</div>
+      <h1>Understand.<br>Design.<br><span>Master exocad.</span></h1>
+      <p class="lead">Practical learning. Real cases.<br>Confident design.</p>
+      <button class="cta" onclick="document.getElementById('courses').scrollIntoView({behavior:'smooth'})">Explore Courses &nbsp; →</button>
+    </div>
+    <div class="heroArt" aria-label="Academy instructor and dental design">
+      <div class="glow"></div>
+      <div class="screen"><b>exocad</b><div class="teeth">🦷</div></div>
+      <div class="person"><div class="head"><div class="hair"></div></div><div class="suit"></div></div>
+      <div class="toothBig">🦷</div>
+    </div>
+  </section>
+
+  <div class="divider">LEARN · DESIGN · REFINE</div>
+
+  <section id="courses">
+    <h2>Choose Your Learning Path</h2>
+    <div class="courses" id="courseList">
+      <article class="course" data-name="exocad fundamentals">
+        <div class="courseImg">🦷</div><div class="courseInfo"><h3>exocad Fundamentals</h3><p>Build strong foundations</p></div><button class="arrow" onclick="selectCourse('exocad Fundamentals')">→</button>
+      </article>
+      <article class="course" data-name="advanced dental design">
+        <div class="courseImg">🦷</div><div class="courseInfo"><h3>Advanced Dental Design</h3><p>Refine anatomy and occlusion</p></div><button class="arrow" onclick="selectCourse('Advanced Dental Design')">→</button>
+      </article>
+      <article class="course" data-name="implant prosthetics">
+        <div class="courseImg">🦷</div><div class="courseInfo"><h3>Implant Prosthetics</h3><p>From single units to full arches</p></div><button class="arrow" onclick="selectCourse('Implant Prosthetics')">→</button>
+      </article>
+    </div>
+  </section>
+
+  <section class="quick" id="cases">
+    <div class="quickItem"><div class="qicon">▷</div>Video Lessons</div>
+    <div class="quickItem"><div class="qicon">▤</div>Case Studies</div>
+    <div class="quickItem" id="resources"><div class="qicon">□</div>Resources</div>
+  </section>
+</div>
+</main>
+
+<footer>© 2026 Hamdi Elkhateeb Academy · Learn · Practice · Build Your Future</footer>
+
+<div class="login" id="login">
+ <div class="loginBox">
+  <button class="close" onclick="closeLogin()">×</button>
+  <h2>Student Login</h2>
+  <p style="color:#a7bdd7">Continue to your academy account.</p>
+  <input class="field" id="studentName" placeholder="Student name">
+  <input class="field" id="studentEmail" type="email" placeholder="Email address">
+  <button class="submit" onclick="login()">Continue</button>
+ </div>
+</div>
+
+<script>
+function toggleDrawer(){const d=document.getElementById('drawer');d.style.display=d.style.display==='block'?'none':'block'}
+function openLogin(){document.getElementById('login').style.display='grid'}
+function closeLogin(){document.getElementById('login').style.display='none'}
+function login(){const n=document.getElementById('studentName').value.trim(),e=document.getElementById('studentEmail').value.trim();if(!n||!e){alert('Please enter your name and email.');return}localStorage.setItem('academyStudent',JSON.stringify({name:n,email:e}));closeLogin();alert('Welcome, '+n+'!')}
+function selectCourse(c){localStorage.setItem('academyCourse',c);openLogin()}
+function filterCourses(){const q=document.getElementById('search').value.toLowerCase();document.querySelectorAll('.course').forEach(x=>x.style.display=x.dataset.name.includes(q)?'grid':'none')}
+</script>
+</body>
+</html>
