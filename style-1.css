@@ -1,5 +1,883 @@
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#061426;color:#eef6ff;font-family:Tahoma,Arial,sans-serif}a{text-decoration:none;color:inherit;cursor:pointer}button{font:inherit;border:0;cursor:pointer}.sidebar{position:fixed;right:0;top:0;width:285px;height:100vh;background:#071a2d;border-left:1px solid #173653;padding:20px 18px;z-index:10}.brand{display:flex;gap:12px;align-items:center;padding:4px 8px 20px;border-bottom:1px solid #173653}.brand-mark{width:48px;height:48px;border-radius:14px;background:linear-gradient(145deg,#0aa5ee,#0750a8);display:grid;place-items:center;font-size:27px;font-weight:bold}.brand strong{display:block;font-size:16px}.brand span{display:block;color:#19b8ef;margin-top:3px}.student{display:flex;gap:12px;align-items:center;padding:22px 8px}.side-avatar{width:48px;height:48px;border-radius:50%;overflow:hidden;background:#0e7ed1;border:2px solid #1e9ee7}.side-avatar img{width:100%;height:100%;object-fit:cover}.student small{display:block;color:#9bb0c5;margin-top:4px}.side-nav{display:grid;gap:5px}.side-nav a{padding:14px 15px;border-radius:9px;color:#c7d6e6;display:flex;justify-content:space-between}.side-nav a:hover,.side-nav .active{background:#0a79cf;color:#fff}main{margin-right:285px;padding:0 28px 40px}.topbar{height:72px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #173653;gap:15px}.search{width:min(520px,65%);height:43px;border:1px solid #214866;border-radius:12px;background:#0a2139;color:#9db6ce;padding:0 14px;display:flex;align-items:center;gap:10px}.search input{background:transparent;border:0;outline:0;color:#fff;width:100%;font-size:14px}.top-actions{color:#a9bfd4;font-size:20px}.notif{background:#ed444f;border-radius:20px;padding:3px 7px;font-size:11px;color:#fff}.mobile-menu{display:none;background:#0a84d8;color:#fff;border-radius:11px;width:48px;height:43px;font-size:23px}
-.profile-card{margin:18px 0 16px;background:#071c31;border:1px solid #214866;border-radius:16px;overflow:hidden;box-shadow:0 12px 32px rgba(0,0,0,.28)}.cover{height:320px;position:relative;overflow:hidden;background:#071d32}.cover:after{content:"";position:absolute;inset:0;background:linear-gradient(to bottom,transparent 52%,rgba(3,14,27,.7));pointer-events:none}.cover img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}.profile-body{position:relative;z-index:2;display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:22px;align-items:center;padding:0 28px 22px;margin-top:-72px}.profile-avatar-wrap{width:150px;height:150px;border-radius:50%;padding:7px;background:#071c31;box-shadow:0 6px 22px rgba(0,0,0,.45);position:relative}.profile-avatar{width:100%;height:100%;display:block;border-radius:50%;object-fit:cover;object-position:center;border:3px solid #fff}.verified{position:absolute;right:4px;bottom:7px;width:35px;height:35px;border-radius:50%;display:grid;place-items:center;background:#0b91df;border:4px solid #071c31;color:#fff;font-size:18px;font-weight:bold}.profile-main{padding-top:65px}.profile-main h1{margin:0 0 7px;font-size:29px;line-height:1.25}.verified-title{display:inline-grid;place-items:center;width:27px;height:27px;border-radius:50%;background:#0b91df;color:#fff;font-size:16px;vertical-align:middle}.type{margin:0;color:#a9bfd4;font-size:15px}.bio{margin:7px 0 0;color:#839bb1;font-size:14px}.profile-actions{display:flex;align-items:center;gap:10px;padding-top:65px}.follow{background:#0789df;color:#fff;border-radius:11px;padding:13px 22px;font-size:15px;font-weight:bold;box-shadow:0 6px 16px rgba(0,137,223,.2)}.more{width:52px;height:52px;border-radius:11px;background:#0a263d;border:1px solid #4b6c85;color:#fff;font-size:28px}.profile-tabs{display:flex;overflow-x:auto;white-space:nowrap;border-top:1px solid #21435c;padding:0 18px}.profile-tabs a{position:relative;padding:17px 22px;color:#8fa7bc;font-size:15px}.profile-tabs a.active{color:#fff}.profile-tabs a.active:after{content:"";position:absolute;left:14px;right:14px;bottom:0;height:3px;background:#0789df;border-radius:4px 4px 0 0}
-.welcome{margin-top:18px;min-height:150px;border:1px solid #155083;border-radius:12px;padding:25px 30px;display:flex;justify-content:space-between;align-items:center;background:radial-gradient(circle at 15% 50%,#073e68,#071d32 65%)}.welcome p{color:#a9c6df;margin:0 0 8px}.welcome h2{font-size:25px;margin:0;line-height:1.6}.welcome h2 b{font-size:32px}.quote{font-size:18px;line-height:2;color:#91d5ff;text-align:center}.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:16px 0}.stat{background:#082039;border:1px solid #173e5d;border-radius:11px;padding:18px;display:grid;grid-template-columns:45px 1fr;gap:4px 10px}.stat span{grid-row:span 3;font-size:27px;background:#0a5f9e;border-radius:12px;display:grid;place-items:center}.stat small{color:#a8bdd1}.stat b{font-size:20px}.stat a{font-size:12px;color:#25b8ef}.grid{display:grid;grid-template-columns:1.55fr 1fr;gap:16px}.panel{background:#071c31;border:1px solid #173e5d;border-radius:11px;padding:17px}.courses{grid-row:span 2}.panel-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.panel-head h2{font-size:17px;margin:0}.panel-head a{font-size:12px;color:#25b8ef}.course-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}.course{border:1px solid #1b4868;background:#09233b;border-radius:10px;padding:10px}.thumb{height:100px;border-radius:8px;display:grid;place-items:center;font-size:25px;font-weight:bold}.excel{background:#0b6d5b}.ps{background:#243c82}.data{background:#155f91}.course h3{font-size:14px;line-height:1.6;min-height:44px}.progress{height:6px;background:#173a55;border-radius:8px;overflow:hidden}.progress i{height:100%;display:block;background:#1eb5ed;border-radius:8px}.course small{display:block;color:#91aabd;margin:8px 0}.course button,.session button,.record button{background:#0b75c5;color:#fff;border-radius:7px;padding:9px 12px;width:100%;font-size:12px}.session{border:1px solid #1a4767;border-radius:9px;padding:13px;margin-bottom:10px}.session b,.session small{display:block}.session small{color:#a7bdcf;font-size:12px;margin:7px 0 12px}.notifications .notice{display:flex;gap:10px;padding:12px 0;border-bottom:1px solid #16354e;color:#2bbcf1}.notice b,.notice small{display:block;color:#e4eff9}.notice small{color:#91aabd;font-size:11px;margin-top:4px}.record{display:flex;align-items:center;gap:10px;border:1px solid #183f5d;border-radius:8px;padding:10px;margin-bottom:9px}.record>div{flex:1}.record b,.record small{display:block}.record small{color:#8fa9bd;font-size:11px;margin-top:3px}.record button{width:auto;padding:7px 11px}
-@media(max-width:1050px){.sidebar{width:230px}main{margin-right:230px}.stats{grid-template-columns:repeat(2,1fr)}.grid{grid-template-columns:1fr}.courses{grid-row:auto}}
-@media(max-width:720px){.sidebar{display:none}main{margin-right:0;padding:0 12px 25px}.topbar{height:66px}.mobile-menu{display:block;order:2}.search{order:1;flex:1;width:auto;height:43px}.top-actions{display:none}.profile-card{margin:12px 0;border-radius:13px}.cover{height:auto;aspect-ratio:16/9}.profile-body{grid-template-columns:1fr;gap:0;padding:0 14px 18px;margin-top:-53px;text-align:center}.profile-avatar-wrap{width:116px;height:116px;margin:0 auto 9px;padding:6px}.verified{width:30px;height:30px;right:2px;bottom:4px;border-width:3px;font-size:15px}.profile-main{padding-top:0}.profile-main h1{font-size:22px;line-height:1.35}.verified-title{width:22px;height:22px;font-size:13px}.type{font-size:12px}.bio{font-size:12px;line-height:1.7}.profile-actions{padding-top:13px;justify-content:center}.follow{padding:11px 25px;font-size:14px}.more{width:46px;height:46px}.profile-tabs{padding:0 2px}.profile-tabs a{padding:15px 16px;font-size:13px}.welcome{flex-direction:column;align-items:flex-start;gap:10px;padding:20px 18px}.welcome h2{font-size:22px}.welcome h2 b{font-size:27px}.quote{display:none}.stats,.course-grid{grid-template-columns:1fr}.course{display:grid;grid-template-columns:100px 1fr;gap:0 10px}.course .thumb{grid-row:span 4;height:100%}.course h3{min-height:auto;margin:4px 0}.course button{grid-column:2}}
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أكاديمية حمدي الخطيب</title>
+
+<style>
+*{box-sizing:border-box}
+
+html,body{
+margin:0;
+padding:0;
+background:#061426;
+color:#eef6ff;
+font-family:Tahoma,Arial,sans-serif;
+}
+
+body{min-height:100vh}
+
+button,a{font-family:inherit}
+a{text-decoration:none;color:inherit}
+
+.sidebar{
+position:fixed;
+right:0;
+top:0;
+width:260px;
+height:100vh;
+background:#071a2d;
+border-left:1px solid #173653;
+padding:20px;
+z-index:20;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+padding-bottom:18px;
+border-bottom:1px solid #173653;
+}
+
+.brand-mark{
+width:48px;
+height:48px;
+border-radius:14px;
+background:#087ed1;
+display:grid;
+place-items:center;
+font-size:26px;
+font-weight:bold;
+}
+
+.brand strong{display:block;font-size:16px}
+.brand span{display:block;color:#22b8ee;font-size:12px;margin-top:4px}
+
+.student{
+display:flex;
+align-items:center;
+gap:12px;
+padding:20px 5px;
+}
+
+.side-avatar{
+width:48px;
+height:48px;
+border-radius:50%;
+overflow:hidden;
+border:2px solid #168ddd;
+flex-shrink:0;
+}
+
+.side-avatar img{
+width:100%;
+height:100%;
+object-fit:cover;
+object-position:center top;
+display:block;
+}
+
+.student b{display:block;font-size:13px}
+.student small{display:block;color:#8faac1;margin-top:4px}
+
+.side-nav{
+display:grid;
+gap:5px;
+}
+
+.side-nav a{
+padding:13px;
+border-radius:9px;
+color:#bfd0df;
+display:flex;
+justify-content:space-between;
+}
+
+.side-nav a.active,
+.side-nav a:hover{
+background:#087bd0;
+color:white;
+}
+
+main{
+margin-right:260px;
+padding:0 25px 40px;
+}
+
+.topbar{
+height:72px;
+display:flex;
+align-items:center;
+gap:15px;
+border-bottom:1px solid #173653;
+}
+
+.mobile-menu{
+display:none;
+}
+
+.search{
+height:44px;
+width:min(520px,100%);
+border:1px solid #42627d;
+border-radius:12px;
+background:#0a2139;
+display:flex;
+align-items:center;
+gap:10px;
+padding:0 15px;
+color:#9bb3c9;
+}
+
+.search input{
+width:100%;
+border:0;
+outline:0;
+background:transparent;
+color:white;
+font-size:14px;
+}
+
+.profile-card{
+margin-top:22px;
+background:#071c31;
+border:1px solid #31536d;
+border-radius:16px;
+overflow:hidden;
+box-shadow:0 10px 35px rgba(0,0,0,.25);
+}
+
+.cover{
+width:100%;
+height:300px;
+overflow:hidden;
+background:#071a2d;
+position:relative;
+}
+
+.cover img{
+width:100%;
+height:100%;
+display:block;
+object-fit:cover;
+object-position:center;
+}
+
+.profile-body{
+position:relative;
+padding:75px 30px 25px;
+text-align:center;
+}
+
+.profile-avatar-wrap{
+position:absolute;
+top:-75px;
+left:50%;
+transform:translateX(-50%);
+width:150px;
+height:150px;
+z-index:5;
+}
+
+.profile-avatar{
+width:150px;
+height:150px;
+display:block;
+border-radius:50%;
+object-fit:cover;
+object-position:center top;
+border:7px solid #071c31;
+outline:3px solid #168ddd;
+background:#fff;
+}
+
+.verified{
+position:absolute;
+right:3px;
+bottom:10px;
+width:38px;
+height:38px;
+border-radius:50%;
+background:#0799e8;
+border:4px solid #071c31;
+display:grid;
+place-items:center;
+font-size:20px;
+font-weight:bold;
+color:white;
+}
+
+.profile-main h1{
+margin:0;
+font-size:30px;
+line-height:1.4;
+}
+
+.verified-title{
+display:inline-grid;
+place-items:center;
+width:28px;
+height:28px;
+border-radius:50%;
+background:#0799e8;
+font-size:16px;
+vertical-align:middle;
+}
+
+.type{
+margin:8px 0;
+font-size:16px;
+color:#a9bfd3;
+}
+
+.bio{
+margin:0;
+font-size:15px;
+color:#819bb2;
+}
+
+.profile-actions{
+margin-top:20px;
+display:flex;
+justify-content:center;
+gap:12px;
+}
+
+.follow{
+border:0;
+border-radius:12px;
+background:#087fd4;
+color:white;
+padding:13px 35px;
+font-size:17px;
+cursor:pointer;
+}
+
+.more{
+width:52px;
+border:1px solid #53728c;
+border-radius:12px;
+background:#09243b;
+color:white;
+font-size:24px;
+}
+
+.profile-tabs{
+display:flex;
+overflow-x:auto;
+border-top:1px solid #1b405c;
+}
+
+.profile-tabs a{
+min-width:120px;
+padding:17px 15px;
+text-align:center;
+color:#8ea8bd;
+white-space:nowrap;
+}
+
+.profile-tabs a.active{
+color:white;
+border-bottom:4px solid #0799e8;
+}
+
+.welcome{
+margin-top:20px;
+padding:25px;
+border:1px solid #155083;
+border-radius:14px;
+background:radial-gradient(circle at 15% 50%,#073e68,#071d32 65%);
+}
+
+.welcome p{
+color:#a9c6df;
+margin:0 0 8px;
+font-size:17px;
+}
+
+.welcome h2{
+margin:0;
+font-size:28px;
+line-height:1.6;
+}
+
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:14px;
+margin:16px 0;
+}
+
+.stat{
+background:#082039;
+border:1px solid #173e5d;
+border-radius:12px;
+padding:16px;
+}
+
+.stat span{
+font-size:25px;
+display:block;
+margin-bottom:8px;
+}
+
+.stat small{
+display:block;
+color:#9db4c8;
+}
+
+.stat b{
+display:block;
+font-size:20px;
+margin:5px 0;
+}
+
+.stat a{
+font-size:12px;
+color:#20b8ef;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1.5fr 1fr;
+gap:15px;
+}
+
+.panel{
+background:#071c31;
+border:1px solid #173e5d;
+border-radius:12px;
+padding:17px;
+}
+
+.panel-head{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-bottom:14px;
+}
+
+.panel-head h2{
+font-size:17px;
+margin:0;
+}
+
+.panel-head a{
+font-size:12px;
+color:#20b8ef;
+}
+
+.course-grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:12px;
+}
+
+.course{
+background:#09233b;
+border:1px solid #1b4868;
+border-radius:10px;
+padding:10px;
+}
+
+.thumb{
+height:100px;
+border-radius:8px;
+display:grid;
+place-items:center;
+font-weight:bold;
+font-size:24px;
+}
+
+.excel{background:#0b6d5b}
+.ps{background:#243c82}
+.data{background:#155f91}
+
+.course h3{
+font-size:14px;
+line-height:1.5;
+}
+
+.progress{
+height:6px;
+background:#173a55;
+border-radius:10px;
+overflow:hidden;
+}
+
+.progress i{
+display:block;
+height:100%;
+background:#1eb5ed;
+}
+
+.course small{
+display:block;
+color:#91aabd;
+margin:8px 0;
+}
+
+.course button,
+.session button,
+.record button{
+width:100%;
+border:0;
+border-radius:7px;
+padding:9px;
+background:#0878c8;
+color:white;
+}
+
+.session{
+border:1px solid #1a4767;
+border-radius:9px;
+padding:13px;
+margin-bottom:10px;
+}
+
+.session b,
+.session small{
+display:block;
+}
+
+.session small{
+color:#a7bdcf;
+margin:7px 0 12px;
+font-size:12px;
+}
+
+.notice,
+.record{
+display:flex;
+align-items:center;
+gap:10px;
+padding:12px 0;
+border-bottom:1px solid #16354e;
+}
+
+.notice:last-child,
+.record:last-child{
+border-bottom:0;
+}
+
+.notice div,
+.record div{
+flex:1;
+}
+
+.notice b,
+.record b{
+display:block;
+}
+
+.notice small,
+.record small{
+display:block;
+color:#8fa9bd;
+font-size:11px;
+margin-top:4px;
+}
+
+.record button{
+width:auto;
+padding:7px 12px;
+}
+
+@media(max-width:900px){
+
+.sidebar{
+display:none;
+}
+
+main{
+margin-right:0;
+padding:0 12px 30px;
+}
+
+.mobile-menu{
+display:block;
+width:58px;
+height:48px;
+border:0;
+border-radius:12px;
+background:#087fd4;
+color:white;
+font-size:27px;
+}
+
+.topbar{
+height:auto;
+padding:12px 0;
+}
+
+.search{
+flex:1;
+}
+
+.profile-card{
+margin-top:12px;
+}
+
+.cover{
+height:210px;
+}
+
+.profile-body{
+padding:72px 15px 22px;
+}
+
+.profile-avatar-wrap{
+width:130px;
+height:130px;
+top:-65px;
+}
+
+.profile-avatar{
+width:130px;
+height:130px;
+}
+
+.verified{
+width:34px;
+height:34px;
+font-size:17px;
+}
+
+.profile-main h1{
+font-size:24px;
+}
+
+.type{
+font-size:14px;
+}
+
+.bio{
+font-size:13px;
+}
+
+.stats{
+grid-template-columns:repeat(2,1fr);
+}
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.course-grid{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:520px){
+
+.cover{
+height:180px;
+}
+
+.profile-body{
+padding-top:70px;
+}
+
+.profile-main h1{
+font-size:21px;
+}
+
+.follow{
+font-size:15px;
+padding:12px 25px;
+}
+
+.profile-tabs a{
+min-width:105px;
+font-size:13px;
+}
+
+.welcome h2{
+font-size:23px;
+}
+
+.stats{
+grid-template-columns:1fr;
+}
+
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+
+<div class="brand">
+<div class="brand-mark">ح</div>
+<div>
+<strong>أكاديمية حمدي الخطيب</strong>
+<span>منصة تعليمية</span>
+</div>
+</div>
+
+<div class="student">
+<div class="side-avatar">
+<img src="teacher.jpg" alt="حمدي الخطيب">
+</div>
+<div>
+<b>أكاديمية حمدي الخطيب</b>
+<small>منصة تعليمية</small>
+</div>
+</div>
+
+<nav class="side-nav">
+<a class="active" href="#">الرئيسية <span>⌂</span></a>
+<a href="#">الدورات <span>▣</span></a>
+<a href="#">المحاضرات المباشرة <span>◉</span></a>
+<a href="#">التسجيلات <span>▶</span></a>
+<a href="#">ملفات التدريب <span>□</span></a>
+<a href="#">التطبيقات والأسئلة <span>☷</span></a>
+<a href="#">الشهادات <span>◇</span></a>
+<a href="#">حسابي <span>♙</span></a>
+</nav>
+
+</aside>
+
+<main>
+
+<header class="topbar">
+
+<button class="mobile-menu">☰</button>
+
+<div class="search">
+⌕
+<input placeholder="ابحث عن دورة أو محاضرة أو ملف...">
+</div>
+
+</header>
+
+<section class="profile-card">
+
+<div class="cover">
+<img src="cover.png" alt="غلاف أكاديمية حمدي الخطيب">
+</div>
+
+<div class="profile-body">
+
+<div class="profile-avatar-wrap">
+
+<img
+class="profile-avatar"
+src="teacher.jpg"
+alt="حمدي الخطيب">
+
+<span class="verified">✓</span>
+
+</div>
+
+<div class="profile-main">
+
+<h1>
+Hamdi Elkhateeb Academy
+<span class="verified-title">✓</span>
+</h1>
+
+<p class="type">
+منصة تعليمية • تدريب وتعليم احترافي
+</p>
+
+<p class="bio">
+تعلّم، طبّق، وطوّر مهاراتك مع أكاديمية حمدي الخطيب.
+</p>
+
+</div>
+
+<div class="profile-actions">
+
+<button class="follow">
+متابعة الأكاديمية
+</button>
+
+<button class="more">
+⋮
+</button>
+
+</div>
+
+</div>
+
+<nav class="profile-tabs">
+
+<a class="active" href="#">الرئيسية</a>
+<a href="#">الدورات</a>
+<a href="#">المحاضرات</a>
+<a href="#">التسجيلات</a>
+<a href="#">عن الأكاديمية</a>
+
+</nav>
+
+</section>
+
+<section class="welcome">
+
+<p>
+أهلًا بك في أكاديمية حمدي الخطيب، وابدأ رحلتك التعليمية معنا.
+</p>
+
+<h2>
+مرحبًا بك مجددًا 👋
+<br>
+<b>أكاديمية حمدي الخطيب</b>
+</h2>
+
+</section>
+
+<section class="stats">
+
+<div class="stat">
+<span>🎓</span>
+<small>الكورسات المسجلة</small>
+<b>3</b>
+<a href="#">عرض الكل ←</a>
+</div>
+
+<div class="stat">
+<span>▶</span>
+<small>متوسط التقدم</small>
+<b>65%</b>
+<a href="#">عرض التفاصيل ←</a>
+</div>
+
+<div class="stat">
+<span>◉</span>
+<small>الدفعة القادمة</small>
+<b>غدًا - 7:00 م</b>
+<a href="#">عرض الجدول ←</a>
+</div>
+
+<div class="stat">
+<span>◇</span>
+<small>الشهادات المحصلة</small>
+<b>1</b>
+<a href="#">عرض الكل ←</a>
+</div>
+
+</section>
+
+<div class="grid">
+
+<section class="panel">
+
+<div class="panel-head">
+<h2>الدورات المسجلة</h2>
+<a href="#">عرض الكل</a>
+</div>
+
+<div class="course-grid">
+
+<article class="course">
+<div class="thumb excel">EXCEL</div>
+<h3>Excel من الصفر للاحتراف</h3>
+<div class="progress"><i style="width:65%"></i></div>
+<small>65% مكتمل</small>
+<button>متابعة الدرس ▶</button>
+</article>
+
+<article class="course">
+<div class="thumb ps">PS</div>
+<h3>أساسيات التصميم الجرافيكي</h3>
+<div class="progress"><i style="width:28%"></i></div>
+<small>28% مكتمل</small>
+<button>متابعة الدرس ▶</button>
+</article>
+
+<article class="course">
+<div class="thumb data">DATA</div>
+<h3>تحليل البيانات بـ Excel</h3>
+<div class="progress"><i style="width:12%"></i></div>
+<small>12% مكتمل</small>
+<button>متابعة الدرس ▶</button>
+</article>
+
+</div>
+
+</section>
+
+<section class="panel">
+
+<div class="panel-head">
+<h2>الدفعات القادمة</h2>
+<a href="#">عرض الكل</a>
+</div>
+
+<div class="session">
+<b>الدفعة الثانية - Excel</b>
+<small>السبت 21 يونيو 2025 · 7:00 م - 9:00 م</small>
+<button>احجز الدفعة</button>
+</div>
+
+<div class="session">
+<b>الدفعة الأولى - Photoshop</b>
+<small>الاثنين 23 يونيو 2025 · 6:00 م - 8:00 م</small>
+<button>احجز الآن</button>
+</div>
+
+</section>
+
+<section class="panel">
+
+<div class="panel-head">
+<h2>آخر الإشعارات</h2>
+<a href="#">عرض الكل</a>
+</div>
+
+<div class="notice">
+▶
+<div>
+<b>تم رفع تسجيل جديد للمحاضرة الثالثة</b>
+<small>في كورس Excel · منذ ساعتين</small>
+</div>
+</div>
+
+<div class="notice">
+✓
+<div>
+<b>تم اعتماد التطبيق الخاص بك</b>
+<small>تمت مراجعة تطبيقك · منذ 5 ساعات</small>
+</div>
+</div>
+
+</section>
+
+<section class="panel">
+
+<div class="panel-head">
+<h2>آخر المحاضرات المرفوعة</h2>
+<a href="#">عرض الكل</a>
+</div>
+
+<div class="record">
+🎬
+<div>
+<b>محاضرة 4 - Excel</b>
+<small>منذ ساعتين</small>
+</div>
+<button>مشاهدة</button>
+</div>
+
+<div class="record">
+🎬
+<div>
+<b>محاضرة 2 - Photoshop</b>
+<small>منذ يوم</small>
+</div>
+<button>مشاهدة</button>
+</div>
+
+</section>
+
+</div>
+
+</main>
+
+</body>
+</html>
