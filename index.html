@@ -32,44 +32,58 @@ button,input{font:inherit}button{cursor:pointer}
 .bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;color:#111;height:70px;display:flex;justify-content:space-around;align-items:center;z-index:40;border-top:1px solid #bbb}.bottom button{border:0;background:none;font-size:27px;color:#222}.bottom button.active{color:#078fe0}
 .modal{display:none;position:fixed;inset:0;background:#000a;z-index:70;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalBox{max-width:650px;width:100%;background:#092039;border:2px solid #3a5c78;border-radius:24px;padding:24px}.modalBox h2{margin-top:0}.close{float:right;border:0;background:none;color:white;font-size:30px}
 @media(max-width:720px){
- .app{padding:22px 22px 90px}
- .top{gap:26px}
- .menuBtn{width:112px;height:92px}
- .search{height:86px;padding:0 20px}
- .search input{font-size:25px;min-width:0}
- .profile{margin-top:52px;border-radius:35px}
- .cover{height:330px}
- .avatar{width:220px;height:220px;margin-top:-110px;border-width:10px;outline-width:6px}
- .name{font-size:30px;line-height:1.2;white-space:nowrap}
- .verified{width:42px;height:42px;font-size:24px;margin-left:6px}
- .sub{font-size:20px;line-height:1.35}
- .desc{font-size:18px;line-height:1.4;margin:12px auto 24px}
- .actions{gap:18px}
- .follow{min-width:280px;padding:16px 22px;font-size:22px}
- .more{width:90px;font-size:31px}
- .tabs .tab{font-size:22px;padding:22px 8px}
- .cards{grid-template-columns:1fr}.card img{height:220px}
+ .app{max-width:680px;padding:18px 18px 82px}
+ .top{gap:18px;padding-bottom:20px}
+ .menuBtn{width:78px;height:68px;border-radius:20px}
+ .menuBtn span,.menuBtn span:before,.menuBtn span:after{width:34px;height:4px}
+ .menuBtn span:before{top:-11px}.menuBtn span:after{top:11px}
+ .search{height:68px;border-width:2px;border-radius:22px;padding:0 16px;gap:12px}
+ .searchIcon{font-size:30px}.search input{font-size:19px}
+ .profile{margin-top:30px;border-radius:30px;border-width:2px}
+ .cover{height:220px}
+ .cover img{object-fit:cover;object-position:center center}
+ .identity{padding:0 16px 26px}
+ .avatar{
+   width:132px;height:132px;
+   margin:-66px auto 14px;
+   border-width:7px;outline:4px solid #dfe8f2
+ }
+ .name{font-size:25px;line-height:1.22;margin:0 0 10px}
+ .verified{width:36px;height:36px;font-size:21px;margin-left:5px}
+ .sub{font-size:17px;line-height:1.35}
+ .desc{font-size:15px;line-height:1.45;margin:12px auto 22px;max-width:500px}
+ .actions{gap:12px}
+ .follow{min-width:215px;padding:14px 18px;border-radius:17px;font-size:19px}
+ .more{width:68px;border-radius:17px;font-size:29px}
+ .moreMenu{right:16px}
+ .tabs .tab{font-size:18px;padding:18px 6px;border-bottom-width:4px}
+ .content{padding:26px 0}
+ .sectionTitle{font-size:25px}
+ .welcome{padding:20px;border-radius:22px}
+ .welcome p{font-size:16px}
+ .cards{grid-template-columns:1fr}.card img{height:190px}
 }
 @media(max-width:480px){
- .app{padding:18px 18px 90px}
- .top{gap:18px}
- .menuBtn{width:92px;height:76px;border-radius:22px}
- .menuBtn span,.menuBtn span:before,.menuBtn span:after{width:38px;height:4px}
- .menuBtn span:before{top:-12px}.menuBtn span:after{top:12px}
- .search{height:76px;border-radius:24px;padding:0 16px}
- .search input{font-size:21px}
- .profile{margin-top:40px;border-radius:32px}
- .cover{height:300px}
- .avatar{width:190px;height:190px;margin-top:-95px;border-width:9px;outline-width:5px}
- .identity{padding:0 16px 28px}
- .name{font-size:25px;white-space:normal}
- .verified{width:38px;height:38px;font-size:21px}
- .sub{font-size:18px}
- .desc{font-size:16px}
- .actions{gap:12px}
- .follow{min-width:230px;padding:14px 18px;font-size:20px}
- .more{width:76px;font-size:28px}
- .tabs .tab{font-size:19px;padding:20px 6px}
+ .app{padding:14px 14px 82px}
+ .top{gap:12px}
+ .menuBtn{width:72px;height:64px;border-radius:18px}
+ .search{height:64px;border-radius:20px}
+ .search input{font-size:18px}
+ .profile{margin-top:26px;border-radius:28px}
+ .cover{height:215px}
+ .avatar{
+   width:128px;height:128px;
+   margin:-64px auto 13px;
+   border-width:7px;outline:4px solid #dfe8f2
+ }
+ .identity{padding:0 14px 24px}
+ .name{font-size:24px}
+ .verified{width:34px;height:34px;font-size:20px}
+ .sub{font-size:16px}
+ .desc{font-size:14px;margin-bottom:20px}
+ .follow{min-width:205px;font-size:18px;padding:13px 16px}
+ .more{width:64px;font-size:27px}
+ .tabs .tab{font-size:17px;padding:17px 4px}
 }
 </style>
 </head>
