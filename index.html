@@ -15,7 +15,13 @@ body{overflow-x:hidden}.app{display:flex;min-height:100vh;background:radial-grad
 .modal{position:fixed;inset:0;background:#0009;display:none;place-items:center;z-index:50}.modal.open{display:grid}.dialog{width:min(450px,90%);background:#0a2137;border:1px solid #31546e;border-radius:15px;padding:22px;box-shadow:0 25px 70px #0009}.dialog button{float:right;background:none;border:0;color:#a8bac8;font-size:24px}.dialog h3{margin:0 0 8px}.dialog p{color:#92a7b8;font-size:12px;line-height:1.6}.primary{background:#159bea;border:0;border-radius:9px;color:#fff;padding:10px 15px;font-weight:800}
 @media(max-width:1050px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px)}.continue-grid,.lower{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.sidebar{transform:translateX(-100%);transition:.2s;width:250px}.sidebar.open{transform:translateX(0)}.main{margin-left:0;width:100%;padding:8px 10px 25px}.mobile{display:grid;width:38px;height:38px;border:1px solid #24445d;background:#0a2137;color:white;border-radius:10px;place-items:center}.topbar{gap:7px}.search{order:2}.topright{order:3}.profile div,.profile em{display:none}.hero{height:auto;aspect-ratio:1000/482}.hero img{object-fit:contain}.continue{grid-template-columns:145px 1fr}.cards{grid-template-columns:1fr}.card{height:155px}.lesson-grid{grid-template-columns:repeat(2,1fr)}}
-</style></head>
+
+.authbox{width:min(420px,92%);background:#0a2137;border:1px solid #31546e;border-radius:15px;padding:22px;box-shadow:0 25px 70px #0009}
+.authbox h3{margin:0 0 6px}.authbox p{color:#92a7b8;font-size:11px;margin:0 0 15px}
+.authbox input{width:100%;box-sizing:border-box;margin:6px 0;padding:11px 12px;border-radius:9px;border:1px solid #31546e;background:#071a2b;color:#fff;outline:0}
+.authrow{display:flex;gap:8px;margin-top:10px}.authrow button{float:none;flex:1}
+.authmsg{min-height:18px;color:#7ec8f5;font-size:10px;margin-top:10px}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="brandmark"><span>HE</span></div><div class="brandname">HAMDI ELKHATEEB<small>DIGITAL ACADEMY</small></div></div>
 <nav class="nav"><button class="active" data-panel="home"><span class="ico">⌂</span>Home</button><button data-panel="learning"><span class="ico">▣</span>My Learning</button><button data-panel="courses"><span class="ico">▤</span>Courses</button><button data-panel="resources"><span class="ico">▧</span>Resources</button><button data-panel="community"><span class="ico">♧</span>Community</button></nav>
@@ -47,17 +53,106 @@ body{overflow-x:hidden}.app{display:flex;min-height:100vh;background:radial-grad
 <section class="panel" id="resources"><div class="section-head"><h2>Resources &amp; Downloads</h2></div><div class="resbox" style="max-width:600px"><div class="resource"><span class="pdf">PDF</span><div><b>Exocad Libraries Guide</b><small>PDF • 12 MB</small></div><span class="dl">↓</span></div><div class="resource"><span class="pdf">PDF</span><div><b>Design Checklist</b><small>PDF • 2 MB</small></div><span class="dl">↓</span></div><div class="resource"><span class="pdf">PDF</span><div><b>Occlusion Quick Reference</b><small>PDF • 1.5 MB</small></div><span class="dl">↓</span></div></div></section>
 <section class="panel" id="community"><div class="section-head"><h2>Community</h2></div><div class="resbox" style="padding:25px;color:#91a6b7">Community area is ready to connect to your real content.</div></section>
 </main></div>
+
+<div class="modal" id="authModal">
+  <div class="authbox">
+    <button id="authX" style="float:right;background:none;border:0;color:#a8bac8;font-size:24px">×</button>
+    <h3 id="authTitle">Sign in to Hamdi Academy</h3>
+    <p id="authSub">Use your email to access your learning account.</p>
+    <input id="authEmail" type="email" placeholder="Email address" autocomplete="email">
+    <input id="authPassword" type="password" placeholder="Password" autocomplete="current-password">
+    <div class="authrow">
+      <button class="primary" id="loginBtn">Sign In</button>
+      <button class="primary" id="signupBtn">Create Account</button>
+    </div>
+    <div class="authmsg" id="authMsg"></div>
+  </div>
+</div>
 <div class="modal" id="modal"><div class="dialog"><button id="x">×</button><h3 id="mt"></h3><p id="mp"></p><button class="primary" id="ok">Continue</button></div></div>
 <script>
+/* ===== HAMDI ACADEMY + SUPABASE ===== */
+const SUPABASE_URL = 'https://irlwndzsphnphdezmyb.supabase.co';
+const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_2bUzudb32hR-udSA1hPcPQ_B6pT3fKK';
+const { createClient } = supabase;
+const db = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+
 const modal=document.getElementById('modal'),mt=document.getElementById('mt'),mp=document.getElementById('mp');
 function openM(t,p){mt.textContent=t;mp.textContent=p;modal.classList.add('open')}
-document.getElementById('x').onclick=()=>modal.classList.remove('open');document.getElementById('ok').onclick=()=>modal.classList.remove('open');
+document.getElementById('x').onclick=()=>modal.classList.remove('open');
+document.getElementById('ok').onclick=()=>modal.classList.remove('open');
+
+const authModal=document.getElementById('authModal');
+const authEmail=document.getElementById('authEmail');
+const authPassword=document.getElementById('authPassword');
+const authMsg=document.getElementById('authMsg');
+function openAuth(){authMsg.textContent='';authModal.classList.add('open')}
+function closeAuth(){authModal.classList.remove('open')}
+document.getElementById('authX').onclick=closeAuth;
+
+async function signIn(){
+  const email=authEmail.value.trim(), password=authPassword.value;
+  if(!email||!password){authMsg.textContent='Enter your email and password.';return}
+  authMsg.textContent='Signing in...';
+  const {error}=await db.auth.signInWithPassword({email,password});
+  if(error){authMsg.textContent=error.message;return}
+  authMsg.textContent='Signed in successfully.';
+  setTimeout(closeAuth,700);
+  await refreshUser();
+}
+async function signUp(){
+  const email=authEmail.value.trim(), password=authPassword.value;
+  if(!email||!password){authMsg.textContent='Enter your email and password.';return}
+  if(password.length<6){authMsg.textContent='Password must be at least 6 characters.';return}
+  authMsg.textContent='Creating account...';
+  const {data,error}=await db.auth.signUp({email,password});
+  if(error){authMsg.textContent=error.message;return}
+  if(data.session){authMsg.textContent='Account created successfully.';setTimeout(closeAuth,700);await refreshUser();}
+  else authMsg.textContent='Account created. Check your email to confirm your account.';
+}
+document.getElementById('loginBtn').onclick=signIn;
+document.getElementById('signupBtn').onclick=signUp;
+
+async function refreshUser(){
+  const {data:{user}}=await db.auth.getUser();
+  const profile=document.querySelector('.profile');
+  const nameEl=profile?.querySelector('b');
+  const smallEl=profile?.querySelector('small');
+  if(user){
+    const name=(user.user_metadata?.full_name||user.email?.split('@')[0]||'Student');
+    if(nameEl)nameEl.textContent=name;
+    if(smallEl)smallEl.textContent='Welcome back';
+  }else{
+    if(nameEl)nameEl.textContent='Guest';
+    if(smallEl)smallEl.textContent='Sign in to learn';
+  }
+}
+db.auth.onAuthStateChange(()=>refreshUser());
+refreshUser();
+
 document.querySelectorAll('[data-panel]').forEach(b=>b.onclick=()=>show(b.dataset.panel));
 document.querySelectorAll('[data-panel-link]').forEach(b=>b.onclick=e=>{e.preventDefault();show(b.dataset.panelLink)});
 function show(id){document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav button[data-panel]').forEach(x=>x.classList.toggle('active',x.dataset.panel===id));document.getElementById('sidebar').classList.remove('open');scrollTo(0,0)}
-document.querySelectorAll('[data-course]').forEach(b=>b.onclick=()=>openM(b.dataset.course,'The course area is ready for your lessons, videos and files.'));
-document.querySelectorAll('[data-msg]').forEach(b=>b.onclick=()=>openM(b.dataset.msg,'This section is ready to connect to your platform content.'));
+
+document.querySelectorAll('[data-course]').forEach(b=>b.onclick=async()=>{
+  const {data:{user}}=await db.auth.getUser();
+  if(!user){openAuth();return}
+  openM(b.dataset.course,'You are signed in. Course access will be available after enrollment/payment is connected.');
+});
+
+document.querySelectorAll('[data-msg]').forEach(b=>b.onclick=async()=>{
+  if(b.dataset.msg==='Logout'){
+    await db.auth.signOut();
+    await refreshUser();
+    openM('Signed out','You have been signed out of Hamdi Academy.');
+    return;
+  }
+  if(b.dataset.msg==='My Account'){openAuth();return}
+  openM(b.dataset.msg,'This section is ready to connect to your platform content.');
+});
+
+document.querySelector('.profile')?.addEventListener('click',openAuth);
 document.getElementById('bell').onclick=()=>openM('Notifications','No new notifications.');
 document.getElementById('menu').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
-const s=document.getElementById('search');s.oninput=()=>{const q=s.value.toLowerCase().trim();document.querySelectorAll('.card').forEach(c=>c.style.display=!q||c.innerText.toLowerCase().includes(q)?'':'none')};
+const sr=document.getElementById('search');
+sr.oninput=()=>{const q=sr.value.toLowerCase().trim();document.querySelectorAll('.card').forEach(c=>c.style.display=!q||c.innerText.toLowerCase().includes(q)?'':'none')};
 </script></body></html>
