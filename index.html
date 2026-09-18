@@ -65,12 +65,9 @@ body{overflow-x:hidden}.app{display:flex;min-height:100vh;background:radial-grad
     </div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SUPABASE_URL='https://irlwndzsphnphdezmyb.supabase.co';
 const SUPABASE_PUBLISHABLE_KEY='sb_publishable_2bUzudb32hR-udSA1hPcPQ_B6pT3fKK';
-const {createClient}=window.supabase;
-const supabase=createClient(SUPABASE_URL,SUPABASE_PUBLISHABLE_KEY);
 
 const modal=document.getElementById('modal');
 const authTitle=document.getElementById('authTitle');
@@ -81,51 +78,59 @@ const authStatus=document.getElementById('authStatus');
 const signInBtn=document.getElementById('signInBtn');
 const signUpBtn=document.getElementById('signUpBtn');
 function setStatus(msg,ok=false){authStatus.textContent=msg;authStatus.className='auth-status'+(ok?' ok':'')}
-function openAuth(){authTitle.textContent='Sign in to Hamdi Academy';authText.textContent='Use your email to access your learning account.';authEmail.value='';authPassword.value='';setStatus('');modal.classList.add('open')}
-function closeM(){modal.classList.remove('open')}
+function openAuth(){resetAuthDialog();authTitle.textContent='Sign in to Hamdi Academy';authText.textContent='Use your email to access your learning account.';authEmail.value='';authPassword.value='';setStatus('');modal.classList.add('open')}
+function closeM(){modal.classList.remove('open');resetAuthDialog()}
 document.getElementById('x').onclick=closeM;
 modal.addEventListener('click',e=>{if(e.target===modal)closeM()});
+function resetAuthDialog(){authEmail.style.display='block';authPassword.style.display='block';signInBtn.style.display='block';signUpBtn.style.display='block'}
 
+async function authRequest(path,body){
+ const r=await fetch(SUPABASE_URL+path,{method:'POST',headers:{'Content-Type':'application/json','apikey':SUPABASE_PUBLISHABLE_KEY,'Authorization':'Bearer '+SUPABASE_PUBLISHABLE_KEY},body:JSON.stringify(body)});
+ let data=null;try{data=await r.json()}catch(e){}
+ if(!r.ok) throw new Error((data&&(data.msg||data.message||data.error_description||data.error))||('Request failed ('+r.status+')'));
+ return data||{};
+}
 async function signIn(){
  const email=authEmail.value.trim(),password=authPassword.value;
  if(!email||!password){setStatus('Please enter your email and password.');return}
  signInBtn.disabled=true;setStatus('Signing in...');
- const {data,error}=await supabase.auth.signInWithPassword({email,password});
+ try{
+  const data=await authRequest('/auth/v1/token?grant_type=password',{email,password});
+  if(data.access_token)localStorage.setItem('hamdi_access_token',data.access_token);
+  if(data.refresh_token)localStorage.setItem('hamdi_refresh_token',data.refresh_token);
+  setStatus('Signed in successfully.',true);updateAccountUI(data.user||{email});setTimeout(closeM,600);
+ }catch(error){setStatus(error.message||'Sign in failed.')}
  signInBtn.disabled=false;
- if(error){setStatus(error.message||'Sign in failed.');return}
- setStatus('Signed in successfully.',true);setTimeout(closeM,500);updateAccountUI(data.user);
 }
 async function signUp(){
  const email=authEmail.value.trim(),password=authPassword.value;
  if(!email||!password){setStatus('Please enter your email and password.');return}
  if(password.length<6){setStatus('Password must be at least 6 characters.');return}
  signUpBtn.disabled=true;setStatus('Creating your account...');
- const {data,error}=await supabase.auth.signUp({email,password});
+ try{
+  const data=await authRequest('/auth/v1/signup',{email,password});
+  if(data.access_token)localStorage.setItem('hamdi_access_token',data.access_token);
+  if(data.refresh_token)localStorage.setItem('hamdi_refresh_token',data.refresh_token);
+  if(data.access_token){setStatus('Account created and signed in.',true);updateAccountUI(data.user||{email});setTimeout(closeM,700)}
+  else setStatus('Account created. Check your email to confirm your account, then sign in.',true);
+ }catch(error){setStatus(error.message||'Account creation failed.')}
  signUpBtn.disabled=false;
- if(error){setStatus(error.message||'Account creation failed.');return}
- if(data.session){setStatus('Account created and signed in.',true);updateAccountUI(data.user);setTimeout(closeM,700)}
- else{setStatus('Account created. Check your email to confirm your account, then sign in.',true)}
 }
 signInBtn.onclick=signIn;signUpBtn.onclick=signUp;
 [authEmail,authPassword].forEach(el=>el.addEventListener('keydown',e=>{if(e.key==='Enter')signIn()}));
 
-async function logout(){await supabase.auth.signOut();updateAccountUI(null);openM('Logged out','You have been signed out of Hamdi Academy.');}
+function logout(){localStorage.removeItem('hamdi_access_token');localStorage.removeItem('hamdi_refresh_token');updateAccountUI(null);openM('Logged out','You have been signed out of Hamdi Academy.')}
 function updateAccountUI(user){
- const profile=document.querySelector('.profile');
- if(!profile)return;
- const small=profile.querySelector('small');
- const b=profile.querySelector('b');
+ const profile=document.querySelector('.profile'); if(!profile)return;
+ const small=profile.querySelector('small'),b=profile.querySelector('b');
  if(user){if(small)small.textContent='Signed in';if(b)b.textContent=(user.email||'Student').split('@')[0]}
  else{if(small)small.textContent='';if(b)b.textContent='Guest'}
 }
-function openM(t,p){authTitle.textContent=t;authText.textContent=p;authEmail.style.display='none';authPassword.style.display='none';signInBtn.style.display='none';signUpBtn.style.display='none';setStatus('');modal.classList.add('open')}
-function resetAuthDialog(){authEmail.style.display='block';authPassword.style.display='block';signInBtn.style.display='block';signUpBtn.style.display='block'}
-modal.addEventListener('click',()=>{if(!authEmail.offsetParent)resetAuthDialog()});
+function openM(t,p){resetAuthDialog();authTitle.textContent=t;authText.textContent=p;authEmail.style.display='none';authPassword.style.display='none';signInBtn.style.display='none';signUpBtn.style.display='none';setStatus('');modal.classList.add('open')}
 
 document.querySelectorAll('[data-panel]').forEach(b=>b.onclick=()=>show(b.dataset.panel));
 document.querySelectorAll('[data-panel-link]').forEach(b=>b.onclick=e=>{e.preventDefault();show(b.dataset.panelLink)});
 function show(id){document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav button[data-panel]').forEach(x=>x.classList.toggle('active',x.dataset.panel===id));document.getElementById('sidebar').classList.remove('open');scrollTo(0,0)}
-
 document.querySelectorAll('[data-course]').forEach(b=>b.onclick=()=>openM(b.dataset.course,'The course area is ready for your lessons, videos and files.'));
 document.querySelectorAll('[data-msg]').forEach(b=>b.onclick=()=>{if(b.dataset.msg==='My Account')openAuth();else if(b.dataset.msg==='Logout')logout();else openM(b.dataset.msg,'This section is ready to connect to your platform content.')});
 document.querySelector('.profile')?.addEventListener('click',openAuth);
@@ -133,6 +138,6 @@ document.getElementById('bell').onclick=()=>openM('Notifications','No new notifi
 document.getElementById('menu').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
 const s=document.getElementById('search');s.oninput=()=>{const q=s.value.toLowerCase().trim();document.querySelectorAll('.card').forEach(c=>c.style.display=!q||c.innerText.toLowerCase().includes(q)?'':'none')};
 
-supabase.auth.getSession().then(({data})=>updateAccountUI(data.session?.user||null));
-supabase.auth.onAuthStateChange((_event,session)=>updateAccountUI(session?.user||null));
+const savedToken=localStorage.getItem('hamdi_access_token');
+if(savedToken) updateAccountUI({email:'Student'});
 </script></body></html>
