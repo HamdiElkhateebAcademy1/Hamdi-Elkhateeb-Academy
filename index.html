@@ -98,8 +98,5 @@ const s=document.getElementById('search');s.oninput=()=>{const q=s.value.toLower
 document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest('.card');if(card&&!card.querySelector('.course-price')){const p=document.createElement('span');p.className='course-price';p.textContent=prices[btn.dataset.course]||'';const body=card.querySelector('.cardbody');if(body)body.appendChild(p)}});
 </script>
 
-  <div>InstaPay: <strong>01001282819</strong></div>
-  <div>PayPal: Details will be added later.</div>
-  <div>بيانس: Details will be added later.</div>
 </div>
 </body></html>
