@@ -76,4 +76,11 @@ document.querySelectorAll('[data-msg]').forEach(b=>b.onclick=()=>openM(b.dataset
 document.getElementById('bell').onclick=()=>openM('Notifications','No new notifications.');
 document.getElementById('menu').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
 const s=document.getElementById('search');s.oninput=()=>{const q=s.value.toLowerCase().trim();document.querySelectorAll('.card').forEach(c=>c.style.display=!q||c.innerText.toLowerCase().includes(q)?'':'none')};
-</script></body></html>
+</script>
+<div id="payment-methods" style="display:none">
+  <div>Vodafone Cash: <strong>01069262587</strong></div>
+  <div>InstaPay: <strong>01001282819</strong></div>
+  <div>PayPal: Details will be added later.</div>
+  <div>بيانس: Details will be added later.</div>
+</div>
+</body></html>
