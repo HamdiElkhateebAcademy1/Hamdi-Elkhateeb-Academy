@@ -90,4 +90,254 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
   <div>PayPal: Details will be added later.</div>
   <div>بيانس: Details will be added later.</div>
 </div>
+<script>
+/*
+  Hamdi Elkhateeb Digital Academy - Course Manager Add-on
+  -------------------------------------------------------
+  This file is an add-on for the ORIGINAL index.html.
+  It does not replace or redesign the existing page.
+
+  What it adds:
+  - Course manager using the existing course/card structure.
+  - Add/edit/delete course records in browser localStorage.
+  - Add lessons with video URL and PDF/resource URL.
+  - Keeps the price already present in the original page when a matching course exists.
+  - Import/export course data as JSON.
+  - No external libraries.
+
+  IMPORTANT:
+  This is a front-end/static add-on. Data saved with localStorage belongs to that browser/device.
+  For shared student accounts, secure video access, real uploads and multi-device persistence,
+  connect the same data layer to Firebase/Supabase/backend later.
+*/
+(function () {
+  'use strict';
+
+  const STORAGE_KEY = 'hamdi_academy_courses_v1';
+  const originalPrices = (window.prices && typeof window.prices === 'object')
+    ? window.prices
+    : {
+        'Exocad Basics': '4,000 EGP',
+        'Advanced Exocad': '5,000 EGP',
+        'Implant Prosthetics': '5,000 EGP'
+      };
+
+  const $ = (s, root = document) => root.querySelector(s);
+  const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
+  const esc = (v) => String(v ?? '').replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]));
+
+  function readCourses() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      const data = raw ? JSON.parse(raw) : [];
+      return Array.isArray(data) ? data : [];
+    } catch (_) { return []; }
+  }
+  function saveCourses(courses) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(courses));
+  }
+
+  function seedFromExistingCards() {
+    const current = readCourses();
+    if (current.length) return current;
+    const found = [];
+    $$('[data-course]').forEach(btn => {
+      const name = btn.getAttribute('data-course');
+      if (!name || found.some(x => x.title === name)) return;
+      const card = btn.closest('.card');
+      found.push({
+        id: 'c_' + Date.now() + '_' + Math.random().toString(36).slice(2,7),
+        title: name,
+        price: originalPrices[name] || '',
+        level: '',
+        description: card ? ((card.querySelector('p') || {}).textContent || '').trim() : '',
+        image: card && card.querySelector('img') ? card.querySelector('img').src : '',
+        lessons: [],
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString()
+      });
+    });
+    if (found.length) saveCourses(found);
+    return found;
+  }
+
+  function ensureStyles() {
+    if ($('#academy-course-manager-style')) return;
+    const style = document.createElement('style');
+    style.id = 'academy-course-manager-style';
+    style.textContent = `
+      #academy-course-manager{position:fixed;inset:0;z-index:99999;background:rgba(3,12,20,.78);display:none;align-items:center;justify-content:center;padding:18px}
+      #academy-course-manager.open{display:flex}
+      .acm-dialog{width:min(1050px,100%);max-height:92vh;overflow:auto;background:#071a2b;border:1px solid #24445d;border-radius:16px;box-shadow:0 24px 80px rgba(0,0,0,.45);color:#eaf4fb;padding:20px}
+      .acm-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px}.acm-head h2{margin:0;font-size:20px}.acm-close{border:0;background:transparent;color:#fff;font-size:28px;cursor:pointer}
+      .acm-grid{display:grid;grid-template-columns:1fr 1.15fr;gap:18px}.acm-box{border:1px solid #24445d;border-radius:12px;padding:16px;background:#091f32}.acm-box h3{margin:0 0 12px}
+      .acm-field{display:grid;gap:6px;margin-bottom:11px}.acm-field label{font-size:12px;color:#9eb4c4}.acm-field input,.acm-field textarea,.acm-field select{width:100%;box-sizing:border-box;background:#061827;border:1px solid #24445d;color:#fff;border-radius:8px;padding:10px;outline:none}.acm-field textarea{min-height:80px;resize:vertical}
+      .acm-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.acm-actions{display:flex;gap:8px;flex-wrap:wrap}.acm-btn{border:1px solid #315c7a;background:#0b2941;color:#fff;border-radius:8px;padding:9px 13px;cursor:pointer}.acm-btn.primary{background:#0e5d91}.acm-btn.danger{background:#632b34;border-color:#87414b}.acm-list{display:grid;gap:9px;max-height:480px;overflow:auto}.acm-item{border:1px solid #24445d;border-radius:10px;padding:11px;background:#071a2b}.acm-item strong{display:block;margin-bottom:4px}.acm-meta{font-size:12px;color:#91a6b7;margin-bottom:8px}.acm-lessons{margin:8px 0 0;padding-left:18px;color:#b7c9d6;font-size:12px}.acm-status{min-height:18px;margin-top:9px;font-size:12px;color:#9ec5df}.acm-empty{color:#91a6b7;font-size:13px;padding:20px 0}.acm-note{font-size:11px;line-height:1.6;color:#8fa5b8}
+      @media(max-width:800px){.acm-grid{grid-template-columns:1fr}.acm-row{grid-template-columns:1fr}}
+    `;
+    document.head.appendChild(style);
+  }
+
+  let editingId = null;
+  let lessonDraft = [];
+
+  function buildUI() {
+    if ($('#academy-course-manager')) return;
+    ensureStyles();
+    const wrap = document.createElement('div');
+    wrap.id = 'academy-course-manager';
+    wrap.innerHTML = `
+      <div class="acm-dialog" role="dialog" aria-modal="true">
+        <div class="acm-head"><h2>Course Manager</h2><button class="acm-close" id="acmClose" aria-label="Close">×</button></div>
+        <div class="acm-grid">
+          <div class="acm-box">
+            <h3 id="acmFormTitle">Add Course</h3>
+            <div class="acm-field"><label>Course name</label><input id="acmTitle" placeholder="e.g. Exocad Basics"></div>
+            <div class="acm-row">
+              <div class="acm-field"><label>Price</label><input id="acmPrice" placeholder="4,000 EGP"></div>
+              <div class="acm-field"><label>Level</label><select id="acmLevel"><option value="">Select</option><option>Beginner</option><option>Intermediate</option><option>Advanced</option></select></div>
+            </div>
+            <div class="acm-field"><label>Image URL</label><input id="acmImage" placeholder="https://..."></div>
+            <div class="acm-field"><label>Description</label><textarea id="acmDescription" placeholder="Course description"></textarea></div>
+            <div class="acm-box" style="padding:12px;margin:8px 0 12px">
+              <h3 style="font-size:14px">Lessons</h3>
+              <div class="acm-row">
+                <div class="acm-field"><label>Lesson title</label><input id="acmLessonTitle" placeholder="Lesson 1"></div>
+                <div class="acm-field"><label>Video URL</label><input id="acmLessonVideo" placeholder="https://... or YouTube/Vimeo"></div>
+              </div>
+              <div class="acm-field"><label>PDF / resource URL</label><input id="acmLessonPdf" placeholder="https://..."></div>
+              <div class="acm-actions"><button class="acm-btn" id="acmAddLesson">Add lesson</button></div>
+              <ol id="acmLessonList" class="acm-lessons"></ol>
+            </div>
+            <div class="acm-actions"><button class="acm-btn primary" id="acmSave">Save course</button><button class="acm-btn" id="acmReset">New course</button></div>
+            <div class="acm-status" id="acmStatus"></div>
+            <p class="acm-note">The existing page design and existing prices are left untouched. This manager stores course data in this browser.</p>
+          </div>
+          <div class="acm-box">
+            <h3>Courses</h3>
+            <div class="acm-actions" style="margin-bottom:12px"><button class="acm-btn" id="acmExport">Export JSON</button><button class="acm-btn" id="acmImportBtn">Import JSON</button><input type="file" id="acmImport" accept="application/json" hidden></div>
+            <div id="acmCourseList" class="acm-list"></div>
+          </div>
+        </div>
+      </div>`;
+    document.body.appendChild(wrap);
+
+    $('#acmClose').onclick = close;
+    wrap.addEventListener('click', e => { if (e.target === wrap) close(); });
+    $('#acmAddLesson').onclick = addLesson;
+    $('#acmSave').onclick = saveCourse;
+    $('#acmReset').onclick = resetForm;
+    $('#acmExport').onclick = exportJSON;
+    $('#acmImportBtn').onclick = () => $('#acmImport').click();
+    $('#acmImport').onchange = importJSON;
+    renderList();
+  }
+
+  function open() { buildUI(); $('#academy-course-manager').classList.add('open'); renderList(); }
+  function close() { const x = $('#academy-course-manager'); if (x) x.classList.remove('open'); }
+
+  function resetForm() {
+    editingId = null; lessonDraft = [];
+    $('#acmFormTitle').textContent = 'Add Course';
+    ['acmTitle','acmPrice','acmImage','acmDescription','acmLessonTitle','acmLessonVideo','acmLessonPdf'].forEach(id => $('#'+id).value='');
+    $('#acmLevel').value=''; renderLessons(); setStatus('');
+  }
+  function setStatus(t) { $('#acmStatus').textContent = t; }
+
+  function addLesson() {
+    const title = $('#acmLessonTitle').value.trim();
+    const video = $('#acmLessonVideo').value.trim();
+    const pdf = $('#acmLessonPdf').value.trim();
+    if (!title) return setStatus('Enter a lesson title first.');
+    lessonDraft.push({title, video, pdf});
+    $('#acmLessonTitle').value=''; $('#acmLessonVideo').value=''; $('#acmLessonPdf').value='';
+    renderLessons();
+  }
+  function renderLessons() {
+    const list = $('#acmLessonList'); if (!list) return;
+    list.innerHTML = lessonDraft.map((l,i)=>`<li><b>${esc(l.title)}</b>${l.video?' — video':''}${l.pdf?' — PDF':''} <button class="acm-btn" data-rm="${i}" style="padding:2px 7px;margin-left:5px">×</button></li>`).join('');
+    $$('[data-rm]', list).forEach(b=>b.onclick=()=>{lessonDraft.splice(Number(b.dataset.rm),1);renderLessons();});
+  }
+
+  function saveCourse() {
+    const title = $('#acmTitle').value.trim();
+    if (!title) return setStatus('Course name is required.');
+    const courses = readCourses();
+    const existingIndex = editingId ? courses.findIndex(c=>c.id===editingId) : -1;
+    const old = existingIndex >= 0 ? courses[existingIndex] : {};
+    const course = {
+      ...old,
+      id: editingId || ('c_' + Date.now() + '_' + Math.random().toString(36).slice(2,8)),
+      title,
+      price: $('#acmPrice').value.trim() || originalPrices[title] || '',
+      level: $('#acmLevel').value,
+      image: $('#acmImage').value.trim(),
+      description: $('#acmDescription').value.trim(),
+      lessons: lessonDraft.slice(),
+      updatedAt: new Date().toISOString(),
+      createdAt: old.createdAt || new Date().toISOString()
+    };
+    if (existingIndex >= 0) courses[existingIndex] = course; else courses.push(course);
+    saveCourses(courses);
+    syncExistingCards();
+    renderList();
+    setStatus('Course saved. Existing page design was not replaced.');
+    resetForm();
+  }
+
+  function editCourse(id) {
+    const c = readCourses().find(x=>x.id===id); if (!c) return;
+    editingId=id; lessonDraft=(c.lessons||[]).slice();
+    $('#acmFormTitle').textContent='Edit Course';
+    $('#acmTitle').value=c.title||''; $('#acmPrice').value=c.price||''; $('#acmLevel').value=c.level||''; $('#acmImage').value=c.image||''; $('#acmDescription').value=c.description||'';
+    renderLessons(); setStatus('Editing '+c.title);
+  }
+  function deleteCourse(id) {
+    const c=readCourses().find(x=>x.id===id); if(!c) return;
+    if(!confirm('Delete course "'+c.title+'" from the local course manager?')) return;
+    saveCourses(readCourses().filter(x=>x.id!==id)); renderList(); syncExistingCards();
+  }
+  function renderList() {
+    const list=$('#acmCourseList'); if(!list) return;
+    const courses=readCourses();
+    list.innerHTML=courses.length?courses.map(c=>`<div class="acm-item"><strong>${esc(c.title)}</strong><div class="acm-meta">${esc(c.price||'No price')} ${c.level?'• '+esc(c.level):''} • ${(c.lessons||[]).length} lesson(s)</div><div class="acm-actions"><button class="acm-btn" data-edit="${esc(c.id)}">Edit</button><button class="acm-btn danger" data-del="${esc(c.id)}">Delete</button></div></div>`).join(''):'<div class="acm-empty">No managed courses yet. Existing courses will be imported automatically the first time you open the manager.</div>';
+    $$('[data-edit]',list).forEach(b=>b.onclick=()=>editCourse(b.dataset.edit));
+    $$('[data-del]',list).forEach(b=>b.onclick=()=>deleteCourse(b.dataset.del));
+  }
+
+  function exportJSON() {
+    const blob=new Blob([JSON.stringify(readCourses(),null,2)],{type:'application/json'});
+    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='hamdi-academy-courses.json';a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);
+  }
+  function importJSON(e) {
+    const file=e.target.files&&e.target.files[0]; if(!file)return;
+    const reader=new FileReader(); reader.onload=()=>{try{const data=JSON.parse(reader.result);if(!Array.isArray(data))throw new Error();saveCourses(data);renderList();setStatus('Courses imported successfully.');}catch(_){setStatus('Invalid JSON file.');}};reader.readAsText(file);e.target.value='';
+  }
+
+  function syncExistingCards() {
+    // Only updates data/labels on existing cards; it does not rebuild the page or change the layout.
+    const courses=readCourses();
+    courses.forEach(c=>{
+      $$('[data-course="'+CSS.escape(c.title)+'"]').forEach(btn=>{
+        btn.setAttribute('data-course',c.title);
+        if(c.price){const card=btn.closest('.card');const price=card&&card.querySelector('.course-price');if(price)price.textContent=c.price;}
+      });
+    });
+  }
+
+  window.AcademyCourseManager = {open, close, readCourses, saveCourses, syncExistingCards};
+
+  // Existing Instructor navigation becomes the entry point; no new visible navigation is added.
+  const instructorBtn = $('[data-panel="instructor"]');
+  if (instructorBtn) instructorBtn.addEventListener('dblclick', open);
+
+  // Admin shortcut: Ctrl+Shift+A (or Cmd+Shift+A on Mac).
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase()==='a') { e.preventDefault(); open(); }
+  });
+
+  seedFromExistingCards();
+})();
+
+</script>
 </body></html>
