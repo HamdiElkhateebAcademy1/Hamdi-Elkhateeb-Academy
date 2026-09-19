@@ -65,7 +65,7 @@ body{overflow-x:hidden}.app{display:flex;min-height:100vh;background:radial-grad
 <section class="panel" id="resources"><div class="section-head"><h2>Resources &amp; Downloads</h2></div><div class="resbox" style="max-width:600px"><div class="resource"><span class="pdf">PDF</span><div><b>Exocad Libraries Guide</b><small>PDF • 12 MB</small></div><span class="dl">↓</span></div><div class="resource"><span class="pdf">PDF</span><div><b>Design Checklist</b><small>PDF • 2 MB</small></div><span class="dl">↓</span></div><div class="resource"><span class="pdf">PDF</span><div><b>Occlusion Quick Reference</b><small>PDF • 1.5 MB</small></div><span class="dl">↓</span></div></div></section>
 <section class="panel" id="community"><div class="section-head"><h2>Community</h2></div><div class="resbox" style="padding:25px;color:#91a6b7">Community area is ready to connect to your real content.</div></section>
 </main></div>
-<div class="modal" id="modal"><div class="dialog payment-dialog"><button id="x">×</button><div id="paymentView"><div class="payment-course" id="paymentCourse"></div><div class="payment-price" id="paymentPrice"></div><p class="payment-note">Choose a payment method, complete the transfer, then keep your payment receipt. PayPal and بيانس will be added later.</p><div class="pay-methods"><div class="pay-method"><b>Vodafone Cash</b><span>01069262587</span></div><div class="pay-method"><b>InstaPay</b><span>01001282819</span></div><div class="pay-method pending"><b>PayPal</b><span>Details will be added later.</span></div><div class="pay-method pending"><b>بيانس</b><span>Details will be added later.</span></div></div><div class="receipt-box"><label>After completing the transfer, send the payment screenshot to the academy on WhatsApp for manual approval.</label><div style="font-size:11px;color:#bcd0de;line-height:1.6">WhatsApp: 01006641750</div></div><div class="payment-actions"><button class="primary" id="whatsappBtn">Send Payment Request</button><button class="secondary" id="closeBtn">Close</button></div><div class="payment-status" id="paymentStatus"></div></div></div></div>
+<div class="modal" id="modal"><div class="dialog payment-dialog"><button id="x">×</button><div id="paymentView"><div class="payment-course" id="paymentCourse"></div><div class="payment-price" id="paymentPrice"></div><p class="payment-note">Choose a payment method, complete the transfer, then keep your payment receipt. PayPal and بيانس will be added later.</p><div class="pay-methods"><div class="pay-method"><b>Vodafone Cash</b><span>01069262587</span></div><div class="pay-method"><b>InstaPay</b><span>01001282819</span></div><div class="pay-method pending"><b>PayPal</b><span>Details will be added later.</span></div><div class="pay-method pending"><b>بيانس</b><span>Details will be added later.</span></div></div><div class="receipt-box"><label>After completing the transfer, send the payment screenshot to the academy on WhatsApp for manual approval.</label></div><div class="payment-actions"><button class="primary" id="whatsappBtn">Send Payment Request</button><button class="secondary" id="closeBtn">Close</button></div><div class="payment-status" id="paymentStatus"></div></div></div></div>
 <script>
 const modal=document.getElementById('modal');
 const courseEl=document.getElementById('paymentCourse'),priceEl=document.getElementById('paymentPrice'),statusEl=document.getElementById('paymentStatus');
@@ -337,6 +337,9 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
   });
 
   seedFromExistingCards();
+
+  // Admin access without adding/changing any visible page design.
+  if (new URLSearchParams(window.location.search).get('admin') === '1') open();
 })();
 
 </script>
