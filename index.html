@@ -189,4 +189,262 @@ renderAll();
 })();
 </script>
 
+
+<style id="hamdi-cloud-css">
+#hamdiAccountBar{position:fixed;right:18px;bottom:18px;z-index:9999;display:flex;gap:8px;align-items:center}
+.hc-btn{border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer;background:#0a74b2;color:#fff;box-shadow:0 8px 24px #0003}
+.hc-btn.alt{background:#12324b;border:1px solid #31546e}
+.hc-btn.danger{background:#8b2635}
+#hamdiAuthOverlay{display:none;position:fixed;inset:0;background:#0009;z-index:10000;align-items:center;justify-content:center;padding:16px}
+#hamdiAuthOverlay.open{display:flex}
+#hamdiAuthBox{width:min(430px,96vw);background:#082139;color:#fff;border:1px solid #31546e;border-radius:18px;padding:22px;box-shadow:0 20px 60px #0008}
+#hamdiAuthBox h2{margin:0 0 8px}
+.hc-field{width:100%;box-sizing:border-box;background:#061a2b;color:#fff;border:1px solid #31546e;border-radius:10px;padding:11px;margin:6px 0 12px}
+#hamdiCloudNotice{font-size:12px;line-height:1.7;color:#bcd0de;margin:8px 0}
+#hamdiMyCourses{margin:16px 0;padding:16px;border:1px solid #e5e7eb;border-radius:14px}
+#hamdiMyCoursesList{display:grid;gap:10px}
+.hc-course{border:1px solid #e5e7eb;border-radius:12px;padding:12px;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.hc-muted{color:#6b7280;font-size:12px}
+#hamdiCloudAdmin{position:fixed;inset:0;background:#000b;z-index:10001;display:none;overflow:auto;padding:20px}
+#hamdiCloudAdmin.open{display:block}
+.hc-admin-box{max-width:1100px;margin:20px auto;background:#fff;color:#111;border-radius:18px;padding:20px}
+.hc-admin-head{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.hc-admin-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:15px 0}
+.hc-admin-card{border:1px solid #ddd;border-radius:12px;padding:12px}
+.hc-admin-table{width:100%;border-collapse:collapse}.hc-admin-table th,.hc-admin-table td{padding:9px;border-bottom:1px solid #ddd;text-align:right}
+@media(max-width:700px){.hc-admin-grid{grid-template-columns:1fr}.hc-course{flex-direction:column;align-items:flex-start}}
+</style>
+
+<script id="hamdi-cloud-layer">
+(function(){
+'use strict';
+const sb = window.HAMDI_SUPABASE;
+if(!sb){ console.warn('Hamdi cloud layer: Supabase client not available.'); return; }
+
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
+let currentUser = null, currentProfile = null, selectedCloudCourse = null;
+
+function injectUI(){
+  if(!$('hamdiAccountBar')){
+    const bar=document.createElement('div');
+    bar.id='hamdiAccountBar';
+    bar.innerHTML='<button class="hc-btn" id="hcAccountBtn">حسابي</button><button class="hc-btn alt" id="hcAdminBtn" style="display:none">إدارة المنصة</button>';
+    document.body.appendChild(bar);
+    $('hcAccountBtn').onclick=()=>currentUser?openAccount():openAuth('login');
+    $('hcAdminBtn').onclick=openCloudAdmin;
+  }
+  if(!$('hamdiAuthOverlay')){
+    const o=document.createElement('div');
+    o.id='hamdiAuthOverlay';
+    o.innerHTML=`<div id="hamdiAuthBox">
+      <h2 id="hcAuthTitle">تسجيل الدخول</h2>
+      <div id="hamdiCloudNotice">استخدم بريدك الإلكتروني وكلمة المرور الخاصة بحساب المنصة.</div>
+      <label>الاسم الكامل<input id="hcName" class="hc-field" placeholder="الاسم الكامل"></label>
+      <label>البريد الإلكتروني<input id="hcEmail" class="hc-field" type="email" placeholder="name@example.com"></label>
+      <label>كلمة المرور<input id="hcPass" class="hc-field" type="password" placeholder="••••••••"></label>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="hc-btn" id="hcSubmit">دخول</button>
+        <button class="hc-btn alt" id="hcSwitch">إنشاء حساب</button>
+        <button class="hc-btn alt" id="hcClose">إغلاق</button>
+      </div>
+      <div id="hcStatus" class="hc-muted" style="margin-top:10px"></div>
+    </div>`;
+    document.body.appendChild(o);
+    $('hcClose').onclick=closeAuth;
+    $('hcSwitch').onclick=()=>openAuth($('hcAuthTitle').textContent==='تسجيل الدخول'?'signup':'login');
+    $('hcSubmit').onclick=submitAuth;
+  }
+  if(!$('hamdiMyCourses')){
+    const box=document.createElement('section');
+    box.id='hamdiMyCourses';
+    box.style.display='none';
+    box.innerHTML='<h2>كورساتي</h2><div id="hamdiMyCoursesList"></div>';
+    const home=document.querySelector('#learning') || document.querySelector('main') || document.body;
+    home.prepend(box);
+  }
+  if(!$('hamdiCloudAdmin')){
+    const o=document.createElement('div'); o.id='hamdiCloudAdmin';
+    o.innerHTML=`<div class="hc-admin-box">
+      <div class="hc-admin-head"><div><h2>إدارة المنصة السحابية</h2><div class="hc-muted">الكورسات وطلبات الدفع الموجودة في Supabase.</div></div>
+      <button class="hc-btn danger" id="hcAdminClose">إغلاق</button></div>
+      <div class="hc-admin-grid" id="hcAdminStats"></div>
+      <h3>إضافة كورس</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+        <input id="hcCourseTitle" class="hc-field" placeholder="اسم الكورس">
+        <input id="hcCoursePrice" class="hc-field" type="number" min="0" placeholder="السعر بالجنيه">
+      </div>
+      <textarea id="hcCourseDesc" class="hc-field" rows="3" placeholder="وصف الكورس"></textarea>
+      <button class="hc-btn" id="hcAddCourse">إضافة الكورس</button>
+      <h3>الكورسات</h3><div id="hcAdminCourses"></div>
+      <h3>طلبات الدفع</h3><div style="overflow:auto"><table class="hc-admin-table"><thead><tr><th>التاريخ</th><th>الطالب</th><th>الكورس</th><th>المبلغ</th><th>الحالة</th><th>إجراء</th></tr></thead><tbody id="hcPayments"></tbody></table></div>
+    </div>`;
+    document.body.appendChild(o);
+    $('hcAdminClose').onclick=()=>o.classList.remove('open');
+    $('hcAddCourse').onclick=addCloudCourse;
+  }
+}
+
+function openAuth(mode){
+  injectUI();
+  $('hamdiAuthOverlay').classList.add('open');
+  $('hcName').style.display=mode==='signup'?'block':'none';
+  $('hcAuthTitle').textContent=mode==='signup'?'إنشاء حساب جديد':'تسجيل الدخول';
+  $('hcSwitch').textContent=mode==='signup'?'لدي حساب بالفعل':'إنشاء حساب';
+  $('hcStatus').textContent='';
+}
+function closeAuth(){ $('hamdiAuthOverlay')?.classList.remove('open'); }
+async function submitAuth(){
+  const mode=$('hcAuthTitle').textContent==='إنشاء حساب جديد'?'signup':'login';
+  const email=$('hcEmail').value.trim(), password=$('hcPass').value;
+  if(!email||!password) return setStatus('اكتب البريد وكلمة المرور.');
+  try{
+    if(mode==='signup'){
+      const name=$('hcName').value.trim();
+      const {data,error}=await sb.auth.signUp({email,password,options:{data:{full_name:name}}});
+      if(error) throw error;
+      if(data.session){ await refreshUser(); closeAuth(); }
+      else setStatus('تم إنشاء الحساب. إذا كان تأكيد البريد مفعّلًا، افتح رسالة التأكيد ثم سجّل الدخول.');
+    }else{
+      const {error}=await sb.auth.signInWithPassword({email,password});
+      if(error) throw error;
+      await refreshUser(); closeAuth();
+    }
+  }catch(e){ setStatus(e.message||'حدث خطأ.'); }
+}
+function setStatus(t){$('hcStatus').textContent=t||'';}
+
+async function refreshUser(){
+  const {data:{user}}=await sb.auth.getUser();
+  currentUser=user||null;
+  currentProfile=null;
+  if(currentUser){
+    const {data}=await sb.from('profiles').select('*').eq('id',currentUser.id).maybeSingle();
+    currentProfile=data||null;
+  }
+  updateAccountUI();
+  await loadCloudCourses();
+  await loadMyCourses();
+}
+function updateAccountUI(){
+  if(!$('hcAccountBtn')) return;
+  $('hcAccountBtn').textContent=currentUser ? `حسابي: ${(currentProfile?.full_name||currentUser.email||'مستخدم').slice(0,20)}` : 'تسجيل الدخول';
+  $('hcAdminBtn').style.display=(currentProfile?.role==='admin')?'inline-block':'none';
+}
+async function openAccount(){
+  if(!currentUser) return openAuth('login');
+  const p=currentProfile||{};
+  alert(`الحساب: ${p.full_name||currentUser.email}\nالدور: ${p.role||'student'}`);
+}
+
+async function loadCloudCourses(){
+  const {data,error}=await sb.from('courses').select('*').eq('published',true).order('created_at',{ascending:false});
+  if(error){ console.warn(error); return; }
+  // Keep the original design: update visible course prices and buttons from cloud data.
+  const byTitle=new Map((data||[]).map(c=>[c.title,c]));
+  document.querySelectorAll('[data-course]').forEach(btn=>{
+    const title=btn.dataset.course, c=byTitle.get(title);
+    if(c){
+      btn.dataset.cloudCourseId=c.id;
+      const card=btn.closest('.card');
+      if(card){
+        let price=card.querySelector('.course-price');
+        if(!price){price=document.createElement('span');price.className='course-price';btn.parentNode.insertBefore(price,btn);}
+        price.textContent=Number(c.price||0).toLocaleString('ar-EG')+' EGP';
+      }
+    }
+  });
+}
+async function requestEnrollment(courseId){
+  if(!currentUser){ openAuth('login'); return; }
+  const {data:course,error}=await sb.from('courses').select('*').eq('id',courseId).single();
+  if(error) return alert(error.message);
+  const {data:existing}=await sb.from('enrollments').select('id,status').eq('user_id',currentUser.id).eq('course_id',courseId).maybeSingle();
+  if(existing?.status==='active') return alert('أنت مشترك بالفعل في هذا الكورس.');
+  const {error:e}=await sb.from('payment_requests').insert({user_id:currentUser.id,course_id:courseId,amount:course.price,status:'pending',method:'manual'});
+  if(e) return alert(e.message);
+  alert('تم تسجيل طلب الشراء. أكمل التحويل بالطريقة المعروضة في المنصة، ثم سيتم تأكيد الاشتراك من الإدارة.');
+}
+async function handleCourseClick(btn){
+  const id=btn.dataset.cloudCourseId;
+  if(id) return requestEnrollment(id);
+  // Fallback for the three original cards until they are created in Supabase.
+  const title=btn.dataset.course;
+  const {data}=await sb.from('courses').select('id').eq('title',title).maybeSingle();
+  if(data?.id){btn.dataset.cloudCourseId=data.id;return requestEnrollment(data.id);}
+  if(typeof window.openPayment==='function') return window.openPayment(title);
+}
+async function loadMyCourses(){
+  const box=$('hamdiMyCourses'); if(!box)return;
+  if(!currentUser){box.style.display='none';return;}
+  box.style.display='block';
+  const {data,error}=await sb.from('enrollments').select('course_id,status,courses(id,title,description,price)').eq('user_id',currentUser.id).eq('status','active');
+  if(error){$('hamdiMyCoursesList').innerHTML='<div class="hc-muted">تعذر تحميل الكورسات.</div>';return;}
+  $('hamdiMyCoursesList').innerHTML=(data||[]).length ? data.map(x=>`<div class="hc-course"><div><b>${esc(x.courses?.title)}</b><div class="hc-muted">${esc(x.courses?.description||'')}</div></div><button class="hc-btn" data-open-cloud="${x.course_id}">فتح الكورس</button></div>`).join(''):'<div class="hc-muted">لا توجد كورسات مفعلة على حسابك حتى الآن.</div>';
+  $('hamdiMyCoursesList').querySelectorAll('[data-open-cloud]').forEach(b=>b.onclick=()=>openEnrolledCourse(b.dataset.openCloud));
+}
+async function openEnrolledCourse(courseId){
+  const {data:en}=await sb.from('enrollments').select('id').eq('user_id',currentUser.id).eq('course_id',courseId).eq('status','active').maybeSingle();
+  if(!en)return alert('هذا الكورس غير متاح لحسابك.');
+  const {data:lessons,error}=await sb.from('lessons').select('*').eq('course_id',courseId).order('sort_order');
+  if(error)return alert(error.message);
+  const text=(lessons||[]).map((l,i)=>`${i+1}. ${l.title}${l.content_url?' — '+l.content_url:''}`).join('\n');
+  alert(text||'لم تتم إضافة دروس لهذا الكورس بعد.');
+}
+
+async function addCloudCourse(){
+  if(currentProfile?.role!=='admin')return alert('هذه الصفحة للمدير فقط.');
+  const title=$('hcCourseTitle').value.trim(), price=Number($('hcCoursePrice').value||0), description=$('hcCourseDesc').value.trim();
+  if(!title)return alert('اكتب اسم الكورس.');
+  const {error}=await sb.from('courses').insert({title,price,description,published:true});
+  if(error)return alert(error.message);
+  $('hcCourseTitle').value='';$('hcCoursePrice').value='';$('hcCourseDesc').value='';
+  await renderCloudAdmin();await loadCloudCourses();
+}
+async function renderCloudAdmin(){
+  const [{data:courses,error:ce},{data:payments,error:pe}]=await Promise.all([
+    sb.from('courses').select('id,title,price,published,created_at').order('created_at',{ascending:false}),
+    sb.from('payment_requests').select('id,user_id,course_id,amount,status,created_at,profiles(full_name,email),courses(title)').order('created_at',{ascending:false})
+  ]);
+  if(ce||pe)return alert((ce||pe).message);
+  $('hcAdminStats').innerHTML=`<div class="hc-admin-card"><b>${courses.length}</b><div>الكورسات</div></div><div class="hc-admin-card"><b>${payments.length}</b><div>طلبات الدفع</div></div><div class="hc-admin-card"><b>${payments.filter(x=>x.status==='pending').length}</b><div>طلبات معلقة</div></div>`;
+  $('hcAdminCourses').innerHTML=courses.map(c=>`<div class="hc-course"><div><b>${esc(c.title)}</b><div class="hc-muted">${Number(c.price||0).toLocaleString('ar-EG')} EGP — ${c.published?'منشور':'مخفي'}</div></div></div>`).join('');
+  $('hcPayments').innerHTML=payments.map(p=>`<tr><td>${new Date(p.created_at).toLocaleString('ar-EG')}</td><td>${esc(p.profiles?.full_name||p.profiles?.email||p.user_id)}</td><td>${esc(p.courses?.title||p.course_id)}</td><td>${Number(p.amount||0).toLocaleString('ar-EG')} EGP</td><td>${esc(p.status)}</td><td>${p.status==='pending'?`<button class="hc-btn" data-approve="${p.id}">تأكيد</button><button class="hc-btn danger" data-reject="${p.id}">رفض</button>`:'—'}</td></tr>`).join('');
+  $('hcPayments').querySelectorAll('[data-approve]').forEach(b=>b.onclick=()=>setPaymentStatus(b.dataset.approve,'approved'));
+  $('hcPayments').querySelectorAll('[data-reject]').forEach(b=>b.onclick=()=>setPaymentStatus(b.dataset.reject,'rejected'));
+}
+async function setPaymentStatus(id,status){
+  if(currentProfile?.role!=='admin')return;
+  const {data:req,error}=await sb.from('payment_requests').select('user_id,course_id').eq('id',id).single();
+  if(error)return alert(error.message);
+  const {error:u}=await sb.from('payment_requests').update({status}).eq('id',id);
+  if(u)return alert(u.message);
+  if(status==='approved'){
+    const {error:e}=await sb.from('enrollments').upsert({user_id:req.user_id,course_id:req.course_id,status:'active'},{onConflict:'user_id,course_id'});
+    if(e)return alert(e.message);
+  }
+  await renderCloudAdmin();
+  alert(status==='approved'?'تم تفعيل الكورس للطالب.':'تم رفض الطلب.');
+}
+async function openCloudAdmin(){
+  if(currentProfile?.role!=='admin')return alert('غير مصرح.');
+  $('hamdiCloudAdmin').classList.add('open');
+  await renderCloudAdmin();
+}
+
+async function boot(){
+  injectUI();
+  const {data:{session}}=await sb.auth.getSession();
+  if(session) await refreshUser(); else updateAccountUI();
+  sb.auth.onAuthStateChange(()=>setTimeout(refreshUser,0));
+
+  // Replace the original local-only purchase buttons with cloud-aware buttons.
+  document.querySelectorAll('[data-course]').forEach(btn=>{
+    btn.onclick=(e)=>{e.preventDefault();handleCourseClick(btn);}
+  });
+}
+boot();
+})();
+</script>
+
 </body></html>
