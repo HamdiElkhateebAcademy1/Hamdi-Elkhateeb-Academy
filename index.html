@@ -17,7 +17,15 @@ body{overflow-x:hidden}.app{display:flex;min-height:100vh;background:radial-grad
 .payment-dialog{width:min(520px,92%);max-height:88vh;overflow:auto}.payment-course{color:#fff;font-size:20px;font-weight:900;margin:0 0 4px}.payment-price{color:#35b0f4;font-size:18px;font-weight:900;margin:0 0 14px}.payment-note{font-size:11px;color:#91a6b7;line-height:1.6;margin:0 0 14px}.pay-methods{display:grid;gap:8px;margin:12px 0 16px}.pay-method{background:#0c2a43;border:1px solid #214761;border-radius:10px;padding:11px 12px}.pay-method b{display:block;font-size:12px;margin-bottom:3px}.pay-method span{font-size:12px;color:#bcd0de}.pay-method.pending{opacity:.65}.receipt-box{border:1px dashed #31546e;border-radius:10px;padding:12px;margin-top:12px}.receipt-box label{display:block;font-size:11px;color:#a9bdca;margin-bottom:7px}.receipt-box input{width:100%;color:#cbd9e3;font-size:11px}.payment-actions{display:flex;gap:8px;align-items:center;margin-top:15px}.secondary{background:#12324b;border:1px solid #31546e;border-radius:9px;color:#d8e7f0;padding:10px 14px;font-weight:800}.payment-status{font-size:11px;color:#74c7f4;line-height:1.5;margin-top:10px;display:none}.course-price{position:relative;z-index:3;display:inline-block;margin-top:9px;color:#fff;background:#0a74b2cc;border:1px solid #38b4f355;border-radius:20px;padding:5px 9px;font-size:10px;font-weight:900}
 @media(max-width:1050px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px)}.continue-grid,.lower{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.sidebar{transform:translateX(-100%);transition:.2s;width:250px}.sidebar.open{transform:translateX(0)}.main{margin-left:0;width:100%;padding:8px 10px 25px}.mobile{display:grid;width:38px;height:38px;border:1px solid #24445d;background:#0a2137;color:white;border-radius:10px;place-items:center}.topbar{gap:7px}.search{order:2}.topright{order:3}.profile div,.profile em{display:none}.hero{height:auto;aspect-ratio:1000/482}.hero img{object-fit:contain}.continue{grid-template-columns:145px 1fr}.cards{grid-template-columns:1fr}.card{height:155px}.lesson-grid{grid-template-columns:repeat(2,1fr)}}
-</style></head>
+</style>
+<!-- Supabase connection -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  const SUPABASE_URL = "https://irlwndzsfphnphezdmyb.supabase.co";
+  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2bUzudb32hR-udSA1hPcPQ_B6pT3fKK";
+  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+</script>
+</head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="brandmark"><span>HE</span></div><div class="brandname">HAMDI ELKHATEEB<small>DIGITAL ACADEMY</small></div></div>
 <nav class="nav"><button class="active" data-panel="home"><span class="ico">⌂</span>Home</button><button data-panel="learning"><span class="ico">▣</span>My Learning</button><button data-panel="courses"><span class="ico">▤</span>Courses</button><button data-panel="resources"><span class="ico">▧</span>Resources</button><button data-panel="community"><span class="ico">♧</span>Community</button><button data-panel="instructor"><span class="ico">◉</span>Instructor</button></nav>
