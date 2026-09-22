@@ -88,51 +88,6 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
 
 </div>
 
-
-<!-- Supabase + Student Account Layer -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<style>
-.student-login-launcher{position:fixed;left:18px;bottom:18px;z-index:9998;border:0;border-radius:999px;padding:11px 16px;background:#0ea5e9;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.18)}
-.student-login-overlay{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:10001;display:none;align-items:center;justify-content:center;padding:18px;direction:rtl}.student-login-overlay.open{display:flex}
-.student-login-box{width:min(430px,100%);background:#fff;color:#111827;border-radius:20px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.student-login-box h2{margin:0 0 8px}.student-login-box p{margin:0 0 18px;color:#6b7280;line-height:1.6}.student-field{display:block;width:100%;box-sizing:border-box;padding:12px 13px;border:1px solid #d1d5db;border-radius:10px;margin:7px 0 12px;font:inherit}.student-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.student-btn{border:0;border-radius:10px;padding:11px 14px;cursor:pointer;font-weight:800}.student-primary{background:#0ea5e9;color:#fff}.student-secondary{background:#eef2f7;color:#111827}.student-status{margin-top:12px;padding:10px;border-radius:10px;background:#f1f5f9;display:none;font-size:13px;line-height:1.6}.student-account-badge{position:fixed;left:18px;bottom:72px;z-index:9997;display:none;background:#0f172a;color:#fff;border-radius:12px;padding:9px 12px;font-size:12px;box-shadow:0 8px 24px rgba(0,0,0,.16)}
-</style>
-<button class="student-login-launcher" id="academyStudentLauncher" type="button">دخول الطالب</button>
-<div class="student-account-badge" id="academyStudentBadge"></div>
-<div class="student-login-overlay" id="academyStudentLogin" aria-hidden="true">
-  <div class="student-login-box">
-    <h2 id="studentAuthTitle">دخول الطالب</h2>
-    <p id="studentAuthText">سجّل الدخول أو أنشئ حسابًا جديدًا للوصول إلى حسابك في الأكاديمية.</p>
-    <label>البريد الإلكتروني<input class="student-field" id="academyStudentEmail" type="email" autocomplete="email" placeholder="email@example.com"></label>
-    <label>كلمة المرور<input class="student-field" id="academyStudentPassword" type="password" autocomplete="current-password" placeholder="6 أحرف أو أكثر"></label>
-    <label id="studentNameWrap" style="display:none">الاسم<input class="student-field" id="academyStudentName" autocomplete="name" placeholder="اسمك الكامل"></label>
-    <div class="student-actions">
-      <button class="student-btn student-primary" id="academyStudentSubmit">دخول</button>
-      <button class="student-btn student-secondary" id="academyStudentToggle">إنشاء حساب</button>
-      <button class="student-btn student-secondary" id="academyStudentClose">إغلاق</button>
-    </div>
-    <div class="student-status" id="academyStudentStatus"></div>
-  </div>
-</div>
-<script>
-(function(){
-  const SUPABASE_URL='https://irlwndzsfphnphezdmyb.supabase.co';
-  const SUPABASE_KEY='sb_publishable_2bUzudb32hR-udSA1hPcPQ_B6pT3fKK';
-  const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-  const $=id=>document.getElementById(id);
-  let signupMode=false;
-  function status(msg,good){const el=$('academyStudentStatus');el.style.display='block';el.textContent=msg;el.style.background=good?'#dcfce7':'#f1f5f9';el.style.color=good?'#166534':'#334155'}
-  function openStudent(){const o=$('academyStudentLogin');o.classList.add('open');o.setAttribute('aria-hidden','false');setTimeout(()=>$('academyStudentEmail').focus(),50)}
-  function closeStudent(){const o=$('academyStudentLogin');o.classList.remove('open');o.setAttribute('aria-hidden','true');}
-  function setMode(signup){signupMode=signup;$('studentAuthTitle').textContent=signup?'إنشاء حساب طالب':'دخول الطالب';$('studentAuthText').textContent=signup?'أنشئ حسابك بالبريد الإلكتروني وكلمة المرور.':'سجّل الدخول للوصول إلى حسابك في الأكاديمية.';$('studentNameWrap').style.display=signup?'block':'none';$('academyStudentSubmit').textContent=signup?'إنشاء الحساب':'دخول';$('academyStudentToggle').textContent=signup?'لدي حساب بالفعل':'إنشاء حساب';$('academyStudentPassword').autocomplete=signup?'new-password':'current-password';$('academyStudentStatus').style.display='none'}
-  async function refreshStudent(){const {data:{session}}=await sb.auth.getSession();const b=$('academyStudentBadge');if(session?.user){b.textContent='مسجل: '+(session.user.email||'');b.style.display='block';$('academyStudentLauncher').textContent='حساب الطالب';}else{b.style.display='none';$('academyStudentLauncher').textContent='دخول الطالب';}}
-  async function submitStudent(){const email=$('academyStudentEmail').value.trim(),pass=$('academyStudentPassword').value,name=$('academyStudentName').value.trim();if(!email||!pass)return status('اكتب البريد الإلكتروني وكلمة المرور.',false);if(pass.length<6)return status('كلمة المرور يجب أن تكون 6 أحرف على الأقل.',false);$('academyStudentSubmit').disabled=true;try{if(signupMode){const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name}}});if(error)throw error;if(data.session){status('تم إنشاء الحساب وتسجيل الدخول بنجاح.',true);setTimeout(closeStudent,900)}else{status('تم إنشاء الحساب. افحص بريدك الإلكتروني لتأكيد الحساب ثم سجّل الدخول.',true)}}else{const {data,error}=await sb.auth.signInWithPassword({email,password:pass});if(error)throw error;status('تم تسجيل الدخول بنجاح.',true);await refreshStudent();setTimeout(closeStudent,700)}}catch(e){status(e.message||'حدث خطأ أثناء العملية.',false)}finally{$('academyStudentSubmit').disabled=false}}
-  $('academyStudentLauncher').onclick=async()=>{const {data:{session}}=await sb.auth.getSession();if(session){const out=confirm('أنت مسجل الدخول بالفعل. هل تريد تسجيل الخروج؟');if(out){await sb.auth.signOut();await refreshStudent();}}else openStudent()};
-  $('academyStudentClose').onclick=closeStudent;$('academyStudentToggle').onclick=()=>setMode(!signupMode);$('academyStudentSubmit').onclick=submitStudent;$('academyStudentPassword').addEventListener('keydown',e=>{if(e.key==='Enter')submitStudent()});$('academyStudentLogin').onclick=e=>{if(e.target.id==='academyStudentLogin')closeStudent()};
-  sb.auth.onAuthStateChange(()=>refreshStudent()); refreshStudent(); setMode(false);
-})();
-</script>
-
 <style id="academy-admin-style-v2">
 /* Added management layer only. Original academy UI is not modified. */
 .admin-login-launcher{position:fixed;right:18px;bottom:18px;z-index:9998;border:0;border-radius:999px;padding:11px 16px;background:#111827;color:#fff;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.18)}
@@ -143,7 +98,7 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
 @media(max-width:800px){.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-row{grid-template-columns:1fr}.admin-shell{margin:12px;padding:16px}.admin-course-item,.admin-lesson-item{align-items:flex-start;flex-direction:column}}@media(max-width:480px){.admin-grid{grid-template-columns:1fr}}
 </style>
 
-<button class="admin-login-launcher" id="academyAdminLauncher" type="button">دخول الإدارة</button>
+<button class="admin-login-launcher" id="academyAdminLauncher" type="button">تسجيل الدخول</button>
 <div class="admin-login-overlay" id="academyAdminLogin" aria-hidden="true"><div class="admin-login-box"><h2>تسجيل الدخول</h2><p>دخول مدير المنصة لإدارة الكورسات والدروس.</p><label>اسم المستخدم<input class="admin-field" id="academyAdminUser" autocomplete="username" placeholder="Admin"></label><label>كلمة المرور<input class="admin-field" id="academyAdminPass" type="password" autocomplete="current-password" placeholder="••••••••"></label><div class="admin-actions"><button class="admin-btn admin-primary" id="academyAdminLoginBtn">دخول</button><button class="admin-btn admin-secondary" id="academyAdminCloseBtn">إغلاق</button></div><div class="admin-note">هذه لوحة إدارة محلية داخل الملف. التخزين السحابي الحقيقي يحتاج ربط خدمة تخزين/قاعدة بيانات بحسابك.</div></div></div>
 
 <section class="panel admin-panel" id="academy-admin-panel"><div class="admin-shell">
@@ -211,4 +166,95 @@ renderAll();
 })();
 </script>
 
+<style id="cloud-academy-css">
+#academyAdminLauncher,#academyAdminLogin,#academy-admin-panel{display:none!important}
+.ca-overlay{position:fixed;inset:0;background:rgba(3,15,28,.78);z-index:200000;display:none;align-items:center;justify-content:center;padding:18px;backdrop-filter:blur(5px)}
+.ca-overlay.open{display:flex}.ca-box{width:min(520px,100%);background:#fff;color:#111827;border-radius:22px;padding:24px;box-shadow:0 25px 80px rgba(0,0,0,.35)}
+.ca-box h2{margin:0 0 8px}.ca-sub{color:#64748b;font-size:14px;margin-bottom:18px}.ca-input{width:100%;box-sizing:border-box;padding:12px;border:1px solid #d1d5db;border-radius:11px;margin:6px 0 12px;font:inherit}.ca-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}.ca-btn{border:0;border-radius:11px;padding:11px 15px;font-weight:800;cursor:pointer}.ca-primary{background:#0f172a;color:#fff}.ca-secondary{background:#e2e8f0;color:#0f172a}.ca-danger{background:#fee2e2;color:#991b1b}.ca-msg{margin-top:12px;padding:10px;border-radius:10px;background:#f1f5f9;font-size:13px;display:none}.ca-links{display:flex;gap:10px;justify-content:center;margin-top:14px}.ca-link{background:none;border:0;color:#2563eb;font-weight:700;cursor:pointer}.ca-app{position:fixed;inset:0;background:#f8fafc;z-index:199999;display:none;overflow:auto}.ca-app.open{display:block}.ca-head{position:sticky;top:0;background:#fff;border-bottom:1px solid #e5e7eb;padding:14px 18px;display:flex;justify-content:space-between;align-items:center;gap:10px;z-index:2}.ca-content{max-width:1100px;margin:auto;padding:22px}.ca-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}.ca-card{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:18px;box-shadow:0 6px 20px rgba(15,23,42,.05)}.ca-card h3{margin:0 0 8px}.ca-price{font-weight:900;font-size:20px;margin:12px 0}.ca-muted{color:#64748b;font-size:13px;line-height:1.6}.ca-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.ca-section{background:#fff;border:1px solid #e5e7eb;border-radius:18px;padding:18px;margin-bottom:16px}.ca-list{display:grid;gap:10px}.ca-item{border:1px solid #e5e7eb;border-radius:12px;padding:12px}.ca-item-top{display:flex;justify-content:space-between;gap:10px;align-items:center}.ca-small{font-size:12px;color:#64748b}.ca-course-view{position:fixed;inset:0;background:#fff;z-index:200001;overflow:auto;display:none}.ca-course-view.open{display:block}.ca-lesson{padding:13px;border:1px solid #e5e7eb;border-radius:12px;margin:8px 0}.ca-lesson a{color:#2563eb;font-weight:700}.ca-badge{display:inline-block;padding:4px 8px;border-radius:999px;background:#dcfce7;color:#166534;font-size:12px;font-weight:800}@media(max-width:700px){.ca-admin-grid,.ca-row{grid-template-columns:1fr}.ca-content{padding:14px}}
+</style><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+(function(){
+'use strict';
+const SUPABASE_URL='https://irlwndzsfphnphezdmyb.supabase.co';
+const SUPABASE_KEY='sb_publishable_2bUzudb32hR-udSA1hPcPQ_B6pT3fKK';
+const {createClient}=window.supabase; const sb=createClient(SUPABASE_URL,SUPABASE_KEY);
+const $=id=>document.getElementById(id);
+let session=null, profile=null, courses=[], enrollments=[];
+const esc=s=>String(s??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
+function toast(msg,good=false){alert(msg)}
+function openAuth(mode='login'){ $('caAuth').classList.add('open'); $('caMode').value=mode; $('caTitle').textContent=mode==='login'?'تسجيل دخول':'إنشاء حساب طالب جديد'; $('caSubmit').textContent=mode==='login'?'دخول':'إنشاء الحساب'; $('caNameWrap').style.display=mode==='signup'?'block':'none'; $('caMsg').style.display='none'; }
+function closeAuth(){ $('caAuth').classList.remove('open') }
+function openApp(){ $('caApp').classList.add('open') } function closeApp(){ $('caApp').classList.remove('open') }
+function showMsg(t){$('caMsg').style.display='block';$('caMsg').textContent=t}
+async function submitAuth(){
+ const mode=$('caMode').value,email=$('caEmail').value.trim(),pass=$('caPass').value,name=$('caName').value.trim();
+ if(!email||!pass)return showMsg('اكتب البريد وكلمة المرور.'); if(pass.length<6)return showMsg('كلمة المرور يجب أن تكون 6 أحرف على الأقل.');
+ $('caSubmit').disabled=true;
+ try{
+  if(mode==='signup'){
+   const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name}}});
+   if(error)throw error;
+   if(!data.session){showMsg('تم إنشاء الحساب. افتح بريدك واضغط رابط تأكيد الحساب ثم ارجع وسجّل الدخول.');return}
+   session=data.session;
+  }else{const {data,error}=await sb.auth.signInWithPassword({email,password:pass});if(error)throw error;session=data.session}
+  await boot();closeAuth();
+ }catch(e){showMsg(e.message||'تعذر تسجيل الدخول.')}finally{$('caSubmit').disabled=false}
+}
+async function boot(){
+ const r=await sb.auth.getSession(); session=r.data.session; if(!session){openAuth('login');return}
+ const pr=await sb.from('profiles').select('*').eq('id',session.user.id).maybeSingle();
+ if(pr.error)throw pr.error; profile=pr.data;
+ if(!profile){await sb.from('profiles').insert({id:session.user.id,full_name:session.user.user_metadata?.full_name||''}); const q=await sb.from('profiles').select('*').eq('id',session.user.id).single();profile=q.data;}
+ await loadCourses(); await loadEnrollments(); renderHome();
+}
+async function loadCourses(){const q=await sb.from('courses').select('*').order('created_at',{ascending:false});if(q.error)throw q.error;courses=q.data||[]}
+async function loadEnrollments(){if(!session)return;const q=await sb.from('enrollments').select('*,courses(*)').eq('user_id',session.user.id);if(q.error)throw q.error;enrollments=q.data||[]}
+function renderHome(){
+ closeApp();
+ document.querySelectorAll('[data-course]').forEach(x=>x.closest('.card')?.style.setProperty('display','none','important'));
+ if(profile?.role==='admin'){renderAdmin();return}
+ openApp(); $('caAppTitle').textContent='منصة الطالب'; $('caAppBody').innerHTML=`<h2>الكورسات المتاحة</h2><p class="ca-muted">أهلاً ${esc(profile?.full_name||session.user.email)}. اختر الكورس لمشاهدة التفاصيل.</p><div class="ca-grid" id="caCourses"></div>`;
+ const g=$('caCourses'); if(!courses.length){g.innerHTML='<div class="ca-card">لا توجد كورسات منشورة حاليًا.</div>';return}
+ g.innerHTML=courses.map(c=>{const enrolled=enrollments.some(e=>e.course_id===c.id&&e.status==='active');return `<article class="ca-card"><h3>${esc(c.name)}</h3><div class="ca-muted">${esc(c.description)}</div><div class="ca-price">${esc(c.price||'السعر عند التواصل')}</div><span class="ca-badge">${enrolled?'مشترك':'متاح'}</span><div style="margin-top:12px"><button class="ca-btn ca-primary" data-open-course="${c.id}">${enrolled?'فتح الكورس':'التفاصيل والاشتراك'}</button></div></article>`}).join('');
+ g.querySelectorAll('[data-open-course]').forEach(b=>b.onclick=()=>openCourse(b.dataset.openCourse));
+}
+async function openCourse(id){
+ const c=courses.find(x=>x.id===id); if(!c)return; const enrolled=enrollments.some(e=>e.course_id===id&&e.status==='active');
+ const q=await sb.from('lessons').select('*').eq('course_id',id).order('lesson_order'); if(q.error)return toast(q.error.message); const ls=q.data||[];
+ $('caCourseView').classList.add('open'); $('caCourseTitle').textContent=c.name;
+ let html='<p class="ca-muted">'+esc(c.description)+'</p><div class="ca-price">'+esc(c.price)+'</div>';
+ if(enrolled){
+   html+='<h3>الدروس</h3>';
+   html+=ls.length?ls.map(l=>{let link='';if(l.storage_path)link='<a href="'+esc(SUPABASE_URL)+'/storage/v1/object/public/academy-files/'+encodeURIComponent(l.storage_path)+'" target="_blank">فتح الملف</a>';else if(l.url)link='<a href="'+esc(l.url)+'" target="_blank">فتح الدرس</a>';else link='<span class="ca-small">لا يوجد ملف</span>';return '<div class="ca-lesson"><b>'+esc(l.title)+'</b><div class="ca-small">'+esc(l.type)+'</div>'+link+'</div>'}).join(''):'<p class="ca-muted">لم تتم إضافة دروس بعد.</p>';
+ }else{
+   html+='<div class="ca-card"><b>هذا الكورس غير مفعّل لحسابك.</b><p class="ca-muted">حوّل قيمة الكورس ثم أرسل صورة التحويل على واتساب، وبعد موافقة الإدارة سيظهر لك المحتوى.</p><button class="ca-btn ca-primary" id="caRequestPay">طلب الاشتراك عبر واتساب</button></div>';
+ }
+ $('caCourseBody').innerHTML=html;
+ if(!enrolled)$('caRequestPay').onclick=()=>{const msg=encodeURIComponent('مرحباً، أريد الاشتراك في كورس '+c.name+' - السعر '+c.price+'. البريد: '+session.user.email);window.open('https://wa.me/201006641750?text='+msg,'_blank')};
+}
+
+async function renderAdmin(){
+ openApp();$('caAppTitle').textContent='لوحة إدارة المنصة';$('caAppBody').innerHTML=`<div class="ca-section"><h2>إدارة الكورسات</h2><div class="ca-row"><input class="ca-input" id="acName" placeholder="اسم الكورس"><input class="ca-input" id="acPrice" placeholder="السعر"></div><textarea class="ca-input" id="acDesc" rows="3" placeholder="وصف الكورس"></textarea><button class="ca-btn ca-primary" id="acAdd">إضافة الكورس</button></div><div class="ca-section"><h3>الكورسات الحالية</h3><div class="ca-list" id="acCourses"></div></div><div class="ca-section"><h2>إضافة طالب/اشتراك</h2><div class="ca-row"><input class="ca-input" id="aeEmail" placeholder="إيميل الطالب"><select class="ca-input" id="aeCourse"></select></div><button class="ca-btn ca-primary" id="aeAdd">تفعيل الاشتراك</button><p class="ca-muted">يجب أن يكون الطالب قد أنشأ حسابًا أولًا.</p></div><div class="ca-section"><button class="ca-btn ca-danger" id="caLogout">تسجيل خروج</button></div>`;
+ $('acAdd').onclick=addCourse;$('aeAdd').onclick=addEnrollment;$('caLogout').onclick=async()=>{await sb.auth.signOut();session=null;profile=null;closeApp();openAuth('login')}; renderAdminCourses();
+}
+function renderAdminCourses(){const g=$('acCourses'),sel=$('aeCourse'); if(!g)return; sel.innerHTML=courses.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join(''); g.innerHTML=courses.length?courses.map(c=>`<div class="ca-item"><div class="ca-item-top"><b>${esc(c.name)}</b><button class="ca-btn ca-danger" data-del-course="${c.id}">حذف</button></div><div class="ca-small">${esc(c.price)} — ${esc(c.description)}</div><div style="margin-top:10px"><input class="ca-input" type="file" data-lesson-file="${c.id}" accept="video/*,.pdf,.zip,.rar,.doc,.docx,.ppt,.pptx,.txt,.jpg,.jpeg,.png,.webp"><input class="ca-input" placeholder="عنوان الدرس" data-lesson-title="${c.id}"><button class="ca-btn ca-secondary" data-add-lesson="${c.id}">رفع وإضافة درس</button></div></div>`).join(''):'لا توجد كورسات';
+ g.querySelectorAll('[data-del-course]').forEach(b=>b.onclick=()=>deleteCourseCloud(b.dataset.delCourse));g.querySelectorAll('[data-add-lesson]').forEach(b=>b.onclick=()=>addLessonCloud(b.dataset.addLesson));}
+async function addCourse(){const name=$('acName').value.trim(),price=$('acPrice').value.trim(),description=$('acDesc').value.trim();if(!name)return toast('اكتب اسم الكورس.');const q=await sb.from('courses').insert({name,price,description}).select().single();if(q.error)return toast(q.error.message);courses.unshift(q.data);renderAdminCourses();toast('تم إضافة الكورس.');}
+async function deleteCourseCloud(id){if(!confirm('حذف الكورس وكل دروسه؟'))return;const q=await sb.from('courses').delete().eq('id',id);if(q.error)return toast(q.error.message);courses=courses.filter(c=>c.id!==id);renderAdminCourses();}
+async function addLessonCloud(courseId){const file=document.querySelector(`[data-lesson-file="${courseId}"]`)?.files?.[0],title=document.querySelector(`[data-lesson-title="${courseId}"]`)?.value.trim();if(!title)return toast('اكتب عنوان الدرس.');let path=null;if(file){path=`${courseId}/${crypto.randomUUID()}-${file.name.replace(/[^\w.\-]+/g,'_')}`;const up=await sb.storage.from('academy-files').upload(path,file,{upsert:false});if(up.error)return toast(up.error.message)}const q=await sb.from('lessons').insert({course_id:courseId,title,type:file?.type?.startsWith('video/')?'video':file?.type==='application/pdf'?'pdf':'file',storage_path:path,file_name:file?.name||null,file_size:file?.size||null,lesson_order:1});if(q.error)return toast(q.error.message);toast('تم رفع الدرس وحفظه على السحابة.');}
+async function addEnrollment(){const email=$('aeEmail').value.trim(),course_id=$('aeCourse').value;if(!email)return toast('اكتب إيميل الطالب.');const u=await sb.from('profiles').select('id,full_name').eq('id',`00000000-0000-0000-0000-000000000000`); // harmless placeholder to avoid exposing auth.users
+ // Resolve user through a secure RPC created below is not available by default; use an admin-only edge-less function via SQL RPC.
+ const r=await sb.rpc('find_user_id_by_email',{p_email:email});if(r.error)return toast('لم يتم العثور على الطالب. تأكد أنه أنشأ حسابًا ثم جرّب مرة أخرى.');const uid=r.data;if(!uid)return toast('لم يتم العثور على الطالب.');const q=await sb.from('enrollments').upsert({user_id:uid,course_id,status:'active'},{onConflict:'user_id,course_id'});if(q.error)return toast(q.error.message);toast('تم تفعيل اشتراك الطالب.');}
+// Replace old launcher with clear student/admin entry points.
+function addUi(){
+ document.body.insertAdjacentHTML('beforeend',`${css}<div class="ca-overlay" id="caAuth"><div class="ca-box"><h2 id="caTitle">تسجيل دخول</h2><div class="ca-sub">Hamdi Elkhateeb Digital Academy</div><input type="hidden" id="caMode" value="login"><div id="caNameWrap" style="display:none"><label>الاسم<input class="ca-input" id="caName" placeholder="اسم الطالب"></label></div><label>البريد الإلكتروني<input class="ca-input" id="caEmail" type="email" autocomplete="email"></label><label>كلمة المرور<input class="ca-input" id="caPass" type="password" autocomplete="current-password"></label><div class="ca-row"><button class="ca-btn ca-primary" id="caSubmit">دخول</button><button class="ca-btn ca-secondary" id="caClose">إغلاق</button></div><div class="ca-msg" id="caMsg"></div><div class="ca-links"><button class="ca-link" id="caSignup">إنشاء حساب جديد</button><button class="ca-link" id="caLogin">لدي حساب بالفعل</button></div></div></div><div class="ca-app" id="caApp"><div class="ca-head"><b id="caAppTitle">المنصة</b><div><button class="ca-btn ca-secondary" id="caProfile">حسابي</button><button class="ca-btn ca-danger" id="caAppClose">إغلاق</button></div></div><div class="ca-content" id="caAppBody"></div></div><div class="ca-course-view" id="caCourseView"><div class="ca-head"><b id="caCourseTitle">الكورس</b><button class="ca-btn ca-secondary" id="caCourseClose">رجوع</button></div><div class="ca-content" id="caCourseBody"></div></div>`);
+ const launcher=document.createElement('button');launcher.className='admin-login-launcher';launcher.id='caLaunch';launcher.textContent='دخول / تسجيل';document.body.appendChild(launcher);
+ launcher.onclick=()=>openAuth('login');$('caSubmit').onclick=submitAuth;$('caClose').onclick=closeAuth;$('caSignup').onclick=()=>openAuth('signup');$('caLogin').onclick=()=>openAuth('login');$('caAppClose').onclick=closeApp;$('caCourseClose').onclick=()=>$('caCourseView').classList.remove('open');$('caProfile').onclick=()=>{if(profile)toast(`${profile.full_name||session.user.email}\n${session.user.email}\n${profile.role==='admin'?'مدير المنصة':'طالب'}`)};
+}
+addUi();
+sb.auth.onAuthStateChange(async(_event,s)=>{session=s;if(s){try{await boot()}catch(e){console.error(e);showMsg('فشل في جلب البيانات: '+(e.message||''))}}});
+// Gate platform: users must sign in before accessing paid content.
+setTimeout(async()=>{try{const r=await sb.auth.getSession();if(r.data.session){await boot()}else{openAuth('login')}}catch(e){openAuth('login');console.error(e)}},300);
+})();
+</script>
 </body></html>
