@@ -17,15 +17,7 @@ body{overflow-x:hidden}.app{display:flex;min-height:100vh;background:radial-grad
 .payment-dialog{width:min(520px,92%);max-height:88vh;overflow:auto}.payment-course{color:#fff;font-size:20px;font-weight:900;margin:0 0 4px}.payment-price{color:#35b0f4;font-size:18px;font-weight:900;margin:0 0 14px}.payment-note{font-size:11px;color:#91a6b7;line-height:1.6;margin:0 0 14px}.pay-methods{display:grid;gap:8px;margin:12px 0 16px}.pay-method{background:#0c2a43;border:1px solid #214761;border-radius:10px;padding:11px 12px}.pay-method b{display:block;font-size:12px;margin-bottom:3px}.pay-method span{font-size:12px;color:#bcd0de}.pay-method.pending{opacity:.65}.receipt-box{border:1px dashed #31546e;border-radius:10px;padding:12px;margin-top:12px}.receipt-box label{display:block;font-size:11px;color:#a9bdca;margin-bottom:7px}.receipt-box input{width:100%;color:#cbd9e3;font-size:11px}.payment-actions{display:flex;gap:8px;align-items:center;margin-top:15px}.secondary{background:#12324b;border:1px solid #31546e;border-radius:9px;color:#d8e7f0;padding:10px 14px;font-weight:800}.payment-status{font-size:11px;color:#74c7f4;line-height:1.5;margin-top:10px;display:none}.course-price{position:relative;z-index:3;display:inline-block;margin-top:9px;color:#fff;background:#0a74b2cc;border:1px solid #38b4f355;border-radius:20px;padding:5px 9px;font-size:10px;font-weight:900}
 @media(max-width:1050px){.sidebar{width:220px}.main{margin-left:220px;width:calc(100% - 220px)}.continue-grid,.lower{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,1fr)}}
 @media(max-width:760px){.sidebar{transform:translateX(-100%);transition:.2s;width:250px}.sidebar.open{transform:translateX(0)}.main{margin-left:0;width:100%;padding:8px 10px 25px}.mobile{display:grid;width:38px;height:38px;border:1px solid #24445d;background:#0a2137;color:white;border-radius:10px;place-items:center}.topbar{gap:7px}.search{order:2}.topright{order:3}.profile div,.profile em{display:none}.hero{height:auto;aspect-ratio:1000/482}.hero img{object-fit:contain}.continue{grid-template-columns:145px 1fr}.cards{grid-template-columns:1fr}.card{height:155px}.lesson-grid{grid-template-columns:repeat(2,1fr)}}
-</style>
-<!-- Supabase connection -->
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const SUPABASE_URL = "https://irlwndzsfphnphezdmyb.supabase.co";
-  const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_2bUzudb32hR-udSA1hPcPQ_B6pT3fKK";
-  const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-</script>
-</head>
+</style></head>
 <body><div class="app">
 <aside class="sidebar" id="sidebar"><div class="brand"><div class="brandmark"><span>HE</span></div><div class="brandname">HAMDI ELKHATEEB<small>DIGITAL ACADEMY</small></div></div>
 <nav class="nav"><button class="active" data-panel="home"><span class="ico">⌂</span>Home</button><button data-panel="learning"><span class="ico">▣</span>My Learning</button><button data-panel="courses"><span class="ico">▤</span>Courses</button><button data-panel="resources"><span class="ico">▧</span>Resources</button><button data-panel="community"><span class="ico">♧</span>Community</button><button data-panel="instructor"><span class="ico">◉</span>Instructor</button></nav>
@@ -96,6 +88,51 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
 
 </div>
 
+
+<!-- Supabase + Student Account Layer -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+.student-login-launcher{position:fixed;left:18px;bottom:18px;z-index:9998;border:0;border-radius:999px;padding:11px 16px;background:#0ea5e9;color:#fff;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.student-login-overlay{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:10001;display:none;align-items:center;justify-content:center;padding:18px;direction:rtl}.student-login-overlay.open{display:flex}
+.student-login-box{width:min(430px,100%);background:#fff;color:#111827;border-radius:20px;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,.3)}
+.student-login-box h2{margin:0 0 8px}.student-login-box p{margin:0 0 18px;color:#6b7280;line-height:1.6}.student-field{display:block;width:100%;box-sizing:border-box;padding:12px 13px;border:1px solid #d1d5db;border-radius:10px;margin:7px 0 12px;font:inherit}.student-actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.student-btn{border:0;border-radius:10px;padding:11px 14px;cursor:pointer;font-weight:800}.student-primary{background:#0ea5e9;color:#fff}.student-secondary{background:#eef2f7;color:#111827}.student-status{margin-top:12px;padding:10px;border-radius:10px;background:#f1f5f9;display:none;font-size:13px;line-height:1.6}.student-account-badge{position:fixed;left:18px;bottom:72px;z-index:9997;display:none;background:#0f172a;color:#fff;border-radius:12px;padding:9px 12px;font-size:12px;box-shadow:0 8px 24px rgba(0,0,0,.16)}
+</style>
+<button class="student-login-launcher" id="academyStudentLauncher" type="button">دخول الطالب</button>
+<div class="student-account-badge" id="academyStudentBadge"></div>
+<div class="student-login-overlay" id="academyStudentLogin" aria-hidden="true">
+  <div class="student-login-box">
+    <h2 id="studentAuthTitle">دخول الطالب</h2>
+    <p id="studentAuthText">سجّل الدخول أو أنشئ حسابًا جديدًا للوصول إلى حسابك في الأكاديمية.</p>
+    <label>البريد الإلكتروني<input class="student-field" id="academyStudentEmail" type="email" autocomplete="email" placeholder="email@example.com"></label>
+    <label>كلمة المرور<input class="student-field" id="academyStudentPassword" type="password" autocomplete="current-password" placeholder="6 أحرف أو أكثر"></label>
+    <label id="studentNameWrap" style="display:none">الاسم<input class="student-field" id="academyStudentName" autocomplete="name" placeholder="اسمك الكامل"></label>
+    <div class="student-actions">
+      <button class="student-btn student-primary" id="academyStudentSubmit">دخول</button>
+      <button class="student-btn student-secondary" id="academyStudentToggle">إنشاء حساب</button>
+      <button class="student-btn student-secondary" id="academyStudentClose">إغلاق</button>
+    </div>
+    <div class="student-status" id="academyStudentStatus"></div>
+  </div>
+</div>
+<script>
+(function(){
+  const SUPABASE_URL='https://irlwndzsfphnphezdmyb.supabase.co';
+  const SUPABASE_KEY='sb_publishable_2bUzudb32hR-udSA1hPcPQ_B6pT3fKK';
+  const sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+  const $=id=>document.getElementById(id);
+  let signupMode=false;
+  function status(msg,good){const el=$('academyStudentStatus');el.style.display='block';el.textContent=msg;el.style.background=good?'#dcfce7':'#f1f5f9';el.style.color=good?'#166534':'#334155'}
+  function openStudent(){const o=$('academyStudentLogin');o.classList.add('open');o.setAttribute('aria-hidden','false');setTimeout(()=>$('academyStudentEmail').focus(),50)}
+  function closeStudent(){const o=$('academyStudentLogin');o.classList.remove('open');o.setAttribute('aria-hidden','true');}
+  function setMode(signup){signupMode=signup;$('studentAuthTitle').textContent=signup?'إنشاء حساب طالب':'دخول الطالب';$('studentAuthText').textContent=signup?'أنشئ حسابك بالبريد الإلكتروني وكلمة المرور.':'سجّل الدخول للوصول إلى حسابك في الأكاديمية.';$('studentNameWrap').style.display=signup?'block':'none';$('academyStudentSubmit').textContent=signup?'إنشاء الحساب':'دخول';$('academyStudentToggle').textContent=signup?'لدي حساب بالفعل':'إنشاء حساب';$('academyStudentPassword').autocomplete=signup?'new-password':'current-password';$('academyStudentStatus').style.display='none'}
+  async function refreshStudent(){const {data:{session}}=await sb.auth.getSession();const b=$('academyStudentBadge');if(session?.user){b.textContent='مسجل: '+(session.user.email||'');b.style.display='block';$('academyStudentLauncher').textContent='حساب الطالب';}else{b.style.display='none';$('academyStudentLauncher').textContent='دخول الطالب';}}
+  async function submitStudent(){const email=$('academyStudentEmail').value.trim(),pass=$('academyStudentPassword').value,name=$('academyStudentName').value.trim();if(!email||!pass)return status('اكتب البريد الإلكتروني وكلمة المرور.',false);if(pass.length<6)return status('كلمة المرور يجب أن تكون 6 أحرف على الأقل.',false);$('academyStudentSubmit').disabled=true;try{if(signupMode){const {data,error}=await sb.auth.signUp({email,password:pass,options:{data:{full_name:name}}});if(error)throw error;if(data.session){status('تم إنشاء الحساب وتسجيل الدخول بنجاح.',true);setTimeout(closeStudent,900)}else{status('تم إنشاء الحساب. افحص بريدك الإلكتروني لتأكيد الحساب ثم سجّل الدخول.',true)}}else{const {data,error}=await sb.auth.signInWithPassword({email,password:pass});if(error)throw error;status('تم تسجيل الدخول بنجاح.',true);await refreshStudent();setTimeout(closeStudent,700)}}catch(e){status(e.message||'حدث خطأ أثناء العملية.',false)}finally{$('academyStudentSubmit').disabled=false}}
+  $('academyStudentLauncher').onclick=async()=>{const {data:{session}}=await sb.auth.getSession();if(session){const out=confirm('أنت مسجل الدخول بالفعل. هل تريد تسجيل الخروج؟');if(out){await sb.auth.signOut();await refreshStudent();}}else openStudent()};
+  $('academyStudentClose').onclick=closeStudent;$('academyStudentToggle').onclick=()=>setMode(!signupMode);$('academyStudentSubmit').onclick=submitStudent;$('academyStudentPassword').addEventListener('keydown',e=>{if(e.key==='Enter')submitStudent()});$('academyStudentLogin').onclick=e=>{if(e.target.id==='academyStudentLogin')closeStudent()};
+  sb.auth.onAuthStateChange(()=>refreshStudent()); refreshStudent(); setMode(false);
+})();
+</script>
+
 <style id="academy-admin-style-v2">
 /* Added management layer only. Original academy UI is not modified. */
 .admin-login-launcher{position:fixed;right:18px;bottom:18px;z-index:9998;border:0;border-radius:999px;padding:11px 16px;background:#111827;color:#fff;font-weight:700;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.18)}
@@ -106,7 +143,7 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
 @media(max-width:800px){.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-row{grid-template-columns:1fr}.admin-shell{margin:12px;padding:16px}.admin-course-item,.admin-lesson-item{align-items:flex-start;flex-direction:column}}@media(max-width:480px){.admin-grid{grid-template-columns:1fr}}
 </style>
 
-<button class="admin-login-launcher" id="academyAdminLauncher" type="button">تسجيل الدخول</button>
+<button class="admin-login-launcher" id="academyAdminLauncher" type="button">دخول الإدارة</button>
 <div class="admin-login-overlay" id="academyAdminLogin" aria-hidden="true"><div class="admin-login-box"><h2>تسجيل الدخول</h2><p>دخول مدير المنصة لإدارة الكورسات والدروس.</p><label>اسم المستخدم<input class="admin-field" id="academyAdminUser" autocomplete="username" placeholder="Admin"></label><label>كلمة المرور<input class="admin-field" id="academyAdminPass" type="password" autocomplete="current-password" placeholder="••••••••"></label><div class="admin-actions"><button class="admin-btn admin-primary" id="academyAdminLoginBtn">دخول</button><button class="admin-btn admin-secondary" id="academyAdminCloseBtn">إغلاق</button></div><div class="admin-note">هذه لوحة إدارة محلية داخل الملف. التخزين السحابي الحقيقي يحتاج ربط خدمة تخزين/قاعدة بيانات بحسابك.</div></div></div>
 
 <section class="panel admin-panel" id="academy-admin-panel"><div class="admin-shell">
