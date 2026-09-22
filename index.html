@@ -146,6 +146,52 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
 <div class="admin-view" id="admin-view-settings"><div class="admin-form"><h3>إعدادات المدير</h3><div class="admin-row"><div><label>اسم المنصة<input class="admin-field" id="settingAcademyName" value="Hamdi Elkhateeb Academy"></label></div><div><label>اسم المدير<input class="admin-field" id="settingAdminName" value="Hamdi"></label></div></div><button class="admin-btn admin-primary" id="saveSettings">حفظ الإعدادات</button><div class="admin-help"><b>مهم قبل التسليم:</b><br>هذا الملف أصبح مجهزًا لإدارة المحتوى ورفع/معاينة الفيديوهات والملفات من لوحة الإدارة. أما تسجيل دخول حقيقي متعدد المستخدمين، قاعدة بيانات مشتركة، تخزين فيديو سحابي، ودفع إلكتروني تلقائي فهي خدمات خادم خارج ملف HTML وتحتاج حسابات/مفاتيح الخدمة الخاصة بك.</div></div></div>
 </div></section>
 
+<style id="hamdi-student-auth-style">
+#hamdiStudentLoginBtn{position:fixed;left:18px;bottom:18px;z-index:9997;border:0;border-radius:999px;padding:13px 18px;background:#0f172a;color:#fff;font-weight:800;box-shadow:0 8px 24px rgba(0,0,0,.2);cursor:pointer;font-size:15px}
+.academy-admin-mode #hamdiStudentLoginBtn{display:none!important}
+#hamdiStudentAuth{position:fixed;inset:0;z-index:10005;background:rgba(0,0,0,.72);display:none;align-items:center;justify-content:center;padding:18px;direction:rtl}
+#hamdiStudentAuth.open{display:flex}
+#hamdiStudentAuthBox{width:min(430px,100%);background:#fff;color:#111827;border-radius:20px;padding:24px;box-shadow:0 20px 70px rgba(0,0,0,.35)}
+#hamdiStudentAuthBox h2{margin:0 0 8px}.student-auth-note{color:#6b7280;font-size:13px;line-height:1.7;margin-bottom:14px}
+.student-auth-field{display:block;width:100%;box-sizing:border-box;padding:12px;border:1px solid #d1d5db;border-radius:10px;margin:7px 0 12px;font:inherit}
+.student-auth-actions{display:flex;gap:8px;flex-wrap:wrap}.student-auth-btn{border:0;border-radius:10px;padding:11px 15px;font-weight:800;cursor:pointer}.student-auth-main{background:#0f172a;color:#fff}.student-auth-alt{background:#eef2f7;color:#111827}.student-auth-status{margin-top:12px;font-size:13px;line-height:1.6}
+</style>
+<button id="hamdiStudentLoginBtn" type="button">تسجيل دخول الطالب</button>
+<div id="hamdiStudentAuth" aria-hidden="true"><div id="hamdiStudentAuthBox">
+<h2 id="studentAuthTitle">تسجيل دخول الطالب</h2>
+<div class="student-auth-note">ادخل بالبريد الإلكتروني وكلمة المرور. ويمكن للطالب إنشاء حساب جديد من نفس الشاشة.</div>
+<label>الاسم الكامل<input id="studentAuthName" class="student-auth-field" placeholder="الاسم الكامل"></label>
+<label>البريد الإلكتروني<input id="studentAuthEmail" class="student-auth-field" type="email" placeholder="name@example.com"></label>
+<label>كلمة المرور<input id="studentAuthPass" class="student-auth-field" type="password" placeholder="••••••••"></label>
+<div class="student-auth-actions"><button class="student-auth-btn student-auth-main" id="studentAuthSubmit">دخول</button><button class="student-auth-btn student-auth-alt" id="studentAuthSwitch">إنشاء حساب</button><button class="student-auth-btn student-auth-alt" id="studentAuthClose">إغلاق</button></div>
+<div id="studentAuthStatus" class="student-auth-status"></div>
+</div></div>
+<script>
+window.addEventListener('load',function(){
+ const b=document.getElementById('hamdiStudentLoginBtn'),o=document.getElementById('hamdiStudentAuth'),sw=document.getElementById('studentAuthSwitch'),name=document.getElementById('studentAuthName'),title=document.getElementById('studentAuthTitle'),status=document.getElementById('studentAuthStatus');
+ let mode='login';
+ function open(m){mode=m;o.classList.add('open');o.setAttribute('aria-hidden','false');name.style.display=m==='signup'?'block':'none';title.textContent=m==='signup'?'إنشاء حساب طالب':'تسجيل دخول الطالب';sw.textContent=m==='signup'?'لدي حساب بالفعل':'إنشاء حساب';status.textContent='';}
+ function close(){o.classList.remove('open');o.setAttribute('aria-hidden','true');}
+ b.onclick=()=>open('login');document.getElementById('studentAuthClose').onclick=close;sw.onclick=()=>open(mode==='login'?'signup':'login');
+ document.getElementById('studentAuthSubmit').onclick=async function(){
+   const sb=window.HAMDI_SUPABASE,e=document.getElementById('studentAuthEmail').value.trim(),p=document.getElementById('studentAuthPass').value,n=name.value.trim();
+   if(!sb)return status.textContent='الاتصال بخدمة الحساب غير جاهز. أعد تحميل الصفحة.';
+   if(!e||!p)return status.textContent='اكتب البريد وكلمة المرور.';
+   this.disabled=true;status.textContent='جارٍ التنفيذ...';
+   try{
+    if(mode==='signup'){
+      const r=await sb.auth.signUp({email:e,password:p,options:{data:{full_name:n}}});if(r.error)throw r.error;
+      status.textContent=r.data.session?'تم إنشاء الحساب وتسجيل الدخول.':'تم إنشاء الحساب. إذا طلب منك تأكيد البريد، افتح رسالة التأكيد ثم سجّل الدخول.';
+      if(r.data.session)setTimeout(close,900);
+    }else{
+      const r=await sb.auth.signInWithPassword({email:e,password:p});if(r.error)throw r.error;status.textContent='تم تسجيل الدخول بنجاح.';setTimeout(close,700);
+    }
+   }catch(err){status.textContent=err.message||'حدث خطأ أثناء تسجيل الدخول.';}
+   finally{this.disabled=false;}
+ };
+});
+</script>
+
 <script id="academy-admin-script-v2">
 (function(){
 'use strict';
@@ -153,7 +199,7 @@ const COURSE_KEY='hamdi_academy_courses_v3', STUDENT_KEY='hamdi_academy_students
 const baseCourses=[{id:'base-exocad',name:'Exocad Basics',price:'4,000 EGP',desc:'Exocad Basics',lessons:[]},{id:'base-advanced',name:'Advanced Exocad',price:'5,000 EGP',desc:'Advanced Exocad',lessons:[]},{id:'base-implant',name:'Implant Prosthetics',price:'5,000 EGP',desc:'Implant Prosthetics',lessons:[]}];
 const $=id=>document.getElementById(id), esc=v=>String(v??'').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
 let courses=read(COURSE_KEY,baseCourses), students=read(STUDENT_KEY,[]), payments=read(PAYMENT_KEY,[]), selectedCourseId=null;
-function read(k,f){try{const x=JSON.parse(localStorage.getItem(k)||'null');return Array.isArray(f)?(Array.isArray(x)?x:f):(x||f)}catch(e){return f}}
+function read(k,f){try{const x=JSON.parse(localStorage.getItem(k)||'null');let out=Array.isArray(f)?(Array.isArray(x)?x:f):(x||f);if(k===COURSE_KEY&&Array.isArray(out)){const dental=/exocad|implant|prosthetic|prosthodont|dental|dentistry|أسنان|اسنان|تركيبات|زراعة|إكزو|اكزود/i;out=out.filter(c=>dental.test(String(c?.name||'')+' '+String(c?.desc||'')));if(!out.length)out=f;}return out}catch(e){return f}}
 function saveAll(){localStorage.setItem(COURSE_KEY,JSON.stringify(courses));localStorage.setItem(STUDENT_KEY,JSON.stringify(students));localStorage.setItem(PAYMENT_KEY,JSON.stringify(payments));renderAll()}
 function uid(p){return p+'-'+Date.now()+'-'+Math.random().toString(36).slice(2,7)}
 function openLogin(){const o=$('academyAdminLogin');o.classList.add('open');o.setAttribute('aria-hidden','false');setTimeout(()=>$('academyAdminUser').focus(),50)}
