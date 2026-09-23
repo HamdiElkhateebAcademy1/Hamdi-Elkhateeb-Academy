@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>أكاديمية حمدي الخطيب لطب الأسنان</title><style>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><title>Hamdi Elkhateeb Digital Academy</title><style>
 :root{--bg:#061727;--side:#061a2b;--panel:#0b2136;--line:#1b3b55;--text:#eef5fb;--muted:#8fa5b8;--blue:#159bea}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#061727;color:var(--text);font-family:Inter,Arial,sans-serif}
 body{overflow-x:hidden}.app{display:flex;min-height:100vh;background:radial-gradient(900px 500px at 70% 0,#10324d 0,#061727 55%,#04111e 100%)}
@@ -22,18 +22,10 @@ body{overflow-x:hidden}.app{display:flex;min-height:100vh;background:radial-grad
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 window.HAMDI_SUPABASE_CONFIG = {
-  url: 'https://irlwndzsfphnphezdmyb.supabase.co',
+  url: 'https://irlwndzsfphnphdezmyb.supabase.co',
   publishableKey: 'sb_publishable_2bUzudb32hR-udSA1hPcPQ_B6pT3fKK'
 };
 (function initHamdiSupabase(){
-  function loadFallback(){
-    if(window.supabase || document.getElementById('hamdi-supabase-fallback')) return;
-    var s=document.createElement('script');
-    s.id='hamdi-supabase-fallback';
-    s.src='https://unpkg.com/@supabase/supabase-js@2';
-    s.onload=create;
-    document.head.appendChild(s);
-  }
   function create(){
     try {
       if (window.supabase && window.supabase.createClient) {
@@ -50,7 +42,6 @@ window.HAMDI_SUPABASE_CONFIG = {
     return false;
   }
   if (!create()) {
-    loadFallback();
     var tries = 0;
     var timer = setInterval(function(){
       tries++;
@@ -206,7 +197,7 @@ window.addEventListener('load',function(){
     }else{
       const r=await sb.auth.signInWithPassword({email:e,password:p});if(r.error)throw r.error;status.textContent='تم تسجيل الدخول بنجاح.';setTimeout(close,700);
     }
-   }catch(err){status.textContent=(err?.message||'حدث خطأ أثناء تسجيل الدخول.')+(err?.code?' ['+err.code+']':'');}
+   }catch(err){status.textContent=err.message||'حدث خطأ أثناء تسجيل الدخول.';}
    finally{this.disabled=false;}
  };
 });
@@ -478,25 +469,22 @@ async function submitAuth(){
       closeAuth();
       openStudentArea();
     }
-  }catch(e){ setAuthStatus((e?.message||'حدث خطأ أثناء تسجيل الدخول.')+(e?.code?' ['+e.code+']':'')); }
+  }catch(e){ setAuthStatus(e.message||'حدث خطأ أثناء تسجيل الدخول.'); }
 }
 
 async function refreshCloudUser(){
-  if(!sb) throw new Error('اتصال Supabase غير جاهز. حدّث الصفحة ثم حاول مرة أخرى.');
-  const u=await sb.auth.getUser();
-  if(u.error) throw u.error;
-  currentUser=u.data?.user||null;
+  if(!sb) return;
+  const {data}=await sb.auth.getUser();
+  currentUser=data?.user||null;
   currentProfile=null;
   if(currentUser){
     const r=await sb.from('profiles').select('id,full_name,email,role').eq('id',currentUser.id).maybeSingle();
-    if(r.error) throw r.error;
-    currentProfile=r.data||null;
+    if(!r.error) currentProfile=r.data;
   }
   injectRealUI();
   const isAdmin=currentProfile?.role==='admin';
   $('hcStudentAccountBtn').textContent=currentUser?(isAdmin?'حسابي / الإدارة':'حساب الطالب'):'تسجيل دخول الطالب';
   $('hcCloudAdminBtn').style.display=isAdmin?'inline-block':'none';
-  return {user:currentUser,profile:currentProfile};
 }
 
 async function openStudentArea(){
@@ -886,7 +874,7 @@ startHamdiRealCloud();
           modal.classList.remove('open');
           if(typeof openCloudAdmin==='function') openCloudAdmin();
         }catch(e){
-          status.textContent=(e?.message||'تعذر تسجيل دخول الإدارة.')+(e?.code?' ['+e.code+']':'');
+          status.textContent=e.message||'تعذر تسجيل دخول الإدارة.';
         }
       };
     }
