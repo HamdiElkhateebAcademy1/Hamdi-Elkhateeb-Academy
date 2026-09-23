@@ -523,7 +523,7 @@ async function loadStudentLessons(courseId){
 async function openStudentLesson(id,type,path){
   if(!path){alert('هذا الدرس لا يحتوي على ملف أو رابط بعد.');return;}
   let src=path;
-  if(!/^https?:\\/\\//i.test(path)){
+  if(!/^https?:\/\//i.test(path)){
     const {data,error}=await sb.storage.from(COURSE_BUCKET).createSignedUrl(path,3600);
     if(error){alert('تعذر فتح الملف: '+error.message);return;}
     src=data.signedUrl;
@@ -694,7 +694,7 @@ async function previewCloudLesson(id){
   if(error)return alert(error.message);
   if(!data.content_url)return alert('لا يوجد ملف.');
   let src=data.content_url;
-  if(!/^https?:\\/\\//i.test(src)){
+  if(!/^https?:\/\//i.test(src)){
     const r=await sb.storage.from(COURSE_BUCKET).createSignedUrl(src,3600);
     if(r.error)return alert(r.error.message);
     src=r.data.signedUrl;
@@ -710,7 +710,7 @@ async function deleteCloudLesson(id){
   if(!confirm('حذف الدرس والملف من Supabase؟'))return;
   const {data,error}=await sb.from('lessons').select('content_url').eq('id',id).single();
   if(error)return alert(error.message);
-  if(data?.content_url && !/^https?:\\/\\//i.test(data.content_url)){
+  if(data?.content_url && !/^https?:\/\//i.test(data.content_url)){
     await sb.storage.from(COURSE_BUCKET).remove([data.content_url]);
   }
   const r=await sb.from('lessons').delete().eq('id',id);
