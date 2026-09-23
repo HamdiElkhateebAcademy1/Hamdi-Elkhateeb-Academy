@@ -506,6 +506,12 @@ async function refreshCloudUser(){
   if(currentUser){
     const r=await sb.from('profiles').select('id,full_name,email,role').eq('id',currentUser.id).maybeSingle();
     if(!r.error) currentProfile=r.data;
+    else {
+      const adminCheck=await sb.rpc('is_admin');
+      if(!adminCheck.error && adminCheck.data===true){
+        currentProfile={id:currentUser.id,email:currentUser.email,role:'admin'};
+      }
+    }
   }
   injectRealUI();
   const isAdmin=currentProfile?.role==='admin';
@@ -883,20 +889,21 @@ startHamdiRealCloud();
           const user=u.data?.user;
           if(!user) throw new Error('تعذر قراءة حساب الأدمن.');
 
+          const adminCheck = await sb.rpc('is_admin');
+          if(adminCheck.error) throw adminCheck.error;
+
+          if(adminCheck.data !== true){
+            await sb.auth.signOut();
+            throw new Error('هذا الحساب ليس حساب مدير.');
+          }
+
           const p=await sb.from('profiles')
             .select('id,full_name,email,role')
             .eq('id',user.id)
             .maybeSingle();
 
-          if(p.error) throw p.error;
-
-          if(p.data?.role!=='admin'){
-            await sb.auth.signOut();
-            throw new Error('هذا الحساب ليس حساب مدير.');
-          }
-
           currentUser=user;
-          currentProfile=p.data;
+          currentProfile=p.data || {id:user.id,email:user.email,role:'admin'};
           modal.classList.remove('open');
           if(typeof openCloudAdmin==='function') openCloudAdmin();
         }catch(e){
