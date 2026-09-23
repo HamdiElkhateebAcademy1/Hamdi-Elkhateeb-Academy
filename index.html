@@ -121,10 +121,10 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
 @media(max-width:800px){.admin-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.admin-row{grid-template-columns:1fr}.admin-shell{margin:12px;padding:16px}.admin-course-item,.admin-lesson-item{align-items:flex-start;flex-direction:column}}@media(max-width:480px){.admin-grid{grid-template-columns:1fr}}
 </style>
 
-<button class="admin-login-launcher" id="academyAdminLauncher" type="button">تسجيل الدخول</button>
+<button class="admin-login-launcher" id="academyAdminLauncher" type="button" style="display:none">تسجيل الدخول</button>
 <div class="admin-login-overlay" id="academyAdminLogin" aria-hidden="true"><div class="admin-login-box"><h2>تسجيل الدخول</h2><p>دخول مدير المنصة لإدارة الكورسات والدروس.</p><label>اسم المستخدم<input class="admin-field" id="academyAdminUser" autocomplete="username" placeholder="Admin"></label><label>كلمة المرور<input class="admin-field" id="academyAdminPass" type="password" autocomplete="current-password" placeholder="••••••••"></label><div class="admin-actions"><button class="admin-btn admin-primary" id="academyAdminLoginBtn">دخول</button><button class="admin-btn admin-secondary" id="academyAdminCloseBtn">إغلاق</button></div><div class="admin-note">هذه لوحة إدارة محلية داخل الملف. التخزين السحابي الحقيقي يحتاج ربط خدمة تخزين/قاعدة بيانات بحسابك.</div></div></div>
 
-<section class="panel admin-panel" id="academy-admin-panel"><div class="admin-shell">
+<section class="panel admin-panel" id="academy-admin-panel" style="display:none!important"><div class="admin-shell">
 <div class="admin-top"><div><h1>لوحة تحكم Hamdi Elkhateeb Academy</h1><div class="admin-note">إدارة الكورسات، الدروس، الفيديوهات، الملفات، الاختبارات والنسخ الاحتياطية بدون تغيير واجهة المنصة الأصلية.</div></div><div class="admin-actions"><button class="admin-btn admin-secondary" id="academyBackBtn">العودة للمنصة</button><button class="admin-btn admin-danger" id="academyLogoutBtn">تسجيل الخروج</button></div></div>
 <div class="admin-grid"><div class="admin-stat">الكورسات<b id="academyCourseCount">0</b></div><div class="admin-stat">الدروس<b id="academyLessonCount">0</b></div><div class="admin-stat">الفيديوهات<b id="academyVideoCount">0</b></div><div class="admin-stat">الملفات<b id="academyFileCount">0</b></div></div>
 <div class="admin-tabs"><button class="admin-tab active" data-view="courses">الكورسات والدروس</button><button class="admin-tab" data-view="students">الطلاب</button><button class="admin-tab" data-view="payments">المدفوعات</button><button class="admin-tab" data-view="backup">نسخ وبيانات</button><button class="admin-tab" data-view="settings">الإعدادات</button></div>
@@ -232,6 +232,549 @@ $('academyAdminLauncher').onclick=()=>localStorage.getItem(SESSION_KEY)==='1'?op
 $('academySaveCourse').onclick=saveCourse;$('academyCancelEdit').onclick=clearCourse;$('academyCloseLessons').onclick=closeLessons;$('academySaveLesson').onclick=saveLesson;$('academyClearLesson').onclick=clearLesson;$('addStudent').onclick=()=>{const name=$('studentName').value.trim(),email=$('studentEmail').value.trim(),course=$('studentCourse').value.trim();if(!name)return alert('اكتب اسم الطالب.');students.push({id:uid('student'),name,email,course});['studentName','studentEmail','studentCourse'].forEach(id=>$(id).value='');saveAll()};$('addPayment').onclick=()=>{const name=$('payName').value.trim(),amount=$('payAmount').value.trim(),course=$('payCourse').value.trim();if(!name||!amount)return alert('اكتب اسم الطالب والمبلغ.');payments.push({id:uid('payment'),name,amount,course,date:new Date().toISOString()});['payName','payAmount','payCourse'].forEach(id=>$(id).value='');saveAll()};$('exportAcademy').onclick=exportData;$('importAcademy').onchange=e=>e.target.files[0]&&importData(e.target.files[0]);$('saveSettings').onclick=()=>{localStorage.setItem(SETTINGS_KEY,JSON.stringify({academyName:$('settingAcademyName').value,adminName:$('settingAdminName').value}));alert('تم حفظ الإعدادات.')};
 document.querySelectorAll('.admin-tab').forEach(t=>t.onclick=()=>{document.querySelectorAll('.admin-tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.admin-view').forEach(x=>x.classList.remove('active'));t.classList.add('active');$('admin-view-'+t.dataset.view).classList.add('active')});
 if(localStorage.getItem(SESSION_KEY)==='1'){openAdmin();}else{renderAll();}
+})();
+</script>
+
+
+<style id="hamdi-real-cloud-style">
+#hcStudentBar{position:fixed;right:16px;bottom:16px;z-index:10020;display:flex;gap:8px;flex-wrap:wrap}
+.hcRealBtn{border:0;border-radius:12px;padding:11px 15px;background:#159bea;color:#fff;font-weight:800;box-shadow:0 8px 25px #0005;cursor:pointer}
+.hcRealBtn.alt{background:#102f47;border:1px solid #31546e}
+.hcRealBtn.danger{background:#b83a46}
+#hcAuthReal,#hcCloudAdminReal,#hcStudentAreaReal{position:fixed;inset:0;z-index:10030;background:#000b;display:none;overflow:auto;padding:16px}
+#hcAuthReal.open,#hcCloudAdminReal.open,#hcStudentAreaReal.open{display:block}
+.hcRealBox{max-width:1050px;margin:25px auto;background:#fff;color:#111;border-radius:18px;padding:20px;box-shadow:0 25px 70px #0009}
+.hcRealBox h2{margin-top:0}
+.hcRealField{width:100%;padding:12px;border:1px solid #ccd4dc;border-radius:10px;margin:6px 0 12px;font-size:15px}
+.hcRealGrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.hcRealCard{border:1px solid #dbe2e8;border-radius:14px;padding:14px;margin:10px 0;background:#fafcfe}
+.hcRealMuted{color:#687784;font-size:13px}
+.hcRealRow{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.hcRealActions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.hcRealVideo{width:100%;max-height:480px;border-radius:12px;background:#000;margin-top:10px}
+.hcRealClose{float:left;border:0;background:#edf1f5;border-radius:10px;padding:8px 12px;cursor:pointer}
+.hcRealStatus{padding:10px;border-radius:10px;background:#f1f6fa;margin:10px 0;white-space:pre-wrap}
+.hcRealProgress{height:8px;background:#e4e9ee;border-radius:20px;overflow:hidden;margin:8px 0}
+.hcRealProgress i{display:block;height:100%;width:0;background:#159bea}
+@media(max-width:650px){.hcRealGrid{grid-template-columns:1fr}.hcRealBox{margin:8px auto;padding:14px}#hcStudentBar{right:10px;bottom:10px}}
+</style>
+
+<script id="hamdi-real-cloud-layer">
+(function(){
+'use strict';
+
+const COURSE_BUCKET = 'course-files';
+let sb = null;
+let currentUser = null;
+let currentProfile = null;
+let cloudCourseId = null;
+
+const $ = id => document.getElementById(id);
+const esc = v => String(v ?? '').replace(/[&<>'"]/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[m]));
+
+function waitForSupabase(){
+  return new Promise(resolve=>{
+    if(window.HAMDI_SUPABASE){ sb=window.HAMDI_SUPABASE; resolve(true); return; }
+    window.addEventListener('hamdi-supabase-ready',()=>{
+      sb=window.HAMDI_SUPABASE; resolve(!!sb);
+    },{once:true});
+    setTimeout(()=>resolve(!!window.HAMDI_SUPABASE),10000);
+  });
+}
+
+function injectRealUI(){
+  if(!$('hcStudentBar')){
+    const bar=document.createElement('div');
+    bar.id='hcStudentBar';
+    bar.innerHTML=`
+      <button class="hcRealBtn" id="hcStudentAccountBtn">تسجيل دخول الطالب</button>
+      <button class="hcRealBtn alt" id="hcCloudAdminBtn" style="display:none">إدارة المنصة ☁️</button>`;
+    document.body.appendChild(bar);
+    $('hcStudentAccountBtn').onclick=()=>currentUser?openStudentArea():openAuth('login');
+    $('hcCloudAdminBtn').onclick=openCloudAdmin;
+  }
+
+  if(!$('hcAuthReal')){
+    const o=document.createElement('div');
+    o.id='hcAuthReal';
+    o.innerHTML=`
+      <div class="hcRealBox">
+        <button class="hcRealClose" id="hcAuthClose">إغلاق</button>
+        <h2 id="hcAuthTitle">تسجيل دخول الطالب</h2>
+        <p class="hcRealMuted">ادخل بالبريد الإلكتروني وكلمة المرور الخاصة بحسابك في الأكاديمية.</p>
+        <label id="hcAuthNameWrap" style="display:none">الاسم الكامل
+          <input class="hcRealField" id="hcAuthName" placeholder="اسم الطالب">
+        </label>
+        <label>البريد الإلكتروني
+          <input class="hcRealField" id="hcAuthEmail" type="email" autocomplete="email" placeholder="student@example.com">
+        </label>
+        <label>كلمة المرور
+          <input class="hcRealField" id="hcAuthPass" type="password" autocomplete="current-password" placeholder="••••••••">
+        </label>
+        <div class="hcRealActions">
+          <button class="hcRealBtn" id="hcAuthSubmit">دخول</button>
+          <button class="hcRealBtn alt" id="hcAuthSwitch">إنشاء حساب جديد</button>
+        </div>
+        <div class="hcRealStatus" id="hcAuthStatus"></div>
+      </div>`;
+    document.body.appendChild(o);
+    $('hcAuthClose').onclick=closeAuth;
+    $('hcAuthSwitch').onclick=()=>{
+      const signup=$('hcAuthTitle').textContent!=='إنشاء حساب جديد';
+      openAuth(signup?'signup':'login');
+    };
+    $('hcAuthSubmit').onclick=submitAuth;
+  }
+
+  if(!$('hcStudentAreaReal')){
+    const o=document.createElement('div');
+    o.id='hcStudentAreaReal';
+    o.innerHTML=`
+      <div class="hcRealBox">
+        <button class="hcRealClose" id="hcStudentClose">إغلاق</button>
+        <h2>حساب الطالب</h2>
+        <div id="hcStudentWelcome" class="hcRealMuted"></div>
+        <div class="hcRealActions">
+          <button class="hcRealBtn alt" id="hcStudentLogout">تسجيل الخروج</button>
+        </div>
+        <h3>كورساتي</h3>
+        <div id="hcStudentCourses"></div>
+        <div id="hcStudentLessons"></div>
+      </div>`;
+    document.body.appendChild(o);
+    $('hcStudentClose').onclick=()=>o.classList.remove('open');
+    $('hcStudentLogout').onclick=async()=>{
+      await sb.auth.signOut();
+      o.classList.remove('open');
+    };
+  }
+
+  if(!$('hcCloudAdminReal')){
+    const o=document.createElement('div');
+    o.id='hcCloudAdminReal';
+    o.innerHTML=`
+      <div class="hcRealBox">
+        <button class="hcRealClose" id="hcCloudAdminClose">إغلاق</button>
+        <h2>إدارة المنصة السحابية</h2>
+        <div class="hcRealStatus" id="hcAdminStatus">متصل بـ Supabase</div>
+
+        <div class="hcRealCard">
+          <h3>إضافة / تعديل كورس</h3>
+          <input type="hidden" id="hcCourseId">
+          <input class="hcRealField" id="hcCourseTitle" placeholder="اسم الكورس">
+          <textarea class="hcRealField" id="hcCourseDesc" rows="3" placeholder="وصف الكورس"></textarea>
+          <div class="hcRealGrid">
+            <input class="hcRealField" id="hcCoursePrice" type="number" min="0" placeholder="السعر بالجنيه">
+            <select class="hcRealField" id="hcCoursePublished">
+              <option value="true">منشور</option>
+              <option value="false">مخفي</option>
+            </select>
+          </div>
+          <div class="hcRealActions">
+            <button class="hcRealBtn" id="hcSaveCourse">حفظ الكورس</button>
+            <button class="hcRealBtn alt" id="hcClearCourse">مسح الحقول</button>
+          </div>
+        </div>
+
+        <div class="hcRealCard">
+          <div class="hcRealRow"><h3>الكورسات</h3><button class="hcRealBtn alt" id="hcReloadCourses">تحديث</button></div>
+          <div id="hcCloudCourses"></div>
+        </div>
+
+        <div class="hcRealCard" id="hcLessonsCard" style="display:none">
+          <h3 id="hcLessonsTitle">دروس الكورس</h3>
+          <input type="hidden" id="hcLessonId">
+          <input class="hcRealField" id="hcLessonTitle" placeholder="عنوان الدرس">
+          <div class="hcRealGrid">
+            <select class="hcRealField" id="hcLessonType">
+              <option value="video">فيديو</option>
+              <option value="pdf">PDF</option>
+              <option value="file">ملف</option>
+              <option value="link">رابط</option>
+              <option value="text">نص</option>
+            </select>
+            <input class="hcRealField" id="hcLessonOrder" type="number" min="1" placeholder="ترتيب الدرس">
+          </div>
+          <input class="hcRealField" id="hcLessonUrl" placeholder="رابط خارجي (لنوع رابط فقط)">
+          <label>ملف الدرس — الفيديو أو PDF أو الملف سيتم رفعه إلى Supabase Storage
+            <input class="hcRealField" id="hcLessonFile" type="file" accept="video/*,.pdf,.zip,.rar,.doc,.docx,.ppt,.pptx,.xls,.xlsx,.txt">
+          </label>
+          <div class="hcRealProgress"><i id="hcUploadProgress"></i></div>
+          <div class="hcRealActions">
+            <button class="hcRealBtn" id="hcUploadLesson">رفع وحفظ الدرس</button>
+            <button class="hcRealBtn alt" id="hcClearLesson">مسح</button>
+          </div>
+          <div id="hcCloudLessons"></div>
+        </div>
+
+        <div class="hcRealCard">
+          <h3>طلبات الدفع</h3>
+          <div id="hcCloudPayments"></div>
+        </div>
+      </div>`;
+    document.body.appendChild(o);
+
+    $('hcCloudAdminClose').onclick=()=>o.classList.remove('open');
+    $('hcReloadCourses').onclick=loadCloudCourses;
+    $('hcSaveCourse').onclick=saveCloudCourse;
+    $('hcClearCourse').onclick=clearCloudCourse;
+    $('hcUploadLesson').onclick=uploadCloudLesson;
+    $('hcClearLesson').onclick=clearCloudLesson;
+  }
+}
+
+function setAuthStatus(t){ $('hcAuthStatus').textContent=t||''; }
+function openAuth(mode='login'){
+  injectRealUI();
+  $('hcAuthReal').classList.add('open');
+  const signup=mode==='signup';
+  $('hcAuthTitle').textContent=signup?'إنشاء حساب جديد':'تسجيل دخول الطالب';
+  $('hcAuthNameWrap').style.display=signup?'block':'none';
+  $('hcAuthSwitch').textContent=signup?'لدي حساب بالفعل':'إنشاء حساب جديد';
+  $('hcAuthStatus').textContent='';
+}
+function closeAuth(){ $('hcAuthReal')?.classList.remove('open'); }
+
+async function submitAuth(){
+  if(!sb) return setAuthStatus('الاتصال بـ Supabase لم يكتمل. أعد تحميل الصفحة.');
+  const email=$('hcAuthEmail').value.trim();
+  const password=$('hcAuthPass').value;
+  if(!email||!password) return setAuthStatus('اكتب البريد الإلكتروني وكلمة المرور.');
+  try{
+    if($('hcAuthTitle').textContent==='إنشاء حساب جديد'){
+      const name=$('hcAuthName').value.trim();
+      const {data,error}=await sb.auth.signUp({email,password,options:{data:{full_name:name}}});
+      if(error) throw error;
+      if(data.session){
+        await refreshCloudUser();
+        closeAuth();
+      }else{
+        setAuthStatus('تم إنشاء الحساب. إذا كان تأكيد البريد الإلكتروني مفعّلًا، افتح رسالة التأكيد ثم سجّل الدخول.');
+      }
+    }else{
+      const {error}=await sb.auth.signInWithPassword({email,password});
+      if(error) throw error;
+      await refreshCloudUser();
+      closeAuth();
+      openStudentArea();
+    }
+  }catch(e){ setAuthStatus(e.message||'حدث خطأ أثناء تسجيل الدخول.'); }
+}
+
+async function refreshCloudUser(){
+  if(!sb) return;
+  const {data}=await sb.auth.getUser();
+  currentUser=data?.user||null;
+  currentProfile=null;
+  if(currentUser){
+    const r=await sb.from('profiles').select('id,full_name,email,role').eq('id',currentUser.id).maybeSingle();
+    if(!r.error) currentProfile=r.data;
+  }
+  injectRealUI();
+  const isAdmin=currentProfile?.role==='admin';
+  $('hcStudentAccountBtn').textContent=currentUser?(isAdmin?'حسابي / الإدارة':'حساب الطالب'):'تسجيل دخول الطالب';
+  $('hcCloudAdminBtn').style.display=isAdmin?'inline-block':'none';
+}
+
+async function openStudentArea(){
+  if(!currentUser){openAuth('login');return;}
+  injectRealUI();
+  $('hcStudentAreaReal').classList.add('open');
+  $('hcStudentWelcome').textContent=`مرحبًا ${currentProfile?.full_name||currentUser.email}`;
+  await loadStudentCourses();
+}
+
+async function loadStudentCourses(){
+  const box=$('hcStudentCourses');
+  const lessonsBox=$('hcStudentLessons');
+  box.innerHTML='<div class="hcRealMuted">جاري تحميل كورساتك...</div>';
+  lessonsBox.innerHTML='';
+  const {data,error}=await sb.from('enrollments')
+    .select('course_id,status,courses(id,title,description,price)')
+    .eq('user_id',currentUser.id)
+    .eq('status','active');
+  if(error){box.innerHTML='<div class="hcRealStatus">'+esc(error.message)+'</div>';return;}
+  if(!data?.length){box.innerHTML='<div class="hcRealStatus">لا توجد كورسات مفعّلة على حسابك حتى الآن.</div>';return;}
+  box.innerHTML=data.map(e=>`
+    <div class="hcRealCard">
+      <div class="hcRealRow"><b>${esc(e.courses?.title||'كورس')}</b><span>${esc(e.courses?.price||'')}</span></div>
+      <p class="hcRealMuted">${esc(e.courses?.description||'')}</p>
+      <button class="hcRealBtn" data-student-course="${e.course_id}">فتح الدروس</button>
+    </div>`).join('');
+  box.querySelectorAll('[data-student-course]').forEach(b=>b.onclick=()=>loadStudentLessons(b.dataset.studentCourse));
+}
+
+async function loadStudentLessons(courseId){
+  const lessonsBox=$('hcStudentLessons');
+  lessonsBox.innerHTML='<div class="hcRealStatus">جاري تحميل الدروس...</div>';
+  const {data,error}=await sb.from('lessons').select('id,title,lesson_type,content_url,sort_order')
+    .eq('course_id',courseId).order('sort_order',{ascending:true});
+  if(error){lessonsBox.innerHTML='<div class="hcRealStatus">'+esc(error.message)+'</div>';return;}
+  if(!data?.length){lessonsBox.innerHTML='<div class="hcRealStatus">لا توجد دروس في هذا الكورس حتى الآن.</div>';return;}
+  lessonsBox.innerHTML='<h3>الدروس</h3>'+data.map(l=>`
+    <div class="hcRealCard">
+      <div class="hcRealRow"><b>${esc(l.title)}</b><span>${esc(l.lesson_type)}</span></div>
+      <div id="student-lesson-${l.id}"></div>
+      <button class="hcRealBtn" data-open-lesson="${l.id}" data-type="${esc(l.lesson_type)}" data-path="${esc(l.content_url||'')}">فتح الدرس</button>
+    </div>`).join('');
+  lessonsBox.querySelectorAll('[data-open-lesson]').forEach(b=>b.onclick=()=>openStudentLesson(b.dataset.openLesson,b.dataset.type,b.dataset.path));
+}
+
+async function openStudentLesson(id,type,path){
+  if(!path){alert('هذا الدرس لا يحتوي على ملف أو رابط بعد.');return;}
+  let src=path;
+  if(!/^https?:\\/\\//i.test(path)){
+    const {data,error}=await sb.storage.from(COURSE_BUCKET).createSignedUrl(path,3600);
+    if(error){alert('تعذر فتح الملف: '+error.message);return;}
+    src=data.signedUrl;
+  }
+  const holder=$('student-lesson-'+id);
+  if(!holder)return;
+  if(type==='video'){
+    holder.innerHTML=`<video class="hcRealVideo" controls playsinline preload="metadata" src="${esc(src)}"></video>`;
+  }else if(type==='pdf'){
+    holder.innerHTML=`<iframe style="width:100%;height:650px;border:0;border-radius:12px" src="${esc(src)}"></iframe>`;
+  }else{
+    holder.innerHTML=`<a class="hcRealBtn" href="${esc(src)}" target="_blank" rel="noopener">فتح الملف</a>`;
+  }
+}
+
+function openCloudAdmin(){
+  if(currentProfile?.role!=='admin'){alert('هذا القسم متاح للأدمن فقط.');return;}
+  injectRealUI();
+  $('hcCloudAdminReal').classList.add('open');
+  loadCloudCourses();
+  loadCloudPayments();
+}
+
+async function loadCloudCourses(){
+  const box=$('hcCloudCourses');
+  box.innerHTML='<div class="hcRealMuted">جاري تحميل الكورسات...</div>';
+  const {data,error}=await sb.from('courses').select('id,title,description,price,published,created_at').order('created_at',{ascending:false});
+  if(error){box.innerHTML='<div class="hcRealStatus">'+esc(error.message)+'</div>';return;}
+  if(!data?.length){box.innerHTML='<div class="hcRealStatus">لا توجد كورسات.</div>';return;}
+  box.innerHTML=data.map(c=>`
+    <div class="hcRealCard">
+      <div class="hcRealRow"><b>${esc(c.title)}</b><span>${Number(c.price||0).toLocaleString('ar-EG')} جنيه</span></div>
+      <div class="hcRealMuted">${esc(c.description||'')}</div>
+      <div class="hcRealActions">
+        <button class="hcRealBtn" data-edit-course="${c.id}">تعديل</button>
+        <button class="hcRealBtn alt" data-lessons-course="${c.id}">الدروس</button>
+        <button class="hcRealBtn alt" data-toggle-course="${c.id}" data-published="${c.published}">${c.published?'إخفاء':'نشر'}</button>
+      </div>
+    </div>`).join('');
+  box.querySelectorAll('[data-edit-course]').forEach(b=>b.onclick=()=>editCloudCourse(b.dataset.editCourse));
+  box.querySelectorAll('[data-lessons-course]').forEach(b=>b.onclick=()=>openCloudLessons(b.dataset.lessonsCourse));
+  box.querySelectorAll('[data-toggle-course]').forEach(b=>b.onclick=()=>toggleCloudCourse(b.dataset.toggleCourse,b.dataset.published==='true'));
+}
+
+async function saveCloudCourse(){
+  const title=$('hcCourseTitle').value.trim();
+  if(!title)return alert('اكتب اسم الكورس.');
+  const payload={
+    title,
+    description:$('hcCourseDesc').value.trim(),
+    price:Number($('hcCoursePrice').value||0),
+    published:$('hcCoursePublished').value==='true'
+  };
+  const id=$('hcCourseId').value;
+  const q=id?sb.from('courses').update(payload).eq('id',id):sb.from('courses').insert({...payload,created_by:currentUser.id});
+  const {error}=await q;
+  if(error)return alert('تعذر حفظ الكورس: '+error.message);
+  clearCloudCourse();
+  await loadCloudCourses();
+  alert('تم حفظ الكورس على Supabase.');
+}
+
+function editCloudCourse(id){
+  sb.from('courses').select('id,title,description,price,published').eq('id',id).single().then(({data,error})=>{
+    if(error)return alert(error.message);
+    $('hcCourseId').value=data.id;
+    $('hcCourseTitle').value=data.title||'';
+    $('hcCourseDesc').value=data.description||'';
+    $('hcCoursePrice').value=data.price||0;
+    $('hcCoursePublished').value=String(data.published);
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+}
+
+function clearCloudCourse(){
+  ['hcCourseId','hcCourseTitle','hcCourseDesc','hcCoursePrice'].forEach(id=>$(id).value='');
+  $('hcCoursePublished').value='true';
+}
+
+async function toggleCloudCourse(id,published){
+  const {error}=await sb.from('courses').update({published:!published}).eq('id',id);
+  if(error)return alert(error.message);
+  loadCloudCourses();
+}
+
+async function openCloudLessons(courseId){
+  cloudCourseId=courseId;
+  const {data,error}=await sb.from('courses').select('id,title').eq('id',courseId).single();
+  if(error)return alert(error.message);
+  $('hcLessonsCard').style.display='block';
+  $('hcLessonsTitle').textContent='دروس: '+data.title;
+  await loadCloudLessons();
+  $('hcLessonsCard').scrollIntoView({behavior:'smooth'});
+}
+
+async function loadCloudLessons(){
+  const box=$('hcCloudLessons');
+  box.innerHTML='<div class="hcRealMuted">جاري تحميل الدروس...</div>';
+  const {data,error}=await sb.from('lessons').select('id,title,lesson_type,content_url,sort_order,created_at')
+    .eq('course_id',cloudCourseId).order('sort_order',{ascending:true});
+  if(error){box.innerHTML='<div class="hcRealStatus">'+esc(error.message)+'</div>';return;}
+  if(!data?.length){box.innerHTML='<div class="hcRealStatus">لا توجد دروس بعد.</div>';return;}
+  box.innerHTML=data.map((l,i)=>`
+    <div class="hcRealCard">
+      <div class="hcRealRow"><b>${i+1}. ${esc(l.title)}</b><span>${esc(l.lesson_type)}</span></div>
+      <div class="hcRealMuted">${esc(l.content_url||'')}</div>
+      <div class="hcRealActions">
+        <button class="hcRealBtn alt" data-preview-cloud="${l.id}">معاينة</button>
+        <button class="hcRealBtn danger" data-delete-cloud="${l.id}">حذف</button>
+      </div>
+    </div>`).join('');
+  box.querySelectorAll('[data-preview-cloud]').forEach(b=>b.onclick=()=>previewCloudLesson(b.dataset.previewCloud));
+  box.querySelectorAll('[data-delete-cloud]').forEach(b=>b.onclick=()=>deleteCloudLesson(b.dataset.deleteCloud));
+}
+
+function clearCloudLesson(){
+  ['hcLessonId','hcLessonTitle','hcLessonOrder','hcLessonUrl'].forEach(id=>$(id).value='');
+  $('hcLessonFile').value='';
+  $('hcLessonType').value='video';
+  $('hcUploadProgress').style.width='0%';
+}
+
+async function uploadCloudLesson(){
+  if(!cloudCourseId)return alert('اختر الكورس أولًا من زر «الدروس».');
+  const title=$('hcLessonTitle').value.trim();
+  if(!title)return alert('اكتب عنوان الدرس.');
+  const type=$('hcLessonType').value;
+  const file=$('hcLessonFile').files[0];
+  const externalUrl=$('hcLessonUrl').value.trim();
+  if(['video','pdf','file'].includes(type) && !file)return alert('اختر ملف الدرس.');
+  if(type==='link' && !externalUrl)return alert('اكتب الرابط.');
+  try{
+    $('hcUploadProgress').style.width='15%';
+    const lessonId=crypto.randomUUID();
+    let contentUrl=externalUrl||null;
+    if(file){
+      const safeName=file.name.replace(/[^a-zA-Z0-9._-]+/g,'_');
+      const path=`${cloudCourseId}/${lessonId}/${safeName}`;
+      const {error}=await sb.storage.from(COURSE_BUCKET).upload(path,file,{upsert:false,contentType:file.type||undefined});
+      if(error)throw error;
+      contentUrl=path;
+    }
+    $('hcUploadProgress').style.width='75%';
+    const {error}=await sb.from('lessons').insert({
+      id:lessonId,
+      course_id:cloudCourseId,
+      title,
+      lesson_type:type,
+      content_url:contentUrl,
+      sort_order:Number($('hcLessonOrder').value||0)||1
+    });
+    if(error){
+      if(file && contentUrl) await sb.storage.from(COURSE_BUCKET).remove([contentUrl]);
+      throw error;
+    }
+    $('hcUploadProgress').style.width='100%';
+    clearCloudLesson();
+    await loadCloudLessons();
+    alert('تم رفع الدرس وحفظه على Supabase.');
+  }catch(e){
+    $('hcUploadProgress').style.width='0%';
+    alert('تعذر رفع الدرس: '+(e.message||e));
+  }
+}
+
+async function previewCloudLesson(id){
+  const {data,error}=await sb.from('lessons').select('title,lesson_type,content_url').eq('id',id).single();
+  if(error)return alert(error.message);
+  if(!data.content_url)return alert('لا يوجد ملف.');
+  let src=data.content_url;
+  if(!/^https?:\\/\\//i.test(src)){
+    const r=await sb.storage.from(COURSE_BUCKET).createSignedUrl(src,3600);
+    if(r.error)return alert(r.error.message);
+    src=r.data.signedUrl;
+  }
+  const w=window.open('','_blank');
+  if(!w)return alert('اسمح بالنوافذ المنبثقة.');
+  if(data.lesson_type==='video')w.document.write(`<title>${esc(data.title)}</title><video controls autoplay style="width:100%;height:auto;background:#000" src="${esc(src)}"></video>`);
+  else if(data.lesson_type==='pdf')w.document.write(`<title>${esc(data.title)}</title><iframe style="width:100%;height:100vh;border:0" src="${esc(src)}"></iframe>`);
+  else w.document.write(`<title>${esc(data.title)}</title><a href="${esc(src)}" target="_blank">فتح الملف</a>`);
+}
+
+async function deleteCloudLesson(id){
+  if(!confirm('حذف الدرس والملف من Supabase؟'))return;
+  const {data,error}=await sb.from('lessons').select('content_url').eq('id',id).single();
+  if(error)return alert(error.message);
+  if(data?.content_url && !/^https?:\\/\\//i.test(data.content_url)){
+    await sb.storage.from(COURSE_BUCKET).remove([data.content_url]);
+  }
+  const r=await sb.from('lessons').delete().eq('id',id);
+  if(r.error)return alert(r.error.message);
+  loadCloudLessons();
+}
+
+async function loadCloudPayments(){
+  const box=$('hcCloudPayments');
+  const {data,error}=await sb.from('payment_requests')
+    .select('id,amount,method,status,created_at,user_id,course_id,courses(title)')
+    .order('created_at',{ascending:false});
+  if(error){box.innerHTML='<div class="hcRealStatus">'+esc(error.message)+'</div>';return;}
+  if(!data?.length){box.innerHTML='<div class="hcRealStatus">لا توجد طلبات دفع.</div>';return;}
+  box.innerHTML=data.map(p=>`
+    <div class="hcRealCard">
+      <b>الطالب: ${esc(p.user_id)}</b>
+      <div>${esc(p.courses?.title||'')} — ${Number(p.amount||0).toLocaleString('ar-EG')} جنيه</div>
+      <div class="hcRealMuted">الحالة: ${esc(p.status)} — ${new Date(p.created_at).toLocaleString('ar-EG')}</div>
+      <div class="hcRealActions">
+        ${p.status==='pending'?`<button class="hcRealBtn" data-approve-pay="${p.id}">موافقة وإضافة الكورس</button><button class="hcRealBtn danger" data-reject-pay="${p.id}">رفض</button>`:''}
+      </div>
+    </div>`).join('');
+  box.querySelectorAll('[data-approve-pay]').forEach(b=>b.onclick=()=>approvePayment(b.dataset.approvePay));
+  box.querySelectorAll('[data-reject-pay]').forEach(b=>b.onclick=()=>rejectPayment(b.dataset.rejectPay));
+}
+
+async function approvePayment(id){
+  const {data,error}=await sb.from('payment_requests').select('id,user_id,course_id,status').eq('id',id).single();
+  if(error)return alert(error.message);
+  if(data.status!=='pending')return alert('هذا الطلب تمت معالجته بالفعل.');
+  const e=await sb.from('enrollments').upsert({user_id:data.user_id,course_id:data.course_id,status:'active'},{onConflict:'user_id,course_id'});
+  if(e.error)return alert(e.error.message);
+  const p=await sb.from('payment_requests').update({status:'approved'}).eq('id',id);
+  if(p.error)return alert(p.error.message);
+  loadCloudPayments();
+}
+
+async function rejectPayment(id){
+  const {error}=await sb.from('payment_requests').update({status:'rejected'}).eq('id',id);
+  if(error)return alert(error.message);
+  loadCloudPayments();
+}
+
+async function bootRealCloud(){
+  injectRealUI();
+  if(!sb)return;
+  await refreshCloudUser();
+  sb.auth.onAuthStateChange(()=>setTimeout(refreshCloudUser,0));
+
+  const session=await sb.auth.getSession();
+  if(session.data?.session && currentProfile?.role==='admin'){
+    // Do not force the admin modal open if the user is simply visiting the site.
+    // The admin button is available in the bottom bar.
+  }
+}
+window.HAMDI_REAL_CLOUD_BOOT=bootRealCloud;
+
+function startHamdiRealCloud(){
+  if(window.HAMDI_SUPABASE){ bootRealCloud(); return; }
+  window.addEventListener('hamdi-supabase-ready', bootRealCloud, {once:true});
+  setTimeout(()=>{ if(window.HAMDI_SUPABASE) bootRealCloud(); },1500);
+}
+startHamdiRealCloud();
 })();
 </script>
 
