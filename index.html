@@ -25,19 +25,30 @@ window.HAMDI_SUPABASE_CONFIG = {
   url: 'https://irlwndzsfphnphezdmyb.supabase.co',
   publishableKey: 'sb_publishable_2bUzudb32hR-udSA1hPcPQ_B6pT3fKK'
 };
-window.addEventListener('load', function () {
-  try {
-    if (window.supabase && window.supabase.createClient) {
-      window.HAMDI_SUPABASE = window.supabase.createClient(
-        window.HAMDI_SUPABASE_CONFIG.url,
-        window.HAMDI_SUPABASE_CONFIG.publishableKey
-      );
-      window.dispatchEvent(new Event('hamdi-supabase-ready'));
+(function initHamdiSupabase(){
+  function create(){
+    try {
+      if (window.supabase && window.supabase.createClient) {
+        window.HAMDI_SUPABASE = window.supabase.createClient(
+          window.HAMDI_SUPABASE_CONFIG.url,
+          window.HAMDI_SUPABASE_CONFIG.publishableKey
+        );
+        window.dispatchEvent(new Event('hamdi-supabase-ready'));
+        return true;
+      }
+    } catch (e) {
+      console.warn('Supabase initialization failed:', e);
     }
-  } catch (e) {
-    console.warn('Supabase initialization failed:', e);
+    return false;
   }
-});
+  if (!create()) {
+    var tries = 0;
+    var timer = setInterval(function(){
+      tries++;
+      if (create() || tries >= 30) clearInterval(timer);
+    }, 200);
+  }
+})();
 </script>
 
 </head>
@@ -122,7 +133,7 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
 </style>
 
 <button class="admin-login-launcher" id="academyAdminLauncher" type="button" style="display:none">تسجيل الدخول</button>
-<div class="admin-login-overlay" id="academyAdminLogin" aria-hidden="true"><div class="admin-login-box"><h2>تسجيل الدخول</h2><p>دخول مدير المنصة لإدارة الكورسات والدروس.</p><label>اسم المستخدم<input class="admin-field" id="academyAdminUser" autocomplete="username" placeholder="Admin"></label><label>كلمة المرور<input class="admin-field" id="academyAdminPass" type="password" autocomplete="current-password" placeholder="••••••••"></label><div class="admin-actions"><button class="admin-btn admin-primary" id="academyAdminLoginBtn">دخول</button><button class="admin-btn admin-secondary" id="academyAdminCloseBtn">إغلاق</button></div><div class="admin-note">هذه لوحة إدارة محلية داخل الملف. التخزين السحابي الحقيقي يحتاج ربط خدمة تخزين/قاعدة بيانات بحسابك.</div></div></div>
+<div class="admin-login-overlay" id="academyAdminLogin" aria-hidden="true"><div class="admin-login-box"><h2>تسجيل الدخول</h2><p>دخول مدير المنصة لإدارة الكورسات والدروس.</p><label>البريد الإلكتروني<input class="admin-field" id="academyAdminUser" type="email" autocomplete="username" placeholder="admin@example.com"></label><label>كلمة المرور<input class="admin-field" id="academyAdminPass" type="password" autocomplete="current-password" placeholder="••••••••"></label><div class="admin-actions"><button class="admin-btn admin-primary" id="academyAdminLoginBtn">دخول</button><button class="admin-btn admin-secondary" id="academyAdminCloseBtn">إغلاق</button></div><div class="admin-note">هذه لوحة إدارة محلية داخل الملف. التخزين السحابي الحقيقي يحتاج ربط خدمة تخزين/قاعدة بيانات بحسابك.</div></div></div>
 
 <section class="panel admin-panel" id="academy-admin-panel" style="display:none!important"><div class="admin-shell">
 <div class="admin-top"><div><h1>لوحة تحكم Hamdi Elkhateeb Academy</h1><div class="admin-note">إدارة الكورسات، الدروس، الفيديوهات، الملفات، الاختبارات والنسخ الاحتياطية بدون تغيير واجهة المنصة الأصلية.</div></div><div class="admin-actions"><button class="admin-btn admin-secondary" id="academyBackBtn">العودة للمنصة</button><button class="admin-btn admin-danger" id="academyLogoutBtn">تسجيل الخروج</button></div></div>
@@ -757,6 +768,7 @@ async function rejectPayment(id){
 
 async function bootRealCloud(){
   injectRealUI();
+  sb = window.HAMDI_SUPABASE || sb;
   if(!sb)return;
   await refreshCloudUser();
   sb.auth.onAuthStateChange(()=>setTimeout(refreshCloudUser,0));
@@ -770,9 +782,9 @@ async function bootRealCloud(){
 window.HAMDI_REAL_CLOUD_BOOT=bootRealCloud;
 
 function startHamdiRealCloud(){
-  if(window.HAMDI_SUPABASE){ bootRealCloud(); return; }
-  window.addEventListener('hamdi-supabase-ready', bootRealCloud, {once:true});
-  setTimeout(()=>{ if(window.HAMDI_SUPABASE) bootRealCloud(); },1500);
+  if(window.HAMDI_SUPABASE){ sb = window.HAMDI_SUPABASE; bootRealCloud(); return; }
+  window.addEventListener('hamdi-supabase-ready', function(){ sb = window.HAMDI_SUPABASE; bootRealCloud(); }, {once:true});
+  setTimeout(()=>{ if(window.HAMDI_SUPABASE){ sb = window.HAMDI_SUPABASE; bootRealCloud(); } },5000);
 }
 startHamdiRealCloud();
 })();
