@@ -22,7 +22,7 @@ body{overflow-x:hidden}.app{display:flex;min-height:100vh;background:radial-grad
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 window.HAMDI_SUPABASE_CONFIG = {
-  url: 'https://irlwndzsfphnphdezmyb.supabase.co',
+  url: 'https://irlwndzsfphnphezdmyb.supabase.co',
   publishableKey: 'sb_publishable_2bUzudb32hR-udSA1hPcPQ_B6pT3fKK'
 };
 (function initHamdiSupabase(){
@@ -174,7 +174,7 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
 <label>الاسم الكامل<input id="studentAuthName" class="student-auth-field" placeholder="الاسم الكامل"></label>
 <label>البريد الإلكتروني<input id="studentAuthEmail" class="student-auth-field" type="email" placeholder="name@example.com"></label>
 <label>كلمة المرور<input id="studentAuthPass" class="student-auth-field" type="password" placeholder="••••••••"></label>
-<div class="student-auth-actions"><button class="student-auth-btn student-auth-main" id="studentAuthSubmit">دخول</button><button class="student-auth-btn student-auth-alt" id="studentAuthSwitch">إنشاء حساب</button><button class="student-auth-btn student-auth-alt" id="studentAuthClose">إغلاق</button></div>
+<div class="student-auth-actions"><button class="student-auth-btn student-auth-main" id="studentAuthSubmit">دخول</button><button class="student-auth-btn student-auth-alt" id="studentAuthReset">نسيت كلمة السر؟</button><button class="student-auth-btn student-auth-alt" id="studentAuthSwitch">إنشاء حساب</button><button class="student-auth-btn student-auth-alt" id="studentAuthClose">إغلاق</button></div>
 <div id="studentAuthStatus" class="student-auth-status"></div>
 </div></div>
 <script>
@@ -184,6 +184,32 @@ window.addEventListener('load',function(){
  function open(m){mode=m;o.classList.add('open');o.setAttribute('aria-hidden','false');name.style.display=m==='signup'?'block':'none';title.textContent=m==='signup'?'إنشاء حساب طالب':'تسجيل دخول الطالب';sw.textContent=m==='signup'?'لدي حساب بالفعل':'إنشاء حساب';status.textContent='';}
  function close(){o.classList.remove('open');o.setAttribute('aria-hidden','true');}
  b.onclick=()=>open('login');document.getElementById('studentAuthClose').onclick=close;sw.onclick=()=>open(mode==='login'?'signup':'login');
+ document.getElementById('studentAuthReset').onclick=async function(){
+   const email=document.getElementById('studentAuthEmail').value.trim() || prompt('اكتب بريدك الإلكتروني لاستعادة كلمة السر:','');
+   if(!email)return;
+   const sb=window.HAMDI_SUPABASE;
+   if(!sb)return status.textContent='الاتصال بخدمة الحساب غير جاهز. أعد تحميل الصفحة.';
+   this.disabled=true;status.textContent='جارٍ إرسال رابط استعادة كلمة السر...';
+   try{
+     const r=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
+     if(r.error)throw r.error;
+     status.textContent='تم إرسال رابط استعادة كلمة السر إلى بريدك الإلكتروني. افتح الرسالة واتبع الرابط.';
+   }catch(err){status.textContent=err.message||'تعذر إرسال رابط استعادة كلمة السر.';}
+   finally{this.disabled=false;}
+ };
+ sbRecovery();
+ function sbRecovery(){
+   const sb=window.HAMDI_SUPABASE;if(!sb)return;
+   sb.auth.onAuthStateChange(async (event)=>{
+     if(event==='PASSWORD_RECOVERY'){
+       const np=prompt('اكتب كلمة السر الجديدة:');
+       if(!np)return;
+       if(np.length<6){alert('كلمة السر يجب أن تكون 6 أحرف على الأقل.');return;}
+       const r=await sb.auth.updateUser({password:np});
+       if(r.error)alert(r.error.message);else alert('تم تغيير كلمة السر بنجاح. يمكنك تسجيل الدخول الآن.');
+     }
+   });
+ }
  document.getElementById('studentAuthSubmit').onclick=async function(){
    const sb=window.HAMDI_SUPABASE,e=document.getElementById('studentAuthEmail').value.trim(),p=document.getElementById('studentAuthPass').value,n=name.value.trim();
    if(!sb)return status.textContent='الاتصال بخدمة الحساب غير جاهز. أعد تحميل الصفحة.';
