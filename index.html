@@ -778,6 +778,7 @@ startHamdiRealCloud();
 })();
 </script>
 
+
 <style id="hamdi-final-access-style">
 #hamdiFinalAccess{position:fixed;right:18px;bottom:18px;z-index:10020;display:flex;gap:8px;flex-direction:column;align-items:flex-end}
 #hamdiFinalAccess button{border:0;border-radius:999px;padding:13px 18px;font-weight:800;cursor:pointer;box-shadow:0 8px 24px rgba(0,0,0,.22);font-size:15px}
@@ -785,52 +786,108 @@ startHamdiRealCloud();
 #hamdiFinalAdminBtn{background:#159bea;color:#fff}
 @media(max-width:650px){#hamdiFinalAccess{right:12px;bottom:12px}#hamdiFinalAccess button{font-size:14px;padding:12px 15px}}
 </style>
-<div id="hamdiFinalAccess"><button id="hamdiFinalStudentBtn">تسجيل دخول الطالب</button><button id="hamdiFinalAdminBtn">دخول الإدارة</button></div>
-<script>
+
+<div id="hamdiFinalAccess">
+  <button id="hamdiFinalStudentBtn" type="button">تسجيل دخول الطالب</button>
+  <button id="hamdiFinalAdminBtn" type="button">دخول الإدارة</button>
+</div>
+
+<script id="hamdi-final-access-fixed">
 (function(){
+  function ready(fn){
+    if(window.HAMDI_SUPABASE) fn();
+    else window.addEventListener('hamdi-supabase-ready',fn,{once:true});
+  }
+
+  function ensureUI(){
+    if(typeof injectRealUI === 'function') injectRealUI();
+  }
+
+  function openStudent(){
+    ensureUI();
+    if(typeof openAuth === 'function'){
+      openAuth('login');
+    } else {
+      document.getElementById('hcStudentAccountBtn')?.click();
+    }
+  }
+
+  function openAdmin(){
+    ensureUI();
+    const modal=document.getElementById('hcAuthReal');
+    if(!modal) return alert('جارٍ تجهيز لوحة الإدارة، أعد تحميل الصفحة مرة واحدة.');
+
+    modal.classList.add('open');
+    const title=document.getElementById('hcAuthTitle');
+    const nameWrap=document.getElementById('hcAuthNameWrap');
+    const switchBtn=document.getElementById('hcAuthSwitch');
+    const submit=document.getElementById('hcAuthSubmit');
+    const status=document.getElementById('hcAuthStatus');
+
+    if(title) title.textContent='دخول الإدارة';
+    if(nameWrap) nameWrap.style.display='none';
+    if(switchBtn) switchBtn.style.display='none';
+    if(status) status.textContent='سجّل بحساب الأدمن في Supabase.';
+
+    if(submit){
+      submit.onclick=async function(){
+        const sb=window.HAMDI_SUPABASE;
+        const email=document.getElementById('hcAuthEmail')?.value.trim();
+        const password=document.getElementById('hcAuthPass')?.value||'';
+        if(!sb) return status.textContent='جارٍ تجهيز الاتصال. أعد تحميل الصفحة.';
+        if(!email||!password) return status.textContent='اكتب البريد الإلكتروني وكلمة المرور.';
+
+        try{
+          const r=await sb.auth.signInWithPassword({email,password});
+          if(r.error) throw r.error;
+
+          const u=await sb.auth.getUser();
+          const user=u.data?.user;
+          if(!user) throw new Error('تعذر قراءة حساب الأدمن.');
+
+          const p=await sb.from('profiles')
+            .select('id,full_name,email,role')
+            .eq('id',user.id)
+            .maybeSingle();
+
+          if(p.error) throw p.error;
+
+          if(p.data?.role!=='admin'){
+            await sb.auth.signOut();
+            throw new Error('هذا الحساب ليس حساب مدير.');
+          }
+
+          currentUser=user;
+          currentProfile=p.data;
+          modal.classList.remove('open');
+          if(typeof openCloudAdmin==='function') openCloudAdmin();
+        }catch(e){
+          status.textContent=e.message||'تعذر تسجيل دخول الإدارة.';
+        }
+      };
+    }
+  }
+
   function setup(){
-    const sb=window.HAMDI_SUPABASE;
     const student=document.getElementById('hamdiFinalStudentBtn');
     const admin=document.getElementById('hamdiFinalAdminBtn');
-    if(!student||!admin)return;
-    student.onclick=()=>{ if(window.HAMDI_REAL_CLOUD_BOOT){ const ev=new CustomEvent('hamdi-open-student-login'); window.dispatchEvent(ev); } };
-    admin.onclick=()=>{ if(window.HAMDI_REAL_CLOUD_BOOT){ window.dispatchEvent(new CustomEvent('hamdi-open-admin-login')); } };
-    window.addEventListener('hamdi-open-student-login',()=>{
-      const b=document.getElementById('hcStudentAccountBtn');
-      if(b){b.click();return;}
-      if(window.HAMDI_REAL_CLOUD_BOOT){ window.HAMDI_REAL_CLOUD_BOOT(); setTimeout(()=>document.getElementById('hcStudentAccountBtn')?.click(),100); }
-    });
-    window.addEventListener('hamdi-open-admin-login',()=>{
-      const b=document.getElementById('hcStudentAccountBtn');
-      if(!b)return;
-      b.click();
-      setTimeout(()=>{
-        const title=document.getElementById('hcAuthTitle');
-        const submit=document.getElementById('hcAuthSubmit');
-        if(title)title.textContent='دخول الإدارة';
-        if(submit){
-          const old=submit.onclick;
-          submit.onclick=async function(){
-            await old.call(this);
-            const sb2=window.HAMDI_SUPABASE;
-            if(!sb2)return;
-            const u=await sb2.auth.getUser();
-            if(u.data?.user){
-              const r=await sb2.from('profiles').select('role').eq('id',u.data.user.id).maybeSingle();
-              if(r.data?.role==='admin'){document.getElementById('hcAuthReal')?.classList.remove('open');document.getElementById('hcCloudAdminBtn')?.click();}
-              else{document.getElementById('hcAuthStatus').textContent='هذا الحساب ليس حساب مدير.';}
-            }
-          };
-        }
-      },150);
-    });
-    // Keep only the final access buttons visible to avoid duplicate student-login buttons.
+    if(!student||!admin) return;
+
+    student.onclick=openStudent;
+    admin.onclick=openAdmin;
+  }
+
+  // The buttons themselves work after Supabase is ready, but we also make
+  // them usable while the page is still booting.
+  setup();
+  ready(setup);
+
+  // Hide older duplicate access buttons so the customer sees one clean entry point.
+  setTimeout(function(){
     document.getElementById('hcStudentBar')?.style.setProperty('display','none','important');
     document.getElementById('hamdiStudentLoginBtn')?.style.setProperty('display','none','important');
     document.getElementById('hamdiStudentAuth')?.style.setProperty('display','none','important');
-  }
-  if(window.HAMDI_SUPABASE) setup(); else window.addEventListener('hamdi-supabase-ready',setup,{once:true});
-  setTimeout(setup,1800);
+  },500);
 })();
 </script>
 
