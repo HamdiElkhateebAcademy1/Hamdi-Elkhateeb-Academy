@@ -174,7 +174,7 @@ document.querySelectorAll('[data-course]').forEach(btn=>{const card=btn.closest(
 <label>الاسم الكامل<input id="studentAuthName" class="student-auth-field" placeholder="الاسم الكامل"></label>
 <label>البريد الإلكتروني<input id="studentAuthEmail" class="student-auth-field" type="email" placeholder="name@example.com"></label>
 <label>كلمة المرور<input id="studentAuthPass" class="student-auth-field" type="password" placeholder="••••••••"></label>
-<div class="student-auth-actions"><button class="student-auth-btn student-auth-main" id="studentAuthSubmit">دخول</button><button class="student-auth-btn student-auth-alt" id="studentAuthReset">نسيت كلمة السر؟</button><button class="student-auth-btn student-auth-alt" id="studentAuthSwitch">إنشاء حساب</button><button class="student-auth-btn student-auth-alt" id="studentAuthClose">إغلاق</button></div>
+<div class="student-auth-actions"><button class="student-auth-btn student-auth-main" id="studentAuthSubmit">دخول</button><button class="student-auth-btn student-auth-alt" id="studentAuthSwitch">إنشاء حساب</button><button class="student-auth-btn student-auth-alt" id="studentAuthClose">إغلاق</button></div>
 <div id="studentAuthStatus" class="student-auth-status"></div>
 </div></div>
 <script>
@@ -184,32 +184,6 @@ window.addEventListener('load',function(){
  function open(m){mode=m;o.classList.add('open');o.setAttribute('aria-hidden','false');name.style.display=m==='signup'?'block':'none';title.textContent=m==='signup'?'إنشاء حساب طالب':'تسجيل دخول الطالب';sw.textContent=m==='signup'?'لدي حساب بالفعل':'إنشاء حساب';status.textContent='';}
  function close(){o.classList.remove('open');o.setAttribute('aria-hidden','true');}
  b.onclick=()=>open('login');document.getElementById('studentAuthClose').onclick=close;sw.onclick=()=>open(mode==='login'?'signup':'login');
- document.getElementById('studentAuthReset').onclick=async function(){
-   const email=document.getElementById('studentAuthEmail').value.trim() || prompt('اكتب بريدك الإلكتروني لاستعادة كلمة السر:','');
-   if(!email)return;
-   const sb=window.HAMDI_SUPABASE;
-   if(!sb)return status.textContent='الاتصال بخدمة الحساب غير جاهز. أعد تحميل الصفحة.';
-   this.disabled=true;status.textContent='جارٍ إرسال رابط استعادة كلمة السر...';
-   try{
-     const r=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
-     if(r.error)throw r.error;
-     status.textContent='تم إرسال رابط استعادة كلمة السر إلى بريدك الإلكتروني. افتح الرسالة واتبع الرابط.';
-   }catch(err){status.textContent=err.message||'تعذر إرسال رابط استعادة كلمة السر.';}
-   finally{this.disabled=false;}
- };
- sbRecovery();
- function sbRecovery(){
-   const sb=window.HAMDI_SUPABASE;if(!sb)return;
-   sb.auth.onAuthStateChange(async (event)=>{
-     if(event==='PASSWORD_RECOVERY'){
-       const np=prompt('اكتب كلمة السر الجديدة:');
-       if(!np)return;
-       if(np.length<6){alert('كلمة السر يجب أن تكون 6 أحرف على الأقل.');return;}
-       const r=await sb.auth.updateUser({password:np});
-       if(r.error)alert(r.error.message);else alert('تم تغيير كلمة السر بنجاح. يمكنك تسجيل الدخول الآن.');
-     }
-   });
- }
  document.getElementById('studentAuthSubmit').onclick=async function(){
    const sb=window.HAMDI_SUPABASE,e=document.getElementById('studentAuthEmail').value.trim(),p=document.getElementById('studentAuthPass').value,n=name.value.trim();
    if(!sb)return status.textContent='الاتصال بخدمة الحساب غير جاهز. أعد تحميل الصفحة.';
@@ -506,12 +480,6 @@ async function refreshCloudUser(){
   if(currentUser){
     const r=await sb.from('profiles').select('id,full_name,email,role').eq('id',currentUser.id).maybeSingle();
     if(!r.error) currentProfile=r.data;
-    else {
-      const adminCheck=await sb.rpc('is_admin');
-      if(!adminCheck.error && adminCheck.data===true){
-        currentProfile={id:currentUser.id,email:currentUser.email,role:'admin'};
-      }
-    }
   }
   injectRealUI();
   const isAdmin=currentProfile?.role==='admin';
@@ -889,21 +857,20 @@ startHamdiRealCloud();
           const user=u.data?.user;
           if(!user) throw new Error('تعذر قراءة حساب الأدمن.');
 
-          const adminCheck = await sb.rpc('is_admin');
-          if(adminCheck.error) throw adminCheck.error;
-
-          if(adminCheck.data !== true){
-            await sb.auth.signOut();
-            throw new Error('هذا الحساب ليس حساب مدير.');
-          }
-
           const p=await sb.from('profiles')
             .select('id,full_name,email,role')
             .eq('id',user.id)
             .maybeSingle();
 
+          if(p.error) throw p.error;
+
+          if(p.data?.role!=='admin'){
+            await sb.auth.signOut();
+            throw new Error('هذا الحساب ليس حساب مدير.');
+          }
+
           currentUser=user;
-          currentProfile=p.data || {id:user.id,email:user.email,role:'admin'};
+          currentProfile=p.data;
           modal.classList.remove('open');
           if(typeof openCloudAdmin==='function') openCloudAdmin();
         }catch(e){
@@ -933,6 +900,136 @@ startHamdiRealCloud();
     document.getElementById('hamdiStudentLoginBtn')?.style.setProperty('display','none','important');
     document.getElementById('hamdiStudentAuth')?.style.setProperty('display','none','important');
   },500);
+})();
+</script>
+
+
+<script id="hamdi-student-login-final-fix">
+(function(){
+  'use strict';
+  function esc(v){return String(v??'').replace(/[&<>\"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','\"':'&quot;',"'":'&#39;'}[m]));}
+  function ready(fn){if(window.HAMDI_SUPABASE) fn(); else window.addEventListener('hamdi-supabase-ready',fn,{once:true});}
+
+  async function loadCoursesSafely(sb,user){
+    const box=document.getElementById('hcStudentCourses');
+    const lessons=document.getElementById('hcStudentLessons');
+    if(!box) return;
+    box.innerHTML='<div class="hcRealStatus">جاري تحميل كورساتك...</div>';
+    if(lessons) lessons.innerHTML='';
+
+    const er=await sb.from('enrollments').select('course_id,status').eq('user_id',user.id).eq('status','active');
+    if(er.error){
+      box.innerHTML='<div class="hcRealStatus">تعذر جلب تسجيلاتك: '+esc(er.error.message)+'</div>';
+      return;
+    }
+    if(!er.data || !er.data.length){
+      box.innerHTML='<div class="hcRealStatus">لا توجد كورسات مفعّلة على حسابك حتى الآن.</div>';
+      return;
+    }
+
+    const ids=[...new Set(er.data.map(x=>x.course_id).filter(Boolean))];
+    const cr=await sb.from('courses').select('id,title,description,price').in('id',ids);
+    if(cr.error){
+      box.innerHTML='<div class="hcRealStatus">تم تسجيل الدخول، لكن تعذر جلب بيانات الكورسات: '+esc(cr.error.message)+'</div>';
+      return;
+    }
+    const byId=new Map((cr.data||[]).map(c=>[c.id,c]));
+    box.innerHTML=ids.map(id=>{
+      const c=byId.get(id);
+      if(!c) return '';
+      return `<div class="hcRealCard"><div class="hcRealRow"><b>${esc(c.title||'كورس')}</b><span>${esc(c.price||'')}</span></div><p class="hcRealMuted">${esc(c.description||'')}</p><button class="hcRealBtn" data-safe-course="${esc(id)}">فتح الدروس</button></div>`;
+    }).join('') || '<div class="hcRealStatus">لا توجد بيانات كورسات مرتبطة بحسابك.</div>';
+
+    box.querySelectorAll('[data-safe-course]').forEach(btn=>btn.onclick=()=>loadLessonsSafely(sb,btn.dataset.safeCourse));
+  }
+
+  async function loadLessonsSafely(sb,courseId){
+    const box=document.getElementById('hcStudentLessons');
+    if(!box) return;
+    box.innerHTML='<div class="hcRealStatus">جاري تحميل الدروس...</div>';
+    const r=await sb.from('lessons').select('id,title,lesson_type,content_url,sort_order').eq('course_id',courseId).order('sort_order',{ascending:true});
+    if(r.error){box.innerHTML='<div class="hcRealStatus">تعذر جلب الدروس: '+esc(r.error.message)+'</div>';return;}
+    if(!r.data?.length){box.innerHTML='<div class="hcRealStatus">لا توجد دروس في هذا الكورس حتى الآن.</div>';return;}
+    box.innerHTML='<h3>الدروس</h3>'+r.data.map(l=>`<div class="hcRealCard"><div class="hcRealRow"><b>${esc(l.title)}</b><span>${esc(l.lesson_type||'')}</span></div><div id="safe-lesson-${esc(l.id)}"></div><button class="hcRealBtn" data-safe-lesson="${esc(l.id)}" data-safe-type="${esc(l.lesson_type||'')}" data-safe-path="${esc(l.content_url||'')}">فتح الدرس</button></div>`).join('');
+    box.querySelectorAll('[data-safe-lesson]').forEach(btn=>btn.onclick=()=>openLessonSafely(sb,btn.dataset.safeLesson,btn.dataset.safeType,btn.dataset.safePath));
+  }
+
+  async function openLessonSafely(sb,id,type,path){
+    if(!path){alert('هذا الدرس لا يحتوي على ملف أو رابط بعد.');return;}
+    let src=path;
+    if(!/^https?:\\/\\//i.test(path)){
+      const r=await sb.storage.from('course-files').createSignedUrl(path,3600);
+      if(r.error){alert('تعذر فتح الملف: '+r.error.message);return;}
+      src=r.data.signedUrl;
+    }
+    const holder=document.getElementById('safe-lesson-'+id);
+    if(!holder)return;
+    if(type==='video') holder.innerHTML=`<video class="hcRealVideo" controls playsinline preload="metadata" src="${esc(src)}"></video>`;
+    else if(type==='pdf') holder.innerHTML=`<iframe style="width:100%;height:650px;border:0;border-radius:12px" src="${esc(src)}"></iframe>`;
+    else holder.innerHTML=`<a class="hcRealBtn" href="${esc(src)}" target="_blank" rel="noopener">فتح الملف</a>`;
+  }
+
+  async function studentSubmit(){
+    const sb=window.HAMDI_SUPABASE;
+    const status=document.getElementById('hcAuthStatus');
+    const email=document.getElementById('hcAuthEmail')?.value.trim();
+    const password=document.getElementById('hcAuthPass')?.value||'';
+    const title=document.getElementById('hcAuthTitle')?.textContent||'';
+    if(!sb){if(status)status.textContent='الاتصال بـ Supabase لم يكتمل. أعد تحميل الصفحة.';return;}
+    if(!email||!password){if(status)status.textContent='اكتب البريد الإلكتروني وكلمة المرور.';return;}
+    const btn=document.getElementById('hcAuthSubmit'); if(btn)btn.disabled=true;
+    if(status)status.textContent='جارٍ تسجيل الدخول...';
+    try{
+      if(title==='إنشاء حساب جديد'){
+        const name=document.getElementById('hcAuthName')?.value.trim()||'';
+        const r=await sb.auth.signUp({email,password,options:{data:{full_name:name}}});
+        if(r.error)throw r.error;
+        if(r.data?.session){
+          const u=r.data.user;
+          if(u){
+            await sb.from('profiles').upsert({id:u.id,full_name:name,email:u.email,role:'student'},{onConflict:'id'});
+          }
+          if(status)status.textContent='تم إنشاء الحساب وتسجيل الدخول بنجاح.';
+          setTimeout(()=>document.getElementById('hcAuthReal')?.classList.remove('open'),500);
+        }else{
+          if(status)status.textContent='تم إنشاء الحساب. افتح رسالة تأكيد البريد ثم سجّل الدخول.';
+        }
+        return;
+      }
+
+      const r=await sb.auth.signInWithPassword({email,password});
+      if(r.error)throw r.error;
+      const user=r.data?.user;
+      if(!user)throw new Error('تم الدخول لكن تعذر قراءة الحساب.');
+
+      // قراءة الملف الشخصي بشكل مستقل؛ عدم وجوده لا يمنع الطالب من الدخول.
+      let profile=null;
+      const pr=await sb.from('profiles').select('id,full_name,email,role').eq('id',user.id).maybeSingle();
+      if(!pr.error) profile=pr.data||null;
+
+      document.getElementById('hcAuthReal')?.classList.remove('open');
+      const area=document.getElementById('hcStudentAreaReal');
+      if(area){
+        area.classList.add('open');
+        const welcome=document.getElementById('hcStudentWelcome');
+        if(welcome)welcome.textContent='مرحبًا '+(profile?.full_name||user.email||'طالب');
+      }
+      await loadCoursesSafely(sb,user);
+    }catch(e){
+      if(status)status.textContent='فشل تسجيل الدخول: '+(e?.message||'خطأ غير معروف');
+    }finally{if(btn)btn.disabled=false;}
+  }
+
+  function install(){
+    const student=document.getElementById('hamdiFinalStudentBtn');
+    if(student){
+      student.onclick=function(){
+        if(typeof openAuth==='function') openAuth('login');
+        setTimeout(()=>{const b=document.getElementById('hcAuthSubmit');if(b)b.onclick=studentSubmit;},30);
+      };
+    }
+  }
+  ready(install); setTimeout(install,1200); setTimeout(install,2500);
 })();
 </script>
 
