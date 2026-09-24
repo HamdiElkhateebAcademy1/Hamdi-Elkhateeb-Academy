@@ -871,10 +871,8 @@ startHamdiRealCloud();
 
           currentUser=user;
           currentProfile=p.data;
-          if (typeof sb !== 'undefined') sb = window.HAMDI_SUPABASE;
           modal.classList.remove('open');
           if(typeof openCloudAdmin==='function') openCloudAdmin();
-          else if (typeof window.HAMDI_REAL_CLOUD_BOOT === 'function') await window.HAMDI_REAL_CLOUD_BOOT();
         }catch(e){
           status.textContent=e.message||'تعذر تسجيل دخول الإدارة.';
         }
@@ -959,7 +957,7 @@ startHamdiRealCloud();
   async function openLessonSafely(sb,id,type,path){
     if(!path){alert('هذا الدرس لا يحتوي على ملف أو رابط بعد.');return;}
     let src=path;
-    if(!/^https?:\\/\\//i.test(path)){
+    if(!/^https?:\/\//i.test(path)){
       const r=await sb.storage.from('course-files').createSignedUrl(path,3600);
       if(r.error){alert('تعذر فتح الملف: '+r.error.message);return;}
       src=r.data.signedUrl;
