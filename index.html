@@ -869,8 +869,10 @@ startHamdiRealCloud();
             throw new Error('هذا الحساب ليس حساب مدير.');
           }
 
-          currentUser=user;
-          currentProfile=p.data;
+          // Do not assign to the shared auth state directly here.
+          // Refresh it from Supabase after the admin sign-in, then open the dashboard.
+          await refreshCloudUser();
+          if(currentProfile?.role!=='admin') throw new Error('تم تسجيل الدخول، لكن حساب الأدمن غير مفعّل كمدير.');
           modal.classList.remove('open');
           if(typeof openCloudAdmin==='function') openCloudAdmin();
         }catch(e){
