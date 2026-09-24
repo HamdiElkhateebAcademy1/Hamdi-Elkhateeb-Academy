@@ -485,6 +485,8 @@ async function refreshCloudUser(){
   const isAdmin=currentProfile?.role==='admin';
   $('hcStudentAccountBtn').textContent=currentUser?(isAdmin?'حسابي / الإدارة':'حساب الطالب'):'تسجيل دخول الطالب';
   $('hcCloudAdminBtn').style.display=isAdmin?'inline-block':'none';
+  window.HAMDI_CURRENT_USER = currentUser;
+  window.HAMDI_CURRENT_PROFILE = currentProfile;
 }
 
 async function openStudentArea(){
@@ -779,6 +781,14 @@ async function bootRealCloud(){
     // The admin button is available in the bottom bar.
   }
 }
+// Expose the real cloud functions to the external access buttons.
+// The cloud layer itself is intentionally kept in a private scope, so the
+// final access buttons must use these explicit public bridges.
+window.HAMDI_REFRESH_CLOUD_USER = refreshCloudUser;
+window.HAMDI_INJECT_REAL_UI = injectRealUI;
+window.HAMDI_OPEN_AUTH = openAuth;
+window.HAMDI_OPEN_STUDENT_AREA = openStudentArea;
+window.HAMDI_OPEN_CLOUD_ADMIN = openCloudAdmin;
 window.HAMDI_REAL_CLOUD_BOOT=bootRealCloud;
 
 function startHamdiRealCloud(){
@@ -812,13 +822,13 @@ startHamdiRealCloud();
   }
 
   function ensureUI(){
-    if(typeof injectRealUI === 'function') injectRealUI();
+    if(typeof window.HAMDI_INJECT_REAL_UI === 'function') window.HAMDI_INJECT_REAL_UI();
   }
 
   function openStudent(){
     ensureUI();
-    if(typeof openAuth === 'function'){
-      openAuth('login');
+    if(typeof window.HAMDI_OPEN_AUTH === 'function'){
+      window.HAMDI_OPEN_AUTH('login');
     } else {
       document.getElementById('hcStudentAccountBtn')?.click();
     }
@@ -871,10 +881,12 @@ startHamdiRealCloud();
 
           // Do not assign to the shared auth state directly here.
           // Refresh it from Supabase after the admin sign-in, then open the dashboard.
-          await refreshCloudUser();
-          if(currentProfile?.role!=='admin') throw new Error('تم تسجيل الدخول، لكن حساب الأدمن غير مفعّل كمدير.');
+          if(typeof window.HAMDI_REFRESH_CLOUD_USER!=='function') throw new Error('نظام الإدارة لم يجهز بعد. أعد تحميل الصفحة.');
+          await window.HAMDI_REFRESH_CLOUD_USER();
+          if(window.HAMDI_CURRENT_PROFILE?.role!=='admin') throw new Error('تم تسجيل الدخول، لكن حساب الأدمن غير مفعّل كمدير.');
           modal.classList.remove('open');
-          if(typeof openCloudAdmin==='function') openCloudAdmin();
+          if(typeof window.HAMDI_OPEN_CLOUD_ADMIN==='function') window.HAMDI_OPEN_CLOUD_ADMIN();
+          else throw new Error('لوحة الإدارة لم تجهز بعد. أعد تحميل الصفحة.');
         }catch(e){
           status.textContent=e.message||'تعذر تسجيل دخول الإدارة.';
         }
@@ -1026,7 +1038,12 @@ startHamdiRealCloud();
     const student=document.getElementById('hamdiFinalStudentBtn');
     if(student){
       student.onclick=function(){
-        if(typeof openAuth==='function') openAuth('login');
+        if(typeof window.HAMDI_OPEN_AUTH==='function') window.HAMDI_OPEN_AUTH('login');
+        else {
+          const status=document.getElementById('hcAuthStatus');
+          if(status) status.textContent='جارٍ تجهيز تسجيل الدخول... أعد تحميل الصفحة إذا استمرت الرسالة.';
+          return;
+        }
         setTimeout(()=>{const b=document.getElementById('hcAuthSubmit');if(b)b.onclick=studentSubmit;},30);
       };
     }
