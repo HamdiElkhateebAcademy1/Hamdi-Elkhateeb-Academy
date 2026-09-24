@@ -871,8 +871,10 @@ startHamdiRealCloud();
 
           currentUser=user;
           currentProfile=p.data;
+          if (typeof sb !== 'undefined') sb = window.HAMDI_SUPABASE;
           modal.classList.remove('open');
           if(typeof openCloudAdmin==='function') openCloudAdmin();
+          else if (typeof window.HAMDI_REAL_CLOUD_BOOT === 'function') await window.HAMDI_REAL_CLOUD_BOOT();
         }catch(e){
           status.textContent=e.message||'تعذر تسجيل دخول الإدارة.';
         }
