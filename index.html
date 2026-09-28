@@ -606,16 +606,18 @@ async function saveCloudCourse(){
   alert('تم حفظ الكورس على Supabase.');
 }
 
-function editCloudCourse(id){
-  sb.from('courses').select('id,title,description,price,published').eq('id',id).single().then(({data,error})=>{
-    if(error)return alert(error.message);
-    $('hcCourseId').value=data.id;
-    $('hcCourseTitle').value=data.title||'';
-    $('hcCourseDesc').value=data.description||'';
-    $('hcCoursePrice').value=data.price||0;
-    $('hcCoursePublished').value=String(data.published);
-    window.scrollTo({top:0,behavior:'smooth'});
-  });
+async function editCloudCourse(id){
+  const {data,error}=await sb.from('courses').select('id,title,description,price,published').eq('id',id).single();
+  if(error)return alert('تعذر فتح بيانات الكورس: '+error.message);
+  $('hcCourseId').value=data.id;
+  $('hcCourseTitle').value=data.title||'';
+  $('hcCourseDesc').value=data.description||'';
+  $('hcCoursePrice').value=data.price??0;
+  $('hcCoursePublished').value=String(data.published);
+  const box=document.querySelector('#hcCloudAdminReal .hcRealBox');
+  if(box){box.scrollTo({top:0,behavior:'smooth'});}
+  const title=$('hcCourseTitle');
+  if(title){setTimeout(()=>{title.focus();title.scrollIntoView({behavior:'smooth',block:'center'});},250);}
 }
 
 function clearCloudCourse(){
