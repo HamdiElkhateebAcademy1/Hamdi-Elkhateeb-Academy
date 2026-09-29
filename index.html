@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta name="theme-color" content="#061727"/><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/><link rel="manifest" href="manifest.json"/><title>Hamdi Elkhateeb Digital Academy</title><style>
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width,initial-scale=1" name="viewport"/><meta name="theme-color" content="#061727"/><meta name="mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-capable" content="yes"/><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/><link rel="manifest" href="manifest.json"/><link rel="apple-touch-icon" href="icon-192.png"/><title>Hamdi Elkhateeb Digital Academy</title><style>
 :root{--bg:#061727;--side:#061a2b;--panel:#0b2136;--line:#1b3b55;--text:#eef5fb;--muted:#8fa5b8;--blue:#159bea}
 *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#061727;color:var(--text);font-family:Inter,Arial,sans-serif}
 body{overflow-x:hidden}.app{display:flex;min-height:100vh;background:radial-gradient(900px 500px at 70% 0,#10324d 0,#061727 55%,#04111e 100%)}
@@ -97,7 +97,7 @@ window.HAMDI_SUPABASE_CONFIG = {
 <div><h3>Software &amp; Digital Tools</h3><p style="color:#8fa5b8;line-height:1.8">EXOCAD Dental CAD · EXOCAD Implant Editor · Blender for dental (I Bar module) · Amann Girrbach Workflow · CAD/CAM Production Systems · Adobe Premiere Pro · Camtasia Studio · Photoshop</p></div>
 </div></div></section>
 <section class="panel" id="resources"><div class="section-head"><h2>Resources &amp; Downloads</h2></div><div class="resbox" style="max-width:600px"><div class="resource"><span class="pdf">PDF</span><div><b>Exocad Libraries Guide</b><small>PDF • 12 MB</small></div><span class="dl">↓</span></div><div class="resource"><span class="pdf">PDF</span><div><b>Design Checklist</b><small>PDF • 2 MB</small></div><span class="dl">↓</span></div><div class="resource"><span class="pdf">PDF</span><div><b>Occlusion Quick Reference</b><small>PDF • 1.5 MB</small></div><span class="dl">↓</span></div></div></section>
-<section class="panel" id="community"><div class="section-head"><h2>Community</h2></div><div class="resbox" style="padding:25px;color:#91a6b7">Community area is ready to connect to your real content.</div></section>
+<section class="panel" id="community"><div class="section-head"><h2>مجتمع الطلاب</h2></div><div class="resbox" style="padding:25px;color:#91a6b7"><h3 style="color:#fff;margin-top:0">مجتمع Hamdi Elkhateeb Academy</h3><p style="line-height:1.9">للتواصل مع طلاب الأكاديمية وطرح الأسئلة ومتابعة الإعلانات، اضغط الزر بالأسفل.</p><button id="communityWhatsappBtn" style="border:0;border-radius:14px;padding:14px 22px;background:#1fa855;color:#fff;font-weight:800;cursor:pointer">فتح مجتمع واتساب</button></div></section>
 </main></div>
 <div class="modal" id="modal"><div class="dialog payment-dialog"><button id="x">×</button><div id="paymentView"><div class="payment-course" id="paymentCourse"></div><div class="payment-price" id="paymentPrice"></div><p class="payment-note">Choose a payment method, complete the transfer, then keep your payment receipt.</p><div class="pay-methods"><div class="pay-method"><b>Vodafone Cash</b><span>01069262587</span></div><div class="pay-method"><b>InstaPay</b><span id="instapayAccount">01001282819</span><small style="display:block;margin-top:5px;color:#9fb3c2">رقم التحويل عبر InstaPay</small></div></div><div class="receipt-box"><label>After completing the transfer, send the payment screenshot to the academy on WhatsApp for manual approval.</label><div style="font-size:11px;color:#bcd0de;line-height:1.6">WhatsApp: 01006641750</div></div><div class="payment-actions"><button class="primary" id="whatsappBtn">Send Payment Request</button><button class="secondary" id="closeBtn">Close</button></div><div class="payment-status" id="paymentStatus"></div></div></div></div>
 <script>
@@ -113,11 +113,19 @@ document.querySelectorAll('[data-panel-link]').forEach(b=>b.onclick=e=>{e.preven
 function show(id){document.querySelectorAll('.panel').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.nav button[data-panel]').forEach(x=>x.classList.toggle('active',x.dataset.panel===id));document.getElementById('sidebar').classList.remove('open');scrollTo(0,0)}
 document.querySelectorAll('[data-course]').forEach(b=>b.onclick=()=>openPayment(b.dataset.course));
 document.querySelectorAll('[data-msg]').forEach(b=>b.onclick=()=>{alert(b.dataset.msg)});
+const WA_NUMBER='201006641750';
+function openAcademyWhatsApp(message){
+  const msg=encodeURIComponent(message);
+  const url='https://wa.me/'+WA_NUMBER+'?text='+msg;
+  const fallback='https://api.whatsapp.com/send?phone='+WA_NUMBER+'&text='+msg;
+  const w=window.open(url,'_blank','noopener');
+  if(!w){ window.location.href=url; }
+  setTimeout(()=>{ if(document.visibilityState==='visible') window.location.href=fallback; },900);
+}
 const helpBtn=document.getElementById('helpSupportBtn');
-if(helpBtn) helpBtn.onclick=()=>{
-  const msg=encodeURIComponent('مرحبًا، أحتاج مساعدة في Hamdi Elkhateeb Digital Academy.');
-  window.location.href='https://wa.me/201006641750?text='+msg;
-};
+if(helpBtn) helpBtn.onclick=()=>openAcademyWhatsApp('مرحبًا، أحتاج مساعدة في Hamdi Elkhateeb Digital Academy.');
+const communityBtn=document.getElementById('communityWhatsappBtn');
+if(communityBtn) communityBtn.onclick=()=>openAcademyWhatsApp('مرحبًا، أريد الانضمام إلى مجتمع طلاب Hamdi Elkhateeb Academy.');
 document.getElementById('bell').onclick=()=>{alert('No new notifications.')};
 document.getElementById('menu').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
 const s=document.getElementById('search');s.oninput=()=>{const q=s.value.toLowerCase().trim();document.querySelectorAll('.card').forEach(c=>c.style.display=!q||c.innerText.toLowerCase().includes(q)?'':'none')};
